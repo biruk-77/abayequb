@@ -186,11 +186,11 @@ class AuthProvider extends ChangeNotifier {
       AppLogger.info('Provider: Updating profile for ${_user!.id}');
 
       final data = {
-        if (fullName != null) 'fullName': fullName,
-        if (email != null) 'email': email,
-        if (phone != null) 'phone': phone,
-        if (password != null) 'password': password,
-        if (profileImageUrl != null) 'profile': profileImageUrl,
+        'fullName': ?fullName,
+        'email': ?email,
+        'phone': ?phone,
+        'password': ?password,
+        'profile': ?profileImageUrl,
         if (otp != null)
           'otp': otp
               .toString(), // Send as string "true"/"false" if backend expects text
