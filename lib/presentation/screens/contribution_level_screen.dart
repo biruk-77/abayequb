@@ -30,7 +30,7 @@ class _ContributionLevelScreenState extends State<ContributionLevelScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await context.read<EqubProvider>().fetchGroupsByPackage(
-        widget.package.id!,
+        widget.package.id,
       );
 
       // Auto-select if initialGroupId is provided

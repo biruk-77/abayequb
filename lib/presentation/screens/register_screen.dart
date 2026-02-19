@@ -470,10 +470,12 @@ class _RegisterScreenState extends State<RegisterScreen>
                       icon: Icons.email_outlined,
                       keyboardType: TextInputType.emailAddress,
                       validator: (v) {
-                        if (v == null || v.isEmpty)
+                        if (v == null || v.isEmpty) {
                           return 'Please enter your email';
-                        if (!v.contains('@') || !v.contains('.'))
+                        }
+                        if (!v.contains('@') || !v.contains('.')) {
                           return 'Please enter a valid email';
+                        }
                         return null;
                       },
                     ),

@@ -40,7 +40,8 @@ class FuturisticNavBar extends StatefulWidget {
   State<FuturisticNavBar> createState() => _FuturisticNavBarState();
 }
 
-class _FuturisticNavBarState extends State<FuturisticNavBar> with SingleTickerProviderStateMixin {
+class _FuturisticNavBarState extends State<FuturisticNavBar>
+    with SingleTickerProviderStateMixin {
   AnimationController? _controller;
   Animation<double>? _anim; // Runs from 0.0 to (items.length - 1).0
   int _prevIndex = 0;
@@ -54,33 +55,39 @@ class _FuturisticNavBarState extends State<FuturisticNavBar> with SingleTickerPr
 
   void _ensureAnimations() {
     if (_controller != null) return;
-    
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600), // Slower, heavier feel
     );
-    
+
     // We animate the VALUE directly (index), not just 0->1
-    _anim = Tween<double>(
-      begin: widget.selectedIndex.toDouble(),
-      end: widget.selectedIndex.toDouble(),
-    ).animate(CurvedAnimation(
-      parent: _controller!,
-      curve: Curves.fastLinearToSlowEaseIn, // "Expensive" mechanical feel
-    ));
+    _anim =
+        Tween<double>(
+          begin: widget.selectedIndex.toDouble(),
+          end: widget.selectedIndex.toDouble(),
+        ).animate(
+          CurvedAnimation(
+            parent: _controller!,
+            curve: Curves.fastLinearToSlowEaseIn, // "Expensive" mechanical feel
+          ),
+        );
   }
-  
+
   void _updateAnimationTarget() {
     _ensureAnimations();
     // Create a new tween to animate from current value to new target
-    _anim = Tween<double>(
-      begin: _anim?.value ?? _prevIndex.toDouble(),
-      end: widget.selectedIndex.toDouble(),
-    ).animate(CurvedAnimation(
-      parent: _controller!,
-      curve: Curves.fastLinearToSlowEaseIn, 
-    ));
-    
+    _anim =
+        Tween<double>(
+          begin: _anim?.value ?? _prevIndex.toDouble(),
+          end: widget.selectedIndex.toDouble(),
+        ).animate(
+          CurvedAnimation(
+            parent: _controller!,
+            curve: Curves.fastLinearToSlowEaseIn,
+          ),
+        );
+
     _controller!.forward(from: 0.0);
   }
 
@@ -108,11 +115,13 @@ class _FuturisticNavBarState extends State<FuturisticNavBar> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     _ensureAnimations();
-    
+
     // Compact height
-    const double height = 64.0;
+    const double height = 72.0;
     const Color activeColor = Colors.white;
-    const Color inactiveColor = Color(0xFF8888AA); 
+    const Color inactiveColor = Color(
+      0xFFAABBCB,
+    ); // Lighter blue-gray for better contrast on dark teal
 
     return RepaintBoundary(
       child: Container(
@@ -120,7 +129,9 @@ class _FuturisticNavBarState extends State<FuturisticNavBar> with SingleTickerPr
         // Floating but low and wide
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
-          color: const Color(0xFF0D4348).withOpacity(0.98), // Deep Teal from theme
+          color: const Color(
+            0xFF0D4348,
+          ).withOpacity(0.98), // Deep Teal from theme
           borderRadius: BorderRadius.circular(32), // Fully rounded ends
           boxShadow: [
             BoxShadow(
@@ -177,31 +188,46 @@ class _FuturisticNavBarState extends State<FuturisticNavBar> with SingleTickerPr
                               children: [
                                 // Icon: Moves up slightly and turns white
                                 Transform.translate(
-                                  offset: Offset(0, -6.0 * t),
+                                  offset: Offset(0, -10.0 * t),
                                   child: Icon(
                                     item.icon,
                                     // Interpolate color smoothly
-                                    color: Color.lerp(inactiveColor, activeColor, t),
+                                    color: Color.lerp(
+                                      inactiveColor,
+                                      activeColor,
+                                      t,
+                                    ),
                                     size: 24, // Standard, professional size
                                   ),
                                 ),
-                                
-                                // Text: Fades in below, subtle
+
+                                // Text: Always visible, different style for active/inactive
                                 Positioned(
-                                  bottom: 16,
-                                  child: Opacity(
-                                    opacity: t,
-                                    child: Transform.translate(
-                                      offset: Offset(0, (1.0 - t) * 8), // Slide up
-                                      child: Text(
-                                        item.label,
-                                        style: const TextStyle(
-                                          color: activeColor,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: 0.3,
-                                        ),
+                                  bottom:
+                                      12 + (2.0 * t), // Slight lift when active
+                                  child: Text(
+                                    item.label,
+                                    style: TextStyle(
+                                      color: Color.lerp(
+                                        inactiveColor.withOpacity(0.7),
+                                        activeColor,
+                                        t,
                                       ),
+                                      fontSize:
+                                          10 + (1.0 * t), // Swells slightly
+                                      fontWeight: t > 0.5
+                                          ? FontWeight.w600
+                                          : FontWeight.w500,
+                                      letterSpacing: 0.2 + (0.3 * t),
+                                      shadows: [
+                                        if (t > 0.1)
+                                          Shadow(
+                                            color: activeColor.withOpacity(
+                                              0.3 * t,
+                                            ),
+                                            blurRadius: 8 * t,
+                                          ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -209,15 +235,20 @@ class _FuturisticNavBarState extends State<FuturisticNavBar> with SingleTickerPr
                                 // Notification Badge: Minimal red dot
                                 if (item.hasNotification)
                                   Positioned(
-                                    top: 22,
-                                    right: 28, 
+                                    top: 18,
+                                    right: 24,
                                     child: Container(
                                       width: 8,
                                       height: 8,
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFFF3B30), // System Red
+                                        color: const Color(
+                                          0xFFFF3B30,
+                                        ), // System Red
                                         shape: BoxShape.circle,
-                                        border: Border.all(color: const Color(0xFF0D4348), width: 1.5),
+                                        border: Border.all(
+                                          color: const Color(0xFF0D4348),
+                                          width: 1.5,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -258,7 +289,7 @@ class _ObsidianHighlightPainter extends CustomPainter {
 
     final double itemWidth = size.width / count;
     final double h = size.height;
-    
+
     // Calculate precise center based on animation value
     final double centerX = (animationValue * itemWidth) + (itemWidth / 2);
     final double centerY = h / 2;
@@ -266,16 +297,16 @@ class _ObsidianHighlightPainter extends CustomPainter {
     // 1. The "Spotlight" Gradient (Vertical Beam)
     // A very subtle beam of light that highlights the active column
     final Rect bgRect = Rect.fromLTWH(0, 0, size.width, h);
-    
+
     // Mask the beam to the current position
     final Paint beamPaint = Paint()
       ..shader = RadialGradient(
-        center: Alignment( ((centerX / size.width) * 2) - 1, -0.6), // Top-center of item
+        center: Alignment(
+          ((centerX / size.width) * 2) - 1,
+          -0.6,
+        ), // Top-center of item
         radius: 0.5,
-        colors: [
-          color.withOpacity(0.15),
-          color.withOpacity(0.0),
-        ],
+        colors: [color.withOpacity(0.15), color.withOpacity(0.0)],
         stops: const [0.0, 1.0],
       ).createShader(bgRect);
 
@@ -283,10 +314,13 @@ class _ObsidianHighlightPainter extends CustomPainter {
 
     // 2. The Active Indicator (Refined Pill)
     // A small, glowing pill behind the icon
-    
+
     final RRect pillRect = RRect.fromRectAndRadius(
       Rect.fromCenter(
-        center: Offset(centerX, centerY - 8), // Centered behind the icon's lifted position
+        center: Offset(
+          centerX,
+          centerY - 8,
+        ), // Centered behind the icon's lifted position
         width: 48,
         height: 48,
       ),
@@ -296,25 +330,26 @@ class _ObsidianHighlightPainter extends CustomPainter {
     canvas.drawRRect(
       pillRect,
       Paint()
-        ..color = color.withOpacity(0.08) // Very faint glass background
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10), // Soft edges
+        ..color = color
+            .withOpacity(0.08) // Very faint glass background
+        ..maskFilter = const MaskFilter.blur(
+          BlurStyle.normal,
+          10,
+        ), // Soft edges
     );
-    
+
     // 3. The Active "Dash" at the bottom
     // Minimalist line indicating selection
     final RRect dashRect = RRect.fromRectAndRadius(
       Rect.fromCenter(
         center: Offset(centerX, h - 2), // Stuck to bottom
         width: 16,
-        height: 3, 
+        height: 3,
       ),
       const Radius.circular(1.5),
     );
-    
-    canvas.drawRRect(
-      dashRect,
-      Paint()..color = color.withOpacity(0.8),
-    );
+
+    canvas.drawRRect(dashRect, Paint()..color = color.withOpacity(0.8));
   }
 
   @override
