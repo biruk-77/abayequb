@@ -415,6 +415,28 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
         ),
         const SizedBox(width: 8),
+        GestureDetector(
+          onTap: () => nav.GoRouter.of(context).push('/profile'),
+          child: Container(
+            margin: const EdgeInsets.only(right: 16),
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white70, width: 1.5),
+            ),
+            child: CircleAvatar(
+              backgroundColor: Colors.white24,
+              backgroundImage:
+                  user?.profileImage != null && user!.profileImage!.isNotEmpty
+                  ? NetworkImage(user.profileImage!)
+                  : null,
+              radius: 18,
+              child: user?.profileImage == null || user!.profileImage!.isEmpty
+                  ? const Icon(Icons.person, color: Colors.white70, size: 20)
+                  : null,
+            ),
+          ),
+        ),
       ],
       flexibleSpace: FlexibleSpaceBar(
         background: Container(

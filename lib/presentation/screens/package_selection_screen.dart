@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../providers/equb_provider.dart';
+import '../providers/auth_provider.dart';
 import '../widgets/abay_icon.dart';
 
 class PackageSelectionScreen extends StatefulWidget {
@@ -24,6 +25,8 @@ class _PackageSelectionScreenState extends State<PackageSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+    final user = authProvider.user;
     final equbProvider = context.watch<EqubProvider>();
     final packages = equbProvider.packages;
     final isLoading = equbProvider.isLoading;
@@ -55,7 +58,10 @@ class _PackageSelectionScreenState extends State<PackageSelectionScreen> {
               ),
               SafeArea(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
                   child: Column(
                     children: [
                       Row(
@@ -67,7 +73,11 @@ class _PackageSelectionScreenState extends State<PackageSelectionScreen> {
                               borderRadius: BorderRadius.circular(15),
                             ),
                             child: IconButton(
-                              icon: const Icon(Icons.menu, color: Colors.white, size: 28),
+                              icon: const Icon(
+                                Icons.menu,
+                                color: Colors.white,
+                                size: 28,
+                              ),
                               onPressed: () {},
                             ),
                           ),
@@ -96,11 +106,32 @@ class _PackageSelectionScreenState extends State<PackageSelectionScreen> {
                             padding: const EdgeInsets.all(2),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white70, width: 1.5),
+                              border: Border.all(
+                                color: Colors.white70,
+                                width: 1.5,
+                              ),
                             ),
-                            child: const CircleAvatar(
-                              backgroundImage: NetworkImage('https://randomuser.me/api/portraits/women/44.jpg'),
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white24,
+                              backgroundImage:
+                                  user?.profileImage != null &&
+                                      user!.profileImage!.isNotEmpty
+                                  ? NetworkImage(
+                                      AbayIcon.getAbsoluteUrl(
+                                        user.profileImage!,
+                                      )!,
+                                    )
+                                  : null,
                               radius: 20,
+                              child:
+                                  user?.profileImage == null ||
+                                      user!.profileImage!.isEmpty
+                                  ? const Icon(
+                                      Icons.person,
+                                      color: Colors.white70,
+                                      size: 20,
+                                    )
+                                  : null,
                             ),
                           ),
                         ],
@@ -120,26 +151,34 @@ class _PackageSelectionScreenState extends State<PackageSelectionScreen> {
               ),
             ],
           ),
-          
+
           Expanded(
-            child: isLoading 
-              ? const Center(child: CircularProgressIndicator(color: Color(0xFF135A5E)))
-              : error != null 
-                ? Center(child: Text('Error: $error', style: GoogleFonts.outfit()))
+            child: isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(color: Color(0xFF135A5E)),
+                  )
+                : error != null
+                ? Center(
+                    child: Text('Error: $error', style: GoogleFonts.outfit()),
+                  )
                 : GridView.builder(
                     padding: const EdgeInsets.fromLTRB(16, 20, 16, 120),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 25,
-                      childAspectRatio: 0.72,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 25,
+                          childAspectRatio: 0.72,
+                        ),
                     itemCount: packages.length,
                     itemBuilder: (context, index) {
                       final package = packages[index];
                       return GestureDetector(
                         onTap: () {
-                          context.push('/packages/contribution/${package.id}', extra: package);
+                          context.push(
+                            '/packages/contribution/${package.id}',
+                            extra: package,
+                          );
                         },
                         child: Column(
                           children: [
@@ -162,7 +201,11 @@ class _PackageSelectionScreenState extends State<PackageSelectionScreen> {
                                   padding: const EdgeInsets.all(10),
                                   child: AbayIcon(
                                     iconPath: package.iconPath,
+                                    name: package.name,
                                     fit: BoxFit.contain,
+                                    color: _getBorderColor(
+                                      index,
+                                    ), // Tint the icon for better aesthetics
                                   ),
                                 ),
                               ),
@@ -252,17 +295,17 @@ class HeaderClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     Path path = Path();
     path.lineTo(0, size.height - 60);
-    
+
     var firstControlPoint = Offset(size.width / 2, size.height + 40);
     var firstEndPoint = Offset(size.width, size.height - 60);
-    
+
     path.quadraticBezierTo(
-      firstControlPoint.dx, 
-      firstControlPoint.dy, 
-      firstEndPoint.dx, 
-      firstEndPoint.dy
+      firstControlPoint.dx,
+      firstControlPoint.dy,
+      firstEndPoint.dx,
+      firstEndPoint.dy,
     );
-    
+
     path.lineTo(size.width, 0);
     path.close();
     return path;
