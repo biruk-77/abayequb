@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 import '../../../data/models/equb_group_model.dart';
 import '../../../core/utils/currency_formatter.dart';
+import '../abay_icon.dart';
 
 class PremiumGroupCard extends StatefulWidget {
   final EqubGroupModel group;
@@ -124,9 +125,10 @@ class _PremiumGroupCardState extends State<PremiumGroupCard>
               Positioned(
                 right: -20,
                 bottom: -20,
-                child: Icon(
-                  theme.icon,
-                  size: 140,
+                child: AbayIcon(
+                  name: widget.group.name,
+                  width: 140,
+                  height: 140,
                   color: Colors.white.withOpacity(0.1),
                 ),
               ),

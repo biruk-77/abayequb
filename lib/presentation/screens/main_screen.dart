@@ -12,6 +12,7 @@ import '../providers/theme_provider.dart';
 import '../widgets/fluid_bottom_nav.dart';
 import 'dashboard_screen.dart';
 import 'package_selection_screen.dart';
+import '../widgets/abay_icon.dart';
 import 'history_screen.dart';
 import 'profile_screen.dart';
 import '../../core/utils/route_observer.dart';
@@ -150,16 +151,28 @@ class _MainScreenState extends State<MainScreen> with RouteAware {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.2),
                     shape: BoxShape.circle,
+                    image:
+                        user?.profileImage != null &&
+                            user!.profileImage!.isNotEmpty
+                        ? DecorationImage(
+                            image: AbayIcon.getImageProvider(user.profileImage),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
                   ),
-                  child: const Icon(
-                    Icons.person_rounded,
-                    color: Colors.white,
-                    size: 32,
-                  ),
+                  child:
+                      user?.profileImage == null || user!.profileImage!.isEmpty
+                      ? const Icon(
+                          Icons.person_rounded,
+                          color: Colors.white,
+                          size: 32,
+                        )
+                      : null,
                 ),
                 const SizedBox(height: 12),
                 Text(

@@ -9,6 +9,7 @@ import '../providers/theme_provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/logger.dart';
+import '../widgets/abay_icon.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -290,7 +291,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   backgroundImage:
                       user?.profileImage != null &&
                           user!.profileImage!.isNotEmpty
-                      ? NetworkImage(user.profileImage!)
+                      ? AbayIcon.getImageProvider(user.profileImage!)
                       : null,
                   child:
                       user?.profileImage == null || user!.profileImage!.isEmpty
