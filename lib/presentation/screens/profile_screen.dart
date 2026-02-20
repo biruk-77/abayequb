@@ -8,7 +8,7 @@ import '../providers/locale_provider.dart';
 import '../providers/theme_provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/theme/app_theme.dart';
-import '../../core/utils/logger.dart';
+import '../../core/theme/app_theme.dart';
 import '../widgets/abay_icon.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -22,7 +22,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _notificationsEnabled = true;
   bool _emailNotifications = true;
   bool _smsNotifications = false;
-  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -30,39 +29,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       p.Provider.of<AuthProvider>(context, listen: false).refreshUser();
     });
-  }
-
-  Future<void> _pickAndUploadImage() async {
-    try {
-      final XFile? image = await _picker.pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 70,
-      );
-
-      if (image != null && mounted) {
-        AppLogger.info('Picked image: ${image.path}');
-        await p.Provider.of<AuthProvider>(
-          context,
-          listen: false,
-        ).updateProfile(profileImageUrl: image.path);
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Profile picture updated')),
-          );
-        }
-      }
-    } catch (e) {
-      AppLogger.error('Failed to pick/upload image', e);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to update profile picture: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
   }
 
   @override
@@ -82,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SizedBox(height: 16),
 
-            // Personal Info Section (FR-12.1)
+            // Personal Info Section
             _buildSection(
               context,
               title: 'Personal Information',
@@ -93,28 +59,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   label: 'Full Name',
                   value: user?.fullName ?? 'Not set',
                   icon: Icons.person,
-                  onTap: () =>
-                      _editPersonalInfo(context, 'Full Name', user?.fullName),
+                  onTap: () => context.push('/profile/edit'),
                 ),
                 _buildInfoTile(
                   context,
                   label: 'Email',
                   value: user?.email ?? 'Not set',
                   icon: Icons.email,
-                  onTap: () => _editPersonalInfo(context, 'Email', user?.email),
+                  onTap: () => context.push('/profile/edit'),
                 ),
                 _buildInfoTile(
                   context,
                   label: 'Phone',
                   value: user?.phoneNumber ?? 'Not set',
                   icon: Icons.phone,
-                  onTap: () =>
-                      _editPersonalInfo(context, 'Phone', user?.phoneNumber),
+                  onTap: () => context.push('/profile/edit'),
                 ),
               ],
             ),
 
-            // KYC Section (FR-12.2)
+            // KYC Section
             _buildSection(
               context,
               title: 'KYC Verification',
@@ -136,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
 
-            // Language Selection (FR-12.3)
+            // Language Selection
             _buildSection(
               context,
               title: 'Language',
@@ -144,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [_buildLanguageSelector(context, localeProvider)],
             ),
 
-            // Accessibility & Appearance (FR-12.4)
+            // Appearance
             _buildSection(
               context,
               title: 'Appearance',
@@ -164,7 +128,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
 
-            // Notifications (FR-12.5)
+            // Notifications
             _buildSection(
               context,
               title: 'Notifications',
@@ -210,19 +174,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 _buildInfoTile(
                   context,
-                  label: 'Profile Picture',
-                  value: user?.profileImage != null
-                      ? 'Update Photo'
-                      : 'Not set',
-                  icon: Icons.image_outlined,
-                  onTap: _pickAndUploadImage,
-                ),
-                _buildInfoTile(
-                  context,
                   label: 'Security',
-                  value: 'Change Password',
-                  icon: Icons.lock_outline,
-                  onTap: () => _editPersonalInfo(context, 'Password', ''),
+                  value: 'Edit All Details',
+                  icon: Icons.edit_note_rounded,
+                  onTap: () => context.push('/profile/edit'),
                 ),
                 _buildSwitchTile(
                   context,
@@ -235,13 +190,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         context,
                         listen: false,
                       ).updateProfile(otp: value);
-                    } catch (e) {
-                      // Error handled by provider/snack
-                    }
+                    } catch (e) {}
                   },
                 ),
                 const Divider(height: 1, indent: 56),
-                // Logout (FR-12.6)
                 ListTile(
                   leading: const Icon(Icons.logout, color: Colors.red),
                   title: const Text(
@@ -282,7 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(
         children: [
           GestureDetector(
-            onTap: _pickAndUploadImage,
+            onTap: () => context.push('/profile/edit'),
             child: Stack(
               children: [
                 CircleAvatar(
@@ -420,10 +372,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildKYCStatus(BuildContext context) {
-    // Mock KYC status - in real app, this would come from user data
-    final kycStatus =
-        'pending'; // 'verified', 'pending', 'rejected', 'not_uploaded'
-
+    final kycStatus = 'pending';
     Color statusColor;
     IconData statusIcon;
     String statusText;
@@ -522,7 +471,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     LocaleProvider localeProvider,
   ) {
     final currentLocale = localeProvider.locale?.languageCode ?? 'en';
-
     return Column(
       children: [
         RadioListTile<String>(
@@ -530,18 +478,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           subtitle: const Text('English'),
           value: 'en',
           groupValue: currentLocale,
-          onChanged: (value) {
-            localeProvider.setLocale(const Locale('en'));
-          },
+          onChanged: (value) => localeProvider.setLocale(const Locale('en')),
         ),
         RadioListTile<String>(
           title: const Text('አማርኛ'),
           subtitle: const Text('Amharic'),
           value: 'am',
           groupValue: currentLocale,
-          onChanged: (value) {
-            localeProvider.setLocale(const Locale('am'));
-          },
+          onChanged: (value) => localeProvider.setLocale(const Locale('am')),
         ),
       ],
     );
@@ -563,112 +507,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _editPersonalInfo(
-    BuildContext context,
-    String field,
-    String? currentValue,
-  ) {
-    final TextEditingController controller = TextEditingController(
-      text: currentValue,
-    );
-
-    final authProvider = p.Provider.of<AuthProvider>(context, listen: false);
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        bool innerLoading = false;
-        return StatefulBuilder(
-          builder: (context, setInnerState) {
-            return AlertDialog(
-              title: Text('Edit $field'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: controller,
-                    decoration: InputDecoration(
-                      labelText: field,
-                      border: const OutlineInputBorder(),
-                    ),
-                    enabled: !innerLoading,
-                  ),
-                  if (innerLoading)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: LinearProgressIndicator(),
-                    ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: innerLoading ? null : () => Navigator.pop(context),
-                  child: const Text('Cancel'),
-                ),
-                ElevatedButton(
-                  onPressed: innerLoading
-                      ? null
-                      : () async {
-                          setInnerState(() => innerLoading = true);
-                          try {
-                            if (field == 'Full Name') {
-                              await authProvider.updateProfile(
-                                fullName: controller.text,
-                              );
-                            } else if (field == 'Email') {
-                              await authProvider.updateProfile(
-                                email: controller.text,
-                              );
-                            } else if (field == 'Phone') {
-                              await authProvider.updateProfile(
-                                phone: controller.text,
-                              );
-                            } else if (field == 'Password') {
-                              await authProvider.updateProfile(
-                                password: controller.text,
-                              );
-                            }
-
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('$field updated successfully'),
-                                ),
-                              );
-                              Navigator.pop(context);
-                            }
-                          } catch (e) {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Failed to update $field: $e'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
-                          } finally {
-                            if (context.mounted) {
-                              setInnerState(() => innerLoading = false);
-                            }
-                          }
-                        },
-                  child: const Text('Save'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
   void _uploadKYC(BuildContext context) {
-    // TODO: Implement KYC document upload
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('KYC upload feature coming soon'),
-        duration: Duration(seconds: 2),
-      ),
+      const SnackBar(content: Text('KYC upload feature coming soon')),
     );
   }
 
@@ -686,14 +527,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () async {
-              Navigator.pop(context); // Close dialog
+              Navigator.pop(context);
               await p.Provider.of<AuthProvider>(
                 context,
                 listen: false,
               ).logout();
-              if (context.mounted) {
-                context.go('/login');
-              }
+              if (context.mounted) context.go('/login');
             },
             child: const Text('Logout'),
           ),

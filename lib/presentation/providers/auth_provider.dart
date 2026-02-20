@@ -185,17 +185,15 @@ class AuthProvider extends ChangeNotifier {
     try {
       AppLogger.info('Provider: Updating profile for ${_user!.id}');
 
-      final data = {
-        'fullName': ?fullName,
-        'email': ?email,
-        'phone': ?phone,
-        'password': ?password,
-        'profile': ?profileImageUrl,
-        if (otp != null)
-          'otp': otp
-              .toString(), // Send as string "true"/"false" if backend expects text
-        if (removeProfile != null) 'removeProfile': removeProfile.toString(),
-      };
+      final Map<String, dynamic> data = {};
+      if (fullName != null) data['fullName'] = fullName;
+      if (email != null) data['email'] = email;
+      if (phone != null) data['phone'] = phone;
+      if (password != null) data['password'] = password;
+      if (profileImageUrl != null) data['profile'] = profileImageUrl;
+      if (otp != null) data['otp'] = otp.toString();
+      if (removeProfile != null)
+        data['removeProfile'] = removeProfile.toString();
 
       _user = await _authRepository.updateProfile(
         userId: _user!.id,

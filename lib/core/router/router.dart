@@ -11,6 +11,7 @@ import '../../presentation/screens/register_screen.dart';
 import '../../presentation/screens/login_screen.dart';
 import '../../presentation/screens/splash_screen.dart';
 import '../../presentation/screens/profile_screen.dart';
+import '../../presentation/screens/edit_profile_screen.dart';
 import '../../presentation/screens/onboarding_screen.dart';
 import '../../presentation/providers/auth_provider.dart';
 import '../../presentation/screens/enrollment_screen.dart';
@@ -92,6 +93,12 @@ class AppRouter {
             builder: (BuildContext context, GoRouterState state) {
               return const ProfileScreen();
             },
+            routes: [
+              GoRoute(
+                path: 'edit', // Route path: /profile/edit
+                builder: (context, state) => const EditProfileScreen(),
+              ),
+            ],
           ),
           GoRoute(
             path: 'payment',
