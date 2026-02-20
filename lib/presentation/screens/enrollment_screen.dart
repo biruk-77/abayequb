@@ -8,6 +8,7 @@ import '../providers/equb_provider.dart';
 import '../../core/utils/currency_formatter.dart';
 
 import '../../core/utils/network_error_handler.dart';
+import '../widgets/abay_icon.dart';
 
 class EnrollmentScreen extends StatefulWidget {
   final EqubGroupModel group;
@@ -73,9 +74,11 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
                           color: Colors.white.withOpacity(0.2),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
-                          Icons.groups_rounded,
-                          size: 48,
+                        child: AbayIcon(
+                          iconPath: widget.package.iconPath,
+                          name: widget.group.name,
+                          width: 48,
+                          height: 48,
                           color: Colors.white,
                         ),
                       ),

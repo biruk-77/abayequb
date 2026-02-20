@@ -1,15 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'dart:io';
 
 class AbayIcon extends StatelessWidget {
   /// Helper to convert relative backend paths to absolute URLs
   static String? getAbsoluteUrl(String? path) {
     if (path == null || path.isEmpty) return null;
     if (path.startsWith('http')) return path;
+
+    // Handle both /uploads and uploads
     if (path.startsWith('/uploads')) {
       return 'https://abayequb.ahadubingo.com$path';
     }
+    if (path.startsWith('uploads')) {
+      return 'https://abayequb.ahadubingo.com/$path';
+    }
+
     return path;
+  }
+
+  /// Helper to get the correct ImageProvider for a path
+  static ImageProvider getImageProvider(String? path) {
+    if (path == null || path.isEmpty) {
+      return const AssetImage('assets/images/logo.png'); // Fallback asset
+    }
+
+    final absoluteUrl = getAbsoluteUrl(path);
+    if (absoluteUrl == null) return const AssetImage('assets/images/logo.png');
+
+    if (absoluteUrl.startsWith('http')) {
+      return NetworkImage(absoluteUrl);
+    }
+
+    // Check if it's a local file path
+    if (absoluteUrl.startsWith('/') ||
+        absoluteUrl.contains(':\\') ||
+        absoluteUrl.startsWith('file://')) {
+      return FileImage(File(absoluteUrl.replaceFirst('file://', '')));
+    }
+
+    return AssetImage(absoluteUrl);
   }
 
   final String? iconPath;
@@ -75,7 +105,7 @@ class AbayIcon extends StatelessWidget {
   }
 
   Widget _getFallbackIcon(String? name, double? size, Color? iconColor) {
-    IconData iconData = Icons.image_not_supported;
+    IconData iconData = Icons.inventory_2_rounded;
     final normalizedName = name?.toLowerCase() ?? '';
 
     if (normalizedName.contains('premium')) {
@@ -94,6 +124,18 @@ class AbayIcon extends StatelessWidget {
       iconData = Icons.school_rounded;
     } else if (normalizedName.contains('saving')) {
       iconData = Icons.savings_rounded;
+    } else if (normalizedName.contains('gold') ||
+        normalizedName.contains('diamond')) {
+      iconData = Icons.workspace_premium_rounded;
+    } else if (normalizedName.contains('business') ||
+        normalizedName.contains('pro')) {
+      iconData = Icons.business_center_rounded;
+    } else if (normalizedName.contains('personal') ||
+        normalizedName.contains('individual')) {
+      iconData = Icons.person_rounded;
+    } else if (normalizedName.contains('family') ||
+        normalizedName.contains('group')) {
+      iconData = Icons.groups_rounded;
     }
 
     return Icon(

@@ -4,6 +4,7 @@ import '../providers/wallet_provider.dart';
 import '../providers/equb_provider.dart';
 import '../../core/utils/logger.dart';
 import '../../core/utils/network_error_handler.dart';
+import '../widgets/abay_icon.dart';
 
 class PaymentScreen extends StatefulWidget {
   final double amount;
@@ -101,6 +102,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ),
               child: Column(
                 children: [
+                  AbayIcon(
+                    name: widget.packageName,
+                    width: 48,
+                    height: 48,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  const SizedBox(height: 16),
                   const Text(
                     'Total Amount',
                     style: TextStyle(color: Colors.grey),

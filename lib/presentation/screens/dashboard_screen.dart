@@ -426,10 +426,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
             child: CircleAvatar(
               backgroundColor: Colors.white24,
-              backgroundImage:
-                  user?.profileImage != null && user!.profileImage!.isNotEmpty
-                  ? NetworkImage(user.profileImage!)
-                  : null,
+              backgroundImage: AbayIcon.getImageProvider(user?.profileImage),
               radius: 18,
               child: user?.profileImage == null || user!.profileImage!.isEmpty
                   ? const Icon(Icons.person, color: Colors.white70, size: 20)
@@ -892,6 +889,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   ),
                   child: AbayIcon(
                     iconPath: package.iconPath,
+                    name: package.name,
                     height: 28,
                     width: 28,
                   ),
@@ -1079,11 +1077,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                             : const Color(0xFFF1F5F9)),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  (group.name?.contains('Gold') ?? false)
-                      ? Icons.workspace_premium_rounded
-                      : Icons.groups_2_rounded,
-                  size: 16,
+                child: AbayIcon(
+                  name: group.name,
+                  width: 16,
+                  height: 16,
                   color: (group.name?.contains('Gold') ?? false)
                       ? Colors.amber.shade700
                       : (isDark ? Colors.white70 : const Color(0xFF64748B)),

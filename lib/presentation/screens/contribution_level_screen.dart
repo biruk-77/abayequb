@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../../data/models/equb_package_model.dart';
 import '../../data/models/equb_group_model.dart';
 import '../providers/equb_provider.dart';
+import '../providers/auth_provider.dart';
+import '../widgets/abay_icon.dart';
 import '../../core/utils/currency_formatter.dart';
 import '../../core/utils/date_formatter.dart';
 
@@ -99,14 +101,28 @@ class _ContributionLevelScreenState extends State<ContributionLevelScreen> {
                   ],
                 ),
                 centerTitle: true,
-                actions: const [
+                actions: [
                   Padding(
-                    padding: EdgeInsets.only(right: 16.0),
+                    padding: const EdgeInsets.only(right: 16.0),
                     child: CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        'https://randomuser.me/api/portraits/women/44.jpg',
+                      backgroundImage: AbayIcon.getImageProvider(
+                        context.watch<AuthProvider>().user?.profileImage,
                       ),
                       radius: 18,
+                      child:
+                          context.watch<AuthProvider>().user?.profileImage ==
+                                  null ||
+                              context
+                                  .watch<AuthProvider>()
+                                  .user!
+                                  .profileImage!
+                                  .isEmpty
+                          ? const Icon(
+                              Icons.person,
+                              color: Colors.white70,
+                              size: 20,
+                            )
+                          : null,
                     ),
                   ),
                 ],
@@ -223,8 +239,10 @@ class _ContributionLevelScreenState extends State<ContributionLevelScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
-                                            Icon(
-                                              Icons.groups_rounded,
+                                            AbayIcon(
+                                              name: group.name,
+                                              width: 32,
+                                              height: 32,
                                               color: isSelected
                                                   ? Theme.of(
                                                       context,
@@ -232,7 +250,6 @@ class _ContributionLevelScreenState extends State<ContributionLevelScreen> {
                                                   : (isCompleted
                                                         ? Colors.grey
                                                         : Colors.blueGrey),
-                                              size: 32,
                                             ),
                                             const SizedBox(height: 8),
                                             Text(
