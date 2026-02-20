@@ -6,29 +6,29 @@ part 'equb_group_model.g.dart';
 
 @JsonSerializable()
 class EqubGroupModel {
-  @JsonKey(fromJson: asString)
+  @JsonKey(fromJson: JsonUtils.asString)
   final String? id;
-  @JsonKey(fromJson: asString)
+  @JsonKey(fromJson: JsonUtils.asString)
   final String? name;
-  @JsonKey(fromJson: asStringNonNull)
+  @JsonKey(fromJson: JsonUtils.asStringNonNull)
   final String packageId;
-  @JsonKey(fromJson: asString)
+  @JsonKey(fromJson: JsonUtils.asString)
   final String? status;
-  @JsonKey(fromJson: asDouble)
+  @JsonKey(fromJson: JsonUtils.asDouble)
   final double? riskReserve;
-  @JsonKey(fromJson: asDateTime)
+  @JsonKey(fromJson: JsonUtils.asDateTime)
   final DateTime? startDate;
-  @JsonKey(fromJson: asInt)
+  @JsonKey(fromJson: JsonUtils.asInt)
   final int? currentCycle;
-  @JsonKey(fromJson: asInt)
+  @JsonKey(fromJson: JsonUtils.asInt)
   final int? memberCount;
-  @JsonKey(fromJson: asInt)
+  @JsonKey(fromJson: JsonUtils.asInt)
   final int? totalCycles;
   @JsonKey(name: 'EqubPackage')
   final EqubPackageModel? package;
-  @JsonKey(fromJson: asDateTime)
+  @JsonKey(fromJson: JsonUtils.asDateTime)
   final DateTime? createdAt;
-  @JsonKey(fromJson: asDateTime)
+  @JsonKey(fromJson: JsonUtils.asDateTime)
   final DateTime? updatedAt;
 
   EqubGroupModel({

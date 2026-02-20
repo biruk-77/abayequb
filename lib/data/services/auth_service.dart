@@ -135,9 +135,11 @@ class AuthService {
       final formDataMap = Map<String, dynamic>.from(data);
 
       // Convert local file path to MultipartFile for Dio FormData
-      if (formDataMap['profile'] != null && formDataMap['profile'] is String) {
+      if (formDataMap['profile'] != null &&
+          formDataMap['profile'] is String &&
+          !formDataMap['profile'].toString().startsWith('http')) {
         final String path = formDataMap['profile'];
-        // Basic check for local path (starts with / or has backslashes/colons on windows)
+        // Basic check for local path
         if (path.startsWith('/') || path.contains('\\') || path.contains(':')) {
           formDataMap['profile'] = await MultipartFile.fromFile(
             path,
