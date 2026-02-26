@@ -50,7 +50,7 @@ class _PackageSelectionScreenState extends State<PackageSelectionScreen> {
                       end: Alignment.bottomCenter,
                       colors: [
                         const Color(0xFF0D4348),
-                        const Color(0xFF135A5E).withOpacity(0.95),
+                        const Color(0xFF135A5E).withValues(alpha: 0.95),
                       ],
                     ),
                   ),
@@ -69,7 +69,7 @@ class _PackageSelectionScreenState extends State<PackageSelectionScreen> {
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.12),
+                              color: Colors.white.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(15),
                             ),
                             child: IconButton(
@@ -247,7 +247,7 @@ class _PackageSelectionScreenState extends State<PackageSelectionScreen> {
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF0D4348).withOpacity(0.3),
+                color: const Color(0xFF0D4348).withValues(alpha: 0.3),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),

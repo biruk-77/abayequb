@@ -549,13 +549,13 @@ class _LoginScreenState extends State<LoginScreen>
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
               color: isDark
-                  ? Colors.white.withOpacity(0.05)
-                  : Colors.white.withOpacity(0.7),
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : Colors.white.withValues(alpha: 0.7),
               borderRadius: BorderRadius.circular(32),
               border: Border.all(
                 color: isDark
-                    ? Colors.white.withOpacity(0.1)
-                    : Colors.white.withOpacity(0.4),
+                    ? Colors.white.withValues(alpha: 0.1)
+                    : Colors.white.withValues(alpha: 0.4),
                 width: 1.5,
               ),
               boxShadow: [
@@ -713,7 +713,7 @@ class _LoginScreenState extends State<LoginScreen>
                       Container(
                         width: 1,
                         height: 20,
-                        color: Colors.grey.withOpacity(0.3),
+                        color: Colors.grey.withValues(alpha: 0.3),
                         margin: const EdgeInsets.symmetric(horizontal: 10),
                       ),
                     ],
@@ -754,7 +754,7 @@ class _LoginScreenState extends State<LoginScreen>
         gradient: AppTheme.primaryGradient,
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryColor.withOpacity(0.3),
+            color: AppTheme.primaryColor.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),

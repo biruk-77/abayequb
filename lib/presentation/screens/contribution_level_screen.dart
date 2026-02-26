@@ -63,7 +63,7 @@ class _ContributionLevelScreenState extends State<ContributionLevelScreen> {
                 gradient: LinearGradient(
                   colors: [
                     Theme.of(context).primaryColor,
-                    Theme.of(context).primaryColor.withOpacity(0.8),
+                    Theme.of(context).primaryColor.withValues(alpha: 0.8),
                   ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -210,9 +210,8 @@ class _ContributionLevelScreenState extends State<ContributionLevelScreen> {
                                         ),
                                         decoration: BoxDecoration(
                                           color: isSelected
-                                              ? Theme.of(
-                                                  context,
-                                                ).primaryColor.withOpacity(0.05)
+                                              ? Theme.of(context).primaryColor
+                                                    .withValues(alpha: 0.05)
                                               : Colors.white,
                                           borderRadius: BorderRadius.circular(
                                             20,
@@ -220,7 +219,9 @@ class _ContributionLevelScreenState extends State<ContributionLevelScreen> {
                                           border: Border.all(
                                             color: isSelected
                                                 ? Theme.of(context).primaryColor
-                                                : Colors.grey.withOpacity(0.2),
+                                                : Colors.grey.withValues(
+                                                    alpha: 0.2,
+                                                  ),
                                             width: isSelected ? 2 : 1,
                                           ),
                                           boxShadow: isSelected
@@ -228,7 +229,7 @@ class _ContributionLevelScreenState extends State<ContributionLevelScreen> {
                                                   BoxShadow(
                                                     color: Theme.of(context)
                                                         .primaryColor
-                                                        .withOpacity(0.1),
+                                                        .withValues(alpha: 0.1),
                                                     blurRadius: 8,
                                                     offset: const Offset(0, 4),
                                                   ),

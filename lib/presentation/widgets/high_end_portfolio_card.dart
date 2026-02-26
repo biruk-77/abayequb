@@ -95,7 +95,7 @@ class _HighEndPortfolioCardState extends State<HighEndPortfolioCard>
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                 blurRadius: 16,
                 offset: const Offset(0, 8),
               ),

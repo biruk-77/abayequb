@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
@@ -12,6 +14,7 @@ import 'presentation/providers/wallet_provider.dart';
 import 'presentation/providers/locale_provider.dart';
 import 'presentation/providers/theme_provider.dart';
 import 'presentation/providers/connectivity_provider.dart';
+import 'presentation/providers/notification_provider.dart';
 import 'package:dio/dio.dart';
 import 'core/api/api_client.dart';
 import 'data/services/auth_service.dart';
@@ -21,10 +24,15 @@ import 'data/repositories/equb_repository.dart';
 import 'core/router/router.dart';
 import 'core/utils/size_config.dart';
 import 'core/utils/logger.dart';
+import 'data/services/notification_service.dart';
+import 'data/services/notification_api_service.dart';
+import 'data/repositories/notification_repository.dart';
 import 'presentation/widgets/offline_indicator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Storage
   const storage = FlutterSecureStorage();
@@ -37,10 +45,12 @@ void main() async {
   // Services
   final authService = AuthService(client);
   final equbService = EqubService(client);
+  final notificationApiService = NotificationApiService(client);
 
   // Repositories
   final authRepository = AuthRepository(authService, storage);
   final equbRepository = EqubRepository(equbService);
+  final notificationRepository = NotificationRepository(notificationApiService);
 
   // Providers
   final authProvider = AuthProvider(authRepository);
@@ -55,6 +65,13 @@ void main() async {
   final localeProvider = LocaleProvider();
   final themeProvider = ThemeProvider();
   final connectivityProvider = ConnectivityProvider();
+  final notificationProvider = NotificationProvider(notificationRepository);
+
+  // Initialize Notifications
+  final notificationService = FirebaseNotificationService();
+  notificationService.setProvider(notificationProvider);
+  notificationService.setAuthService(authService);
+  await notificationService.initialize();
 
   // Router initialized once
   final router = AppRouter.router(authProvider);
@@ -68,6 +85,7 @@ void main() async {
         ChangeNotifierProvider.value(value: localeProvider),
         ChangeNotifierProvider.value(value: themeProvider),
         ChangeNotifierProvider.value(value: connectivityProvider),
+        ChangeNotifierProvider.value(value: notificationProvider),
       ],
       child: AbayEqubApp(router: router),
     ),

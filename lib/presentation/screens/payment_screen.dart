@@ -95,7 +95,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Colors.grey.withValues(alpha: 0.1),
                     blurRadius: 10,
                   ),
                 ],

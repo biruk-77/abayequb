@@ -51,5 +51,10 @@
   "joinFailed": "ቡድኑን መቀላቀል አልተቻለም",
   "walletRequired": "የኪስ ቦርሳ ማዘጋጀት ያስፈልጋል",
   "alreadyMember": "ቀድሞውኑ የዚህ ቡድን አባል ነዎት",
-  "joinGroupConfirmation": "በእርግጥ መቀላቀል ይፈልጋሉ"
+  "joinGroupConfirmation": "በእርግጥ መቀላቀል ይፈልጋሉ",
+  "notifications": "ማሳወቂያዎች",
+  "noNotifications": "ምንም ማሳወቂያ የለም",
+  "notificationsDescription": "ስለ ገቢዎ፣ ክፍያዎ እና ስለ ቡድን እንቅስቃሴዎች መረጃ ያግኙ።",
+  "markAsRead": "እንደተነበበ ምልክት አድርግ",
+  "clearAll": "ሁሉንም አጥፋ"
 }

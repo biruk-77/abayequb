@@ -44,7 +44,7 @@ class _GlowingTextFieldState extends State<GlowingTextField>
       vsync: this,
       duration: const Duration(seconds: 2),
     );
-    
+
     _pulseAnimation = Tween<double>(begin: 4.0, end: 12.0).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
@@ -89,7 +89,7 @@ class _GlowingTextFieldState extends State<GlowingTextField>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     return FormField<String>(
       key: _formFieldKey,
       initialValue: widget.controller.text,
@@ -118,7 +118,7 @@ class _GlowingTextFieldState extends State<GlowingTextField>
                     boxShadow: [
                       if (_hasFocus || hasError)
                         BoxShadow(
-                          color: activeColor.withOpacity(0.3),
+                          color: activeColor.withValues(alpha: 0.3),
                           blurRadius: _pulseAnimation.value,
                           spreadRadius: _pulseAnimation.value / 4,
                         ),
@@ -146,22 +146,29 @@ class _GlowingTextFieldState extends State<GlowingTextField>
                     decoration: InputDecoration(
                       hintText: widget.hintText,
                       hintStyle: TextStyle(
-                        color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.5),
+                        color: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                       ),
-                      prefixIcon: widget.prefixWidget ??
+                      prefixIcon:
+                          widget.prefixWidget ??
                           (widget.icon != null
                               ? Icon(
                                   widget.icon,
                                   color: (_hasFocus || hasError)
                                       ? activeColor
-                                      : Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.5),
+                                      : Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.color
+                                            ?.withValues(alpha: 0.5),
                                 )
                               : null),
                       suffixIcon: widget.suffixIcon,
                       filled: true,
-                      fillColor: isDark 
-                          ? Colors.white.withOpacity(0.05) 
-                          : Colors.black.withOpacity(0.02),
+                      fillColor: isDark
+                          ? Colors.white.withValues(alpha: 0.05)
+                          : Colors.black.withValues(alpha: 0.02),
                       contentPadding: const EdgeInsets.symmetric(
                         vertical: 20,
                         horizontal: 20,
@@ -175,17 +182,16 @@ class _GlowingTextFieldState extends State<GlowingTextField>
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
                         borderSide: BorderSide(
-                          color: hasError 
-                             ? activeColor 
-                             : (isDark ? Colors.white12 : Colors.black.withOpacity(0.05)),
+                          color: hasError
+                              ? activeColor
+                              : (isDark
+                                    ? Colors.white12
+                                    : Colors.black.withValues(alpha: 0.05)),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
-                        borderSide: BorderSide(
-                          color: activeColor,
-                          width: 2,
-                        ),
+                        borderSide: BorderSide(color: activeColor, width: 2),
                       ),
                     ),
                   ),

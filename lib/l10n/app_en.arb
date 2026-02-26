@@ -58,5 +58,10 @@
   "joinFailed": "Failed to join group",
   "walletRequired": "Wallet setup required",
   "alreadyMember": "Already a member of this group",
-  "joinGroupConfirmation": "Are you sure you want to join"
+  "joinGroupConfirmation": "Are you sure you want to join",
+  "notifications": "Notifications",
+  "noNotifications": "No notifications yet",
+  "notificationsDescription": "Stay updated on your contributions, payouts, and group activities.",
+  "markAsRead": "Mark as read",
+  "clearAll": "Clear all"
 }

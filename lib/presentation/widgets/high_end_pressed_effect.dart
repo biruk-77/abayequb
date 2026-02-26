@@ -63,7 +63,7 @@ class _HighEndPressedEffectState extends State<HighEndPressedEffect>
           position: _tapPosition,
           progress: _rippleController.value,
           maxRadius: _maxRadius,
-          color: Theme.of(context).primaryColor.withOpacity(0.1),
+          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
         ),
         child: widget.child,
       ),

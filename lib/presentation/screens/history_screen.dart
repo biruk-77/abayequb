@@ -74,7 +74,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     end: Alignment.bottomRight,
                     colors: [
                       AppTheme.primaryColor,
-                      AppTheme.primaryColor.withOpacity(0.8),
+                      AppTheme.primaryColor.withValues(alpha: 0.8),
                     ],
                   ),
                 ),
@@ -195,7 +195,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -213,7 +213,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
+                    color: color.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(icon, color: color, size: 24),
@@ -267,7 +267,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: _getStatusColor(tx.status).withOpacity(0.1),
+                        color: _getStatusColor(
+                          tx.status,
+                        ).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(

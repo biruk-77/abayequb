@@ -5,16 +5,12 @@ class BrandedLoadingIndicator extends StatelessWidget {
   final double size;
   final Color? color;
 
-  const BrandedLoadingIndicator({
-    super.key,
-    this.size = 50,
-    this.color,
-  });
+  const BrandedLoadingIndicator({super.key, this.size = 50, this.color});
 
   @override
   Widget build(BuildContext context) {
     final activeColor = color ?? Theme.of(context).colorScheme.secondary;
-    
+
     return Center(
       child: Stack(
         alignment: Alignment.center,
@@ -28,7 +24,7 @@ class BrandedLoadingIndicator extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: activeColor.withOpacity(0.2),
+                  color: activeColor.withValues(alpha: 0.2),
                   width: 2,
                 ),
               ),
@@ -54,10 +50,10 @@ class BrandedLoadingIndicator extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: activeColor.withOpacity(0.5),
+                    color: activeColor.withValues(alpha: 0.5),
                     blurRadius: 10,
-                  )
-                ]
+                  ),
+                ],
               ),
             ),
           ),

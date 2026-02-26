@@ -58,7 +58,7 @@ class MeshGradientBackground extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: RadialGradient(colors: [color, color.withOpacity(0)]),
+        gradient: RadialGradient(colors: [color, color.withValues(alpha: 0.0)]),
       ),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),

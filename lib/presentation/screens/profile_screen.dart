@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as p;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import '../providers/auth_provider.dart';
 import '../providers/locale_provider.dart';
 import '../providers/theme_provider.dart';
 import '../../l10n/app_localizations.dart';
-import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_theme.dart';
 import '../widgets/abay_icon.dart';
 
@@ -289,7 +287,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Text(
             user?.email ?? user?.phoneNumber ?? '',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
               fontSize: 14,
             ),
           ),
@@ -331,7 +329,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
+                color: Colors.grey.withValues(alpha: 0.1),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -403,7 +401,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: statusColor.withOpacity(0.1),
+        color: statusColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: statusColor),
       ),

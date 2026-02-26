@@ -15,6 +15,7 @@ import '../../presentation/screens/edit_profile_screen.dart';
 import '../../presentation/screens/onboarding_screen.dart';
 import '../../presentation/providers/auth_provider.dart';
 import '../../presentation/screens/enrollment_screen.dart';
+import '../../presentation/screens/notification_screen.dart';
 import '../../data/models/equb_group_model.dart';
 import '../../data/models/equb_package_model.dart';
 
@@ -144,6 +145,12 @@ class AppRouter {
             ],
             builder: (BuildContext context, GoRouterState state) {
               return const PackageSelectionScreen();
+            },
+          ),
+          GoRoute(
+            path: 'notifications', // Route path: /notifications
+            builder: (BuildContext context, GoRouterState state) {
+              return const NotificationScreen();
             },
           ),
         ],

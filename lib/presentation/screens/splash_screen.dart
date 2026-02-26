@@ -17,16 +17,18 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateToNext();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _navigateToNext();
+    });
   }
 
   Future<void> _navigateToNext() async {
     // Ensure splash is seen for at least a moment
-   
+    await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
-    
+
     final authProvider = context.read<AuthProvider>();
-    
+
     // Wait for auth initialization to complete
     while (authProvider.isLoading) {
       await Future.delayed(const Duration(milliseconds: 200));
@@ -65,16 +67,13 @@ class _SplashScreenState extends State<SplashScreen> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 30,
                       spreadRadius: 5,
-                    )
+                    ),
                   ],
                 ),
-                child: Image.asset(
-                  'assets/images/logo2.png',
-                  height: 160,
-                ),
+                child: Image.asset('assets/images/logo2.png', height: 160),
               ),
             ),
             const SizedBox(height: 40),
@@ -95,7 +94,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Text(
                 'Flowing Wealth, Shared Future',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                   fontSize: 16,
                   letterSpacing: 1.2,
                 ),

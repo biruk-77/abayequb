@@ -168,4 +168,20 @@ class AbayLocalizationsAm extends AbayLocalizations {
 
   @override
   String get joinGroupConfirmation => 'በእርግጥ መቀላቀል ይፈልጋሉ';
+
+  @override
+  String get notifications => 'ማሳወቂያዎች';
+
+  @override
+  String get noNotifications => 'ምንም ማሳወቂያ የለም';
+
+  @override
+  String get notificationsDescription =>
+      'ስለ ገቢዎ፣ ክፍያዎ እና ስለ ቡድን እንቅስቃሴዎች መረጃ ያግኙ።';
+
+  @override
+  String get markAsRead => 'እንደተነበበ ምልክት አድርግ';
+
+  @override
+  String get clearAll => 'ሁሉንም አጥፋ';
 }
