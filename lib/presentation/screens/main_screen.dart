@@ -154,7 +154,7 @@ class _MainScreenState extends State<MainScreen> with RouteAware {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     shape: BoxShape.circle,
                     image:
                         user?.profileImage != null &&
@@ -201,6 +201,14 @@ class _MainScreenState extends State<MainScreen> with RouteAware {
             onTap: () {
               Navigator.pop(context); // Close drawer
               context.push('/profile');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.notifications_outlined),
+            title: Text(l10n.notifications),
+            onTap: () {
+              Navigator.pop(context); // Close drawer
+              context.push('/notifications');
             },
           ),
           ListTile(

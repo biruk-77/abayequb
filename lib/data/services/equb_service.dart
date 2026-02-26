@@ -194,21 +194,24 @@ class EqubService {
     String order = 'DESC',
   }) async {
     try {
+      final Map<String, dynamic> query = {
+        'page': page,
+        'limit': limit,
+        'sortBy': sortBy,
+        'order': order,
+      };
+
+      if (type != null) query['type'] = type;
+      if (status != null) query['status'] = status;
+      if (method != null) query['method'] = method;
+      if (minAmount != null) query['minAmount'] = minAmount;
+      if (maxAmount != null) query['maxAmount'] = maxAmount;
+      if (startDate != null) query['startDate'] = startDate;
+      if (endDate != null) query['endDate'] = endDate;
+
       final response = await _dio.get(
         '/equb/transactions',
-        queryParameters: {
-          'page': page,
-          'limit': limit,
-          'type': ?type,
-          'status': ?status,
-          'method': ?method,
-          'minAmount': ?minAmount,
-          'maxAmount': ?maxAmount,
-          'startDate': ?startDate,
-          'endDate': ?endDate,
-          'sortBy': sortBy,
-          'order': order,
-        },
+        queryParameters: query,
       );
       final data = response.data['data'];
       if (data is List) return data;

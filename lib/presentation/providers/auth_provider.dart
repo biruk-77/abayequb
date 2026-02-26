@@ -5,6 +5,7 @@ import '../../data/models/user_model.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../core/utils/logger.dart';
 import '../../core/utils/network_error_handler.dart';
+import '../../data/services/notification_service.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthRepository _authRepository;
@@ -25,9 +26,14 @@ class AuthProvider extends ChangeNotifier {
   bool get hasSeenOnboarding => _hasSeenOnboarding;
   bool get hasSeenHomeShowcase => _hasSeenHomeShowcase;
 
+  void _safeNotify() {
+    // Ensuring we don't notify during build to avoid GoRouter issues
+    Future.microtask(() => notifyListeners());
+  }
+
   Future<void> _init() async {
     _isLoading = true;
-    notifyListeners();
+    _safeNotify();
     try {
       AppLogger.info('Initializing AuthProvider...');
 
@@ -45,7 +51,7 @@ class AuthProvider extends ChangeNotifier {
       _error = _handleError(e);
     } finally {
       _isLoading = false;
-      notifyListeners();
+      _safeNotify();
     }
   }
 
@@ -54,24 +60,26 @@ class AuthProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboarding_completed', true);
     _hasSeenOnboarding = true;
-    notifyListeners();
+    _safeNotify();
   }
 
   Future<void> completeHomeShowcase() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('home_showcase_completed', true);
     _hasSeenHomeShowcase = true;
-    notifyListeners();
+    _safeNotify();
   }
 
   Future<void> login(String identifier, String password) async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    _safeNotify();
 
     try {
       AppLogger.info('Provider: Attempting login for $identifier');
       _user = await _authRepository.signIn(identifier, password);
+      // Ensure FCM token is registered with backend
+      FirebaseNotificationService().registerDevice();
       // Ensure onboarding is marked as seen on login just in case
       completeOnboarding();
       AppLogger.success('Provider: Login successful for ${_user!.fullName}');
@@ -81,14 +89,14 @@ class AuthProvider extends ChangeNotifier {
       throw _error!;
     } finally {
       _isLoading = false;
-      notifyListeners();
+      _safeNotify();
     }
   }
 
   Future<void> requestOtp(String phone, {bool isRegister = false}) async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    _safeNotify();
     try {
       AppLogger.info(
         'Provider: Requesting OTP for $phone (Register: $isRegister)',
@@ -105,7 +113,7 @@ class AuthProvider extends ChangeNotifier {
       throw _error!;
     } finally {
       _isLoading = false;
-      notifyListeners();
+      _safeNotify();
     }
   }
 
@@ -119,7 +127,7 @@ class AuthProvider extends ChangeNotifier {
   }) async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    _safeNotify();
     try {
       AppLogger.info(
         'Provider: Verifying OTP for $phone (Register: $isRegister)',
@@ -149,6 +157,8 @@ class AuthProvider extends ChangeNotifier {
         }
       } else {
         _user = await _authRepository.verifyLoginOtp(phone: phone, otp: otp);
+        // Ensure FCM token is registered with backend
+        FirebaseNotificationService().registerDevice();
         completeOnboarding();
       }
       AppLogger.success(
@@ -163,7 +173,7 @@ class AuthProvider extends ChangeNotifier {
       throw _error!;
     } finally {
       _isLoading = false;
-      notifyListeners();
+      _safeNotify();
     }
   }
 
@@ -180,7 +190,7 @@ class AuthProvider extends ChangeNotifier {
 
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    _safeNotify();
 
     try {
       AppLogger.info('Provider: Updating profile for ${_user!.id}');
@@ -192,8 +202,9 @@ class AuthProvider extends ChangeNotifier {
       if (password != null) data['password'] = password;
       if (profileImageUrl != null) data['profile'] = profileImageUrl;
       if (otp != null) data['otp'] = otp.toString();
-      if (removeProfile != null)
+      if (removeProfile != null) {
         data['removeProfile'] = removeProfile.toString();
+      }
 
       _user = await _authRepository.updateProfile(
         userId: _user!.id,
@@ -206,7 +217,7 @@ class AuthProvider extends ChangeNotifier {
       throw _error!;
     } finally {
       _isLoading = false;
-      notifyListeners();
+      _safeNotify();
     }
   }
 
@@ -216,7 +227,9 @@ class AuthProvider extends ChangeNotifier {
       AppLogger.info('Provider: Refreshing user data for ${_user!.id}...');
       final updatedUser = await _authRepository.getUserProfile(_user!.id);
       _user = updatedUser;
-      notifyListeners();
+      // Use microtask to ensure notifyListeners() doesn't fire during a build phase
+      // which can crash GoRouter's refreshListenable.
+      _safeNotify();
       AppLogger.success('Provider: User data refreshed');
     } catch (e) {
       AppLogger.error('Provider: User refresh failed', e);
@@ -229,7 +242,7 @@ class AuthProvider extends ChangeNotifier {
       await _authRepository.signOut();
       _user = null;
       AppLogger.success('Provider: Logged out successfully');
-      notifyListeners();
+      _safeNotify();
     } catch (e) {
       AppLogger.error('Provider: Logout failed', e);
       _error = _handleError(e);
@@ -239,7 +252,7 @@ class AuthProvider extends ChangeNotifier {
   Future<void> requestForgotPassword(String phone) async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    _safeNotify();
     try {
       AppLogger.info('Provider: Requesting forgot password OTP for $phone');
       await _authRepository.requestForgotPassword(phone);
@@ -250,7 +263,7 @@ class AuthProvider extends ChangeNotifier {
       throw _error!;
     } finally {
       _isLoading = false;
-      notifyListeners();
+      _safeNotify();
     }
   }
 
@@ -261,7 +274,7 @@ class AuthProvider extends ChangeNotifier {
   }) async {
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    _safeNotify();
     try {
       AppLogger.info('Provider: Verifying forgot password OTP for $phone');
       await _authRepository.verifyForgotPassword(
@@ -276,7 +289,7 @@ class AuthProvider extends ChangeNotifier {
       throw _error!;
     } finally {
       _isLoading = false;
-      notifyListeners();
+      _safeNotify();
     }
   }
 

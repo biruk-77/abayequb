@@ -415,6 +415,36 @@ abstract class AbayLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure you want to join'**
   String get joinGroupConfirmation;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @noNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get noNotifications;
+
+  /// No description provided for @notificationsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay updated on your contributions, payouts, and group activities.'**
+  String get notificationsDescription;
+
+  /// No description provided for @markAsRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as read'**
+  String get markAsRead;
+
+  /// No description provided for @clearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get clearAll;
 }
 
 class _AbayLocalizationsDelegate

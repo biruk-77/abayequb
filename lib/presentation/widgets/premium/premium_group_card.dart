@@ -113,7 +113,7 @@ class _PremiumGroupCardState extends State<PremiumGroupCard>
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: theme.colors[0].withOpacity(0.3),
+                      color: theme.colors[0].withValues(alpha: 0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -121,7 +121,24 @@ class _PremiumGroupCardState extends State<PremiumGroupCard>
                 ),
               ),
 
-              // 2. Decorative Patterns (The "Card" look)
+              // 2. Decorative Patterns (The "Card" look) + Specular Highlight
+              Positioned(
+                right: -30,
+                top: -30,
+                child: Container(
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        Colors.white.withValues(alpha: 0.15),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
               Positioned(
                 right: -20,
                 bottom: -20,
@@ -129,7 +146,7 @@ class _PremiumGroupCardState extends State<PremiumGroupCard>
                   name: widget.group.name,
                   width: 140,
                   height: 140,
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withValues(alpha: 0.1),
                 ),
               ),
 
@@ -143,14 +160,14 @@ class _PremiumGroupCardState extends State<PremiumGroupCard>
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(28),
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         width: 1.0,
                       ),
                       gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Colors.white.withOpacity(0.1),
+                          Colors.white.withValues(alpha: 0.1),
                           Colors.transparent,
                         ],
                       ),
@@ -183,7 +200,7 @@ class _PremiumGroupCardState extends State<PremiumGroupCard>
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
+                                  color: Colors.white.withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
@@ -204,7 +221,7 @@ class _PremiumGroupCardState extends State<PremiumGroupCard>
                           'Contribution',
                           style: GoogleFonts.outfit(
                             fontSize: 11,
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -232,7 +249,7 @@ class _PremiumGroupCardState extends State<PremiumGroupCard>
                                   style: GoogleFonts.outfit(
                                     fontSize: 10,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.white.withOpacity(0.8),
+                                    color: Colors.white.withValues(alpha: 0.8),
                                     letterSpacing: 1.0,
                                   ),
                                 ),
@@ -253,7 +270,7 @@ class _PremiumGroupCardState extends State<PremiumGroupCard>
                                   height: 4,
                                   width: double.infinity,
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.2),
+                                    color: Colors.white.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(2),
                                   ),
                                 ),
@@ -267,7 +284,9 @@ class _PremiumGroupCardState extends State<PremiumGroupCard>
                                     borderRadius: BorderRadius.circular(2),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.white.withOpacity(0.5),
+                                        color: Colors.white.withValues(
+                                          alpha: 0.5,
+                                        ),
                                         blurRadius: 4,
                                       ),
                                     ],
@@ -295,7 +314,7 @@ class _PremiumGroupCardState extends State<PremiumGroupCard>
                   decoration: BoxDecoration(
                     color: isCompleted
                         ? Colors.grey.shade800
-                        : Colors.black.withOpacity(0.3),
+                        : Colors.black.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(

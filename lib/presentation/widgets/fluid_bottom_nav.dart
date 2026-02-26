@@ -131,11 +131,11 @@ class _FuturisticNavBarState extends State<FuturisticNavBar>
         decoration: BoxDecoration(
           color: const Color(
             0xFF0D4348,
-          ).withOpacity(0.98), // Deep Teal from theme
+          ).withValues(alpha: 0.98), // Deep Teal from theme
           borderRadius: BorderRadius.circular(32), // Fully rounded ends
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.4),
+              color: Colors.black.withValues(alpha: 0.4),
               blurRadius: 15,
               offset: const Offset(0, 8),
             ),
@@ -209,7 +209,7 @@ class _FuturisticNavBarState extends State<FuturisticNavBar>
                                     item.label,
                                     style: TextStyle(
                                       color: Color.lerp(
-                                        inactiveColor.withOpacity(0.7),
+                                        inactiveColor.withValues(alpha: 0.7),
                                         activeColor,
                                         t,
                                       ),
@@ -306,7 +306,7 @@ class _ObsidianHighlightPainter extends CustomPainter {
           -0.6,
         ), // Top-center of item
         radius: 0.5,
-        colors: [color.withOpacity(0.15), color.withOpacity(0.0)],
+        colors: [color.withValues(alpha: 0.15), color.withValues(alpha: 0.0)],
         stops: const [0.0, 1.0],
       ).createShader(bgRect);
 
@@ -331,7 +331,7 @@ class _ObsidianHighlightPainter extends CustomPainter {
       pillRect,
       Paint()
         ..color = color
-            .withOpacity(0.08) // Very faint glass background
+            .withValues(alpha: 0.08) // Very faint glass background
         ..maskFilter = const MaskFilter.blur(
           BlurStyle.normal,
           10,
@@ -349,7 +349,7 @@ class _ObsidianHighlightPainter extends CustomPainter {
       const Radius.circular(1.5),
     );
 
-    canvas.drawRRect(dashRect, Paint()..color = color.withOpacity(0.8));
+    canvas.drawRRect(dashRect, Paint()..color = color.withValues(alpha: 0.8));
   }
 
   @override

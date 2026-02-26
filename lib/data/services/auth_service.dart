@@ -176,4 +176,12 @@ class AuthService {
       // Ignore signout errors for now
     }
   }
+
+  Future<void> updateFcmToken(String token) async {
+    try {
+      await _dio.patch('/users', data: {'fcmToken': token});
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

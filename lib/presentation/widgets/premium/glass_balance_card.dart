@@ -58,12 +58,12 @@ class _GlassBalanceCardState extends State<GlassBalanceCard>
         borderRadius: BorderRadius.circular(36),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withValues(alpha: 0.4),
             blurRadius: 30,
             offset: const Offset(0, 15),
           ),
           BoxShadow(
-            color: AppTheme.primaryColor.withOpacity(0.2),
+            color: AppTheme.primaryColor.withValues(alpha: 0.2),
             blurRadius: 20,
             offset: const Offset(0, 5),
           ),
@@ -92,19 +92,19 @@ class _GlassBalanceCardState extends State<GlassBalanceCard>
             _buildAnimatedOrb(
               top: -60,
               right: -60,
-              color: const Color(0xFF6366F1).withOpacity(0.5), // Indigo
+              color: const Color(0xFF6366F1).withValues(alpha: 0.5), // Indigo
               size: 240,
             ),
             _buildAnimatedOrb(
               bottom: -80,
               left: -40,
-              color: AppTheme.primaryColor.withOpacity(0.45), // Emerald
+              color: AppTheme.primaryColor.withValues(alpha: 0.45), // Emerald
               size: 280,
             ),
             _buildAnimatedOrb(
               top: 50,
               left: 80,
-              color: const Color(0xFFF59E0B).withOpacity(0.2), // Amber
+              color: const Color(0xFFF59E0B).withValues(alpha: 0.2), // Amber
               size: 140,
             ),
 
@@ -118,15 +118,15 @@ class _GlassBalanceCardState extends State<GlassBalanceCard>
                 ),
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.12),
+                    color: Colors.white.withValues(alpha: 0.12),
                     width: 1.5,
                   ),
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Colors.white.withOpacity(0.1),
-                      Colors.white.withOpacity(0.02),
+                      Colors.white.withValues(alpha: 0.1),
+                      Colors.white.withValues(alpha: 0.02),
                     ],
                   ),
                 ),
@@ -161,7 +161,7 @@ class _GlassBalanceCardState extends State<GlassBalanceCard>
                                 Text(
                                   'Secure Digital Assets',
                                   style: GoogleFonts.outfit(
-                                    color: Colors.white.withOpacity(0.6),
+                                    color: Colors.white.withValues(alpha: 0.6),
                                     fontSize: 11,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -183,7 +183,7 @@ class _GlassBalanceCardState extends State<GlassBalanceCard>
                             Text(
                               'TOTAL PORTFOLIO',
                               style: GoogleFonts.outfit(
-                                color: Colors.white.withOpacity(0.5),
+                                color: Colors.white.withValues(alpha: 0.5),
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: 1.2,
@@ -192,7 +192,9 @@ class _GlassBalanceCardState extends State<GlassBalanceCard>
                             const SizedBox(width: 8),
                             Icon(
                               Icons.trending_up,
-                              color: const Color(0xFF34D399).withOpacity(0.6),
+                              color: const Color(
+                                0xFF34D399,
+                              ).withValues(alpha: 0.6),
                               size: 14,
                             ),
                           ],
@@ -215,7 +217,7 @@ class _GlassBalanceCardState extends State<GlassBalanceCard>
                                 letterSpacing: widget.isVisible ? -1.0 : 4.0,
                                 shadows: [
                                   Shadow(
-                                    color: Colors.black.withOpacity(0.3),
+                                    color: Colors.black.withValues(alpha: 0.3),
                                     blurRadius: 10,
                                     offset: const Offset(0, 4),
                                   ),
@@ -269,9 +271,9 @@ class _GlassBalanceCardState extends State<GlassBalanceCard>
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              Colors.white.withOpacity(0.0),
-                              Colors.white.withOpacity(0.1),
-                              Colors.white.withOpacity(0.0),
+                              Colors.white.withValues(alpha: 0.0),
+                              Colors.white.withValues(alpha: 0.1),
+                              Colors.white.withValues(alpha: 0.0),
                             ],
                             stops: const [0.0, 0.5, 1.0],
                           ),
@@ -293,9 +295,9 @@ class _GlassBalanceCardState extends State<GlassBalanceCard>
       width: 48,
       height: 48,
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.2), width: 1.5),
+        border: Border.all(color: color.withValues(alpha: 0.2), width: 1.5),
       ),
       child: Center(child: Icon(icon, color: color, size: 24)),
     );
@@ -308,9 +310,12 @@ class _GlassBalanceCardState extends State<GlassBalanceCard>
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withValues(alpha: 0.1),
           shape: BoxShape.circle,
-          border: Border.all(color: Colors.white.withOpacity(0.1), width: 1),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.1),
+            width: 1,
+          ),
         ),
         child: Icon(
           widget.isVisible
@@ -332,12 +337,12 @@ class _GlassBalanceCardState extends State<GlassBalanceCard>
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
+        color: Colors.white.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: accent.withOpacity(0.4), width: 1.2),
+        border: Border.all(color: accent.withValues(alpha: 0.4), width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: accent.withOpacity(0.05),
+            color: accent.withValues(alpha: 0.05),
             blurRadius: 10,
             spreadRadius: 2,
           ),
@@ -353,7 +358,7 @@ class _GlassBalanceCardState extends State<GlassBalanceCard>
               Text(
                 label,
                 style: GoogleFonts.outfit(
-                  color: Colors.white.withOpacity(0.7),
+                  color: Colors.white.withValues(alpha: 0.7),
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.0,

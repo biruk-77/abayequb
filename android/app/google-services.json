@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "895055745889",
+    "project_id": "abayedir",
+    "storage_bucket": "abayedir.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:895055745889:android:ddf42d3e8217600557eb20",
+        "android_client_info": {
+          "package_name": "com.example.abay_equb"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWD1g1bUePmjdtgAnfPcmaRWpEhrgVT34"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:895055745889:android:376ecc7dbd79838357eb20",
+        "android_client_info": {
+          "package_name": "com.example.abbaydirnotificaitontest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWD1g1bUePmjdtgAnfPcmaRWpEhrgVT34"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

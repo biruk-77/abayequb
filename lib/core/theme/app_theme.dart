@@ -34,12 +34,29 @@ class AppTheme {
     end: Alignment.bottomRight,
   );
 
+  static const LinearGradient accentGradient = LinearGradient(
+    colors: [accentColor, Color(0xFFF4CF6E)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static LinearGradient premiumCardGradient(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return LinearGradient(
+      colors: isDark
+          ? [const Color(0xFF1E293B), const Color(0xFF0F172A)]
+          : [Colors.white, const Color(0xFFF1F5F9)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
+  }
+
   static LinearGradient glassGradient(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return LinearGradient(
       colors: [
-        (isDark ? Colors.white : Colors.white).withOpacity(0.15),
-        (isDark ? Colors.white : Colors.white).withOpacity(0.05),
+        (isDark ? Colors.white : Colors.white).withValues(alpha: 0.12),
+        (isDark ? Colors.white : Colors.white).withValues(alpha: 0.04),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
@@ -109,7 +126,7 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: surface,
         elevation: isDark ? 0 : 8,
-        shadowColor: primary.withOpacity(0.1),
+        shadowColor: primary.withValues(alpha: 0.1),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -126,12 +143,12 @@ class AppTheme {
             letterSpacing: 0.5,
           ),
           elevation: 2,
-          shadowColor: primary.withOpacity(0.4),
+          shadowColor: primary.withValues(alpha: 0.4),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? surface.withOpacity(0.1) : Colors.grey[50],
+        fillColor: isDark ? surface.withValues(alpha: 0.1) : Colors.grey[50],
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
@@ -148,7 +165,7 @@ class AppTheme {
           borderSide: BorderSide(color: primary, width: 2),
         ),
         labelStyle: TextStyle(color: textSecondary),
-        hintStyle: TextStyle(color: textSecondary.withOpacity(0.5)),
+        hintStyle: TextStyle(color: textSecondary.withValues(alpha: 0.5)),
         contentPadding: const EdgeInsets.all(20),
       ),
       snackBarTheme: SnackBarThemeData(
@@ -160,7 +177,7 @@ class AppTheme {
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: accentColor,
-        circularTrackColor: primary.withOpacity(0.2),
+        circularTrackColor: primary.withValues(alpha: 0.2),
         refreshBackgroundColor: surface,
       ),
     );
