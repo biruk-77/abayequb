@@ -151,7 +151,7 @@ class AuthService {
       final formData = FormData.fromMap(formDataMap);
 
       // Use /users/me for self-updates to avoid permission issues with ID-based routes
-      final response = await _dio.put('/users/me', data: formData);
+      final response = await _dio.put('/users', data: formData);
       return response.data;
     } catch (e) {
       rethrow;

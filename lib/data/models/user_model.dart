@@ -29,6 +29,8 @@ class UserModel {
   final UserType userType;
   @JsonKey(defaultValue: 0)
   final int trustScore;
+  final int? onTimePayments;
+  final int? missedPayments;
 
   UserModel({
     required this.id,
@@ -38,6 +40,8 @@ class UserModel {
     this.profileImage,
     required this.userType,
     required this.trustScore,
+    this.onTimePayments,
+    this.missedPayments,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

@@ -20,6 +20,7 @@ EqubPackageModel _$EqubPackageModelFromJson(Map<String, dynamic> json) =>
           EqubPackageStatus.active,
       targetAmount: asDouble(json['targetAmount']),
       currentRound: asInt(json['currentRound']),
+      totalCycles: asInt(json['totalCycles']),
     );
 
 Map<String, dynamic> _$EqubPackageModelToJson(EqubPackageModel instance) =>
@@ -34,6 +35,7 @@ Map<String, dynamic> _$EqubPackageModelToJson(EqubPackageModel instance) =>
       'status': _$EqubPackageStatusEnumMap[instance.status],
       'targetAmount': instance.targetAmount,
       'currentRound': instance.currentRound,
+      'totalCycles': instance.totalCycles,
     };
 
 const _$EqubScheduleEnumMap = {

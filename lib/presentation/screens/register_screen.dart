@@ -33,6 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen>
 
   bool _isOtpSent = false;
   bool _isPasswordObscured = true;
+  bool _acceptedTerms = false;
   int _otpCountdown = 0;
   Timer? _countdownTimer;
 
@@ -74,6 +75,11 @@ class _RegisterScreenState extends State<RegisterScreen>
 
   Future<void> _handleRequestOtp() async {
     if (!_formKey.currentState!.validate()) return;
+
+    if (!_acceptedTerms) {
+      _showSnackBar('Please accept the Terms & Privacy Policy');
+      return;
+    }
 
     final authProvider = context.read<AuthProvider>();
     try {
@@ -481,6 +487,41 @@ class _RegisterScreenState extends State<RegisterScreen>
                     ),
                     const SizedBox(height: 16),
                     _buildPasswordInput(),
+                    const SizedBox(height: 16),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: Checkbox(
+                            value: _acceptedTerms,
+                            onChanged: (val) {
+                              setState(() {
+                                _acceptedTerms = val ?? false;
+                              });
+                            },
+                            activeColor: Theme.of(context).primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'I accept the Terms & Privacy Policy',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.color,
+                              height: 1.2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 24),
                     _buildSubmitButton(
                       AbayLocalizations.of(context)!.sendOtp,

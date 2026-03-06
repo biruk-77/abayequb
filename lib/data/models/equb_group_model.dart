@@ -31,6 +31,8 @@ class EqubGroupModel {
   @JsonKey(fromJson: JsonUtils.asDateTime)
   final DateTime? updatedAt;
 
+  String? get iconPath => package?.iconPath;
+
   EqubGroupModel({
     this.id,
     this.name,

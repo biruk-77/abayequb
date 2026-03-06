@@ -24,7 +24,7 @@ class AbayLocalizationsEn extends AbayLocalizations {
   String get selectPackage => 'Select Package';
 
   @override
-  String get chooseGroup => 'Choose Group Type';
+  String get chooseGroup => 'Available eQub Packages';
 
   @override
   String get joinGroup => 'Join Group';

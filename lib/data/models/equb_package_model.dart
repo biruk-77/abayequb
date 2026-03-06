@@ -4,15 +4,21 @@ import '../../core/utils/json_utils.dart';
 part 'equb_package_model.g.dart';
 
 enum EqubPackageStatus {
-  @JsonValue('active') active,
-  @JsonValue('completed') completed,
-  @JsonValue('pending') pending,
+  @JsonValue('active')
+  active,
+  @JsonValue('completed')
+  completed,
+  @JsonValue('pending')
+  pending,
 }
 
 enum EqubSchedule {
-  @JsonValue('daily') daily,
-  @JsonValue('weekly') weekly,
-  @JsonValue('monthly') monthly,
+  @JsonValue('daily')
+  daily,
+  @JsonValue('weekly')
+  weekly,
+  @JsonValue('monthly')
+  monthly,
 }
 
 @JsonSerializable()
@@ -35,6 +41,8 @@ class EqubPackageModel {
   final double? targetAmount;
   @JsonKey(fromJson: asInt)
   final int? currentRound;
+  @JsonKey(fromJson: asInt)
+  final int? totalCycles;
 
   EqubPackageModel({
     required this.id,
@@ -47,8 +55,10 @@ class EqubPackageModel {
     this.status = EqubPackageStatus.active,
     this.targetAmount,
     this.currentRound,
+    this.totalCycles,
   });
 
-  factory EqubPackageModel.fromJson(Map<String, dynamic> json) => _$EqubPackageModelFromJson(json);
+  factory EqubPackageModel.fromJson(Map<String, dynamic> json) =>
+      _$EqubPackageModelFromJson(json);
   Map<String, dynamic> toJson() => _$EqubPackageModelToJson(this);
 }

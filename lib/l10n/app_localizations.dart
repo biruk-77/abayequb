@@ -131,7 +131,7 @@ abstract class AbayLocalizations {
   /// No description provided for @chooseGroup.
   ///
   /// In en, this message translates to:
-  /// **'Choose Group Type'**
+  /// **'Available eQub Packages'**
   String get chooseGroup;
 
   /// No description provided for @joinGroup.

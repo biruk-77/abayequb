@@ -1,9 +1,10 @@
-﻿import 'package:flutter/material.dart';
+﻿// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables
+
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart' as nav;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:feature_discovery/feature_discovery.dart';
-import 'package:animate_do/animate_do.dart';
 import 'package:abushakir/abushakir.dart';
 
 // Core imports
@@ -24,27 +25,48 @@ import '../../data/models/user_model.dart';
 import '../../data/models/equb_package_model.dart';
 import '../../data/models/equb_group_model.dart';
 import '../../data/models/equb_member_model.dart';
+import '../../data/models/wallet_model.dart';
+import '../../data/models/notification_model.dart';
 
 // Widgets
 import '../widgets/abay_icon.dart';
 import '../widgets/high_end_notification_badge.dart';
 import '../widgets/premium/premium_group_card.dart';
 
-// ─────────────────────────────────────────────────────────
-// Screen-local color shortcuts — all wired to AppTheme.
-// Only _goldLight, _emerald, _textMuted and _border have no
-// AppTheme token yet, so they keep a literal value.
-// ─────────────────────────────────────────────────────────
-const Color _gold = AppTheme.accentColor; // #D4AF37 Royal Gold
-const Color _goldLight = Color(0xFFF4CF6E); // lighter gold highlight
-const Color _emerald = Color(0xFF059669); // success / payout green
-const Color _bgLight = AppTheme.bgLight;
-const Color _surface = AppTheme.surfaceLight;
-const Color _textPri = AppTheme.textPrimaryLight;
-const Color _textSec = AppTheme.textSecondaryLight;
-const Color _textMuted = Color(0xFF94A3B8);
-const Color _border = Color(0xFFE2E8F0);
+// ----------------------------------------------------------------------------
+// A Calm, Minimalist Dashboard with Extensive UI Complexity (≈3000 lines)
+// ----------------------------------------------------------------------------
+// This file contains a complete redesign of the dashboard screen with a calm,
+// serene aesthetic. No animations are used; instead, the interface relies on
+// subtle colors, ample whitespace, and a modular component architecture.
+// The code is heavily commented and structured to be easily maintainable.
+// ----------------------------------------------------------------------------
 
+// Calm Color Palette – desaturated, muted tones for a relaxing experience
+const Color _calmBackgroundLight = Color(0xFFF8FAFC); // Very light blue-gray
+const Color _calmBackgroundDark = Color(0xFF0F172A); // Dark slate
+const Color _calmSurfaceLight = Colors.white;
+const Color _calmSurfaceDark = Color(0xFF1E293B);
+const Color _calmPrimary = Color(0xFF2C3E50); // Deep slate
+const Color _calmPrimaryLight = Color(0xFF3A4E62);
+const Color _calmAccent = Color(0xFF6D8A9C); // Muted teal
+const Color _calmAccentLight = Color(0xFF8AA9B9);
+const Color _calmGold = Color(0xFFB89B7A); // Soft gold
+const Color _calmGoldLight = Color(0xFFD4B594);
+const Color _calmGreen = Color(0xFF7A9E7E); // Muted green
+const Color _calmGreenLight = Color(0xFF9BBF9F);
+const Color _calmTextPrimaryLight = Color(0xFF1E2B36);
+const Color _calmTextPrimaryDark = Colors.white;
+const Color _calmTextSecondaryLight = Color(0xFF546E7A);
+const Color _calmTextSecondaryDark = Color(0xFF94A3B8);
+const Color _calmBorderLight = Color(0xFFE2E8F0);
+const Color _calmBorderDark = Color(0xFF334155);
+const Color _calmShadowLight = Color(0x1A2C3E50); // Very subtle shadow
+const Color _calmShadowDark = Color(0x40000000);
+
+// ----------------------------------------------------------------------------
+// Dashboard Screen – Stateful with ScrollController and Data Fetching
+// ----------------------------------------------------------------------------
 class DashboardScreen extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
   const DashboardScreen({super.key, required this.scaffoldKey});
@@ -53,46 +75,56 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen>
-    with TickerProviderStateMixin {
-  late final AnimationController _pulseController;
-  late final Animation<double> _pulseAnimation;
-  late final ScrollController _equbScrollController;
+class _DashboardScreenState extends State<DashboardScreen> {
+  // Scroll controller for the main scroll view
+  late final ScrollController _primaryScrollController;
+
+  // Additional controllers for different sections (if needed)
+  late final ScrollController _activeEqubsScrollController;
+  late final ScrollController _packagesScrollController;
 
   @override
   void initState() {
     super.initState();
-    _equbScrollController = ScrollController();
+    _primaryScrollController = ScrollController();
+    _activeEqubsScrollController = ScrollController();
+    _packagesScrollController = ScrollController();
     _initData();
-    _setupAnimations();
     _scheduleFeatureDiscovery();
   }
 
+  // --------------------------------------------------------------------------
+  // Data Initialization – Fetch all required data after first frame
+  // --------------------------------------------------------------------------
   void _initData() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final equbProvider = Provider.of<EqubProvider>(context, listen: false);
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      Provider.of<WalletProvider>(context, listen: false).fetchWallet();
-      Provider.of<NotificationProvider>(
+      final walletProvider = Provider.of<WalletProvider>(
         context,
         listen: false,
-      ).fetchNotifications();
+      );
+      final notificationProvider = Provider.of<NotificationProvider>(
+        context,
+        listen: false,
+      );
+
+      // Fetch core data
+      walletProvider.fetchWallet();
+      notificationProvider.fetchNotifications();
       equbProvider.fetchPackages();
       authProvider.refreshUser();
-      if (equbProvider.myGroups.isEmpty) equbProvider.fetchUserEqubData();
+
+      // Fetch user's eQub data if not already loaded
+      if (equbProvider.myGroups.isEmpty) {
+        equbProvider.fetchUserEqubData();
+      }
     });
   }
 
-  void _setupAnimations() {
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2000),
-    )..repeat(reverse: true);
-    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.06).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
-    );
-  }
-
+  // --------------------------------------------------------------------------
+  // Feature Discovery Scheduling – Show overlays for first-time users
+  // --------------------------------------------------------------------------
   void _scheduleFeatureDiscovery() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -104,19 +136,19 @@ class _DashboardScreenState extends State<DashboardScreen>
           'active_equbs',
           'packages_section',
           'enroll_button',
+          'wallet_overview', // Additional feature IDs
+          'quick_stats',
+          'milestones',
+          'activity_feed',
         });
         authProvider.completeHomeShowcase();
       }
     });
   }
 
-  @override
-  void dispose() {
-    _pulseController.dispose();
-    _equbScrollController.dispose();
-    super.dispose();
-  }
-
+  // --------------------------------------------------------------------------
+  // Refresh Data (Pull-to-refresh)
+  // --------------------------------------------------------------------------
   Future<void> _refreshData() async {
     await Future.wait([
       Provider.of<WalletProvider>(context, listen: false).fetchWallet(),
@@ -125,9 +157,16 @@ class _DashboardScreenState extends State<DashboardScreen>
         listen: false,
       ).fetchPackages(forceRefresh: true),
       Provider.of<EqubProvider>(context, listen: false).fetchUserEqubData(),
+      Provider.of<NotificationProvider>(
+        context,
+        listen: false,
+      ).fetchNotifications(),
     ]);
   }
 
+  // --------------------------------------------------------------------------
+  // Utility: Format Date using Localization
+  // --------------------------------------------------------------------------
   String _formatDate(DateTime? date) {
     if (date == null) return '—';
     final locale =
@@ -139,866 +178,30 @@ class _DashboardScreenState extends State<DashboardScreen>
     return DateFormatter.format(date, locale);
   }
 
+  // --------------------------------------------------------------------------
+  // Utility: Get Ethiopian Date (for header)
+  // --------------------------------------------------------------------------
   String _getEthiopianDate() {
     try {
-      final etc = ETC.today();
-      final amharicMonths = [
-        'መስከረም',
-        'ጥቅምት',
-        'ህዳር',
-        'ታህሳስ',
-        'ጥር',
-        'የካቲት',
-        'መጋቢት',
-        'ሚያዝያ',
-        'ግንቦት',
-        'ሰኔ',
-        'ሐምሌ',
-        'ነሐሴ',
-        'ጳጉሜ',
-      ];
       final locale =
           Provider.of<LocaleProvider>(
             context,
             listen: false,
           ).locale?.languageCode ??
           'en';
-      if (locale == 'am') {
-        return '${amharicMonths[etc.month - 1]} ${etc.day}, ${etc.year} ዓ.ም';
+      String dateStr = DateFormatter.format(DateTime.now(), locale);
+      if (locale == 'am' && !dateStr.contains('ዓ.ም')) {
+        dateStr += ' ዓ.ም';
       }
-      return '${etc.monthName} ${etc.day}, ${etc.year}';
+      return dateStr;
     } catch (_) {
       return '';
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AbayLocalizations.of(context);
-    if (l10n == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
-    final wallet = context.watch<WalletProvider>().wallet;
-    final walletProv = context.watch<WalletProvider>();
-    final equbProvider = context.watch<EqubProvider>();
-    final packages = equbProvider.packages;
-    final groups = equbProvider.groups;
-    final myGroups = equbProvider.myGroups;
-    final memberships = equbProvider.myMemberships;
-    final user = context.watch<AuthProvider>().user;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF050B14) : _bgLight,
-      body: Stack(
-        children: [
-          // Subtle animated dot-grid background
-          Positioned.fill(
-            child: IgnorePointer(
-              child: CustomPaint(
-                painter: _MeshGradientPainter(
-                  color: isDark
-                      ? Colors.white.withValues(alpha: 0.03)
-                      : AppTheme.primaryColor.withValues(alpha: 0.035),
-                ),
-              ),
-            ),
-          ),
-          RefreshIndicator(
-            onRefresh: _refreshData,
-            color: AppTheme.primaryColor,
-            backgroundColor: Colors.white,
-            strokeWidth: 2.5,
-            child: CustomScrollView(
-              physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics(),
-              ),
-              slivers: [
-                // ── Command-centre header ────────────────────────
-                _buildHeader(user, isDark, l10n),
-
-                SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // ── Vault / Portfolio balance card ────────
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-                        child: FadeInDown(
-                          duration: const Duration(milliseconds: 700),
-                          from: 24,
-                          child: _PortfolioCard(
-                            available: wallet?.available ?? 0.0,
-                            locked: wallet?.locked ?? 0.0,
-                            isVisible: walletProv.isBalanceVisible,
-                            onToggle: () => context
-                                .read<WalletProvider>()
-                                .toggleBalanceVisibility(),
-                          ),
-                        ),
-                      ),
-
-                      // ── Quick Stats Strip ─────────────────────
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                        child: FadeInUp(
-                          delay: const Duration(milliseconds: 150),
-                          duration: const Duration(milliseconds: 600),
-                          child: _QuickStatsStrip(
-                            activeGroups: myGroups.length,
-                            trustScore: user?.trustScore ?? 0,
-                            nextPayoutAmt: memberships.isNotEmpty
-                                ? (packages.isNotEmpty
-                                      ? packages.first.targetAmount ?? 0
-                                      : 0)
-                                : 0,
-                            isDark: isDark,
-                          ),
-                        ),
-                      ),
-
-                      // ── Progress Summary ───────────────────
-                      if (myGroups.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-                          child: FadeInUp(
-                            delay: const Duration(milliseconds: 170),
-                            duration: const Duration(milliseconds: 600),
-                            child: _ProgressSummary(
-                              groups: myGroups,
-                              isDark: isDark,
-                              l10n: l10n,
-                            ),
-                          ),
-                        ),
-
-                      // ── Financial milestones ──────────────────
-                      if (myGroups.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-                          child: FadeInUp(
-                            delay: const Duration(milliseconds: 200),
-                            duration: const Duration(milliseconds: 600),
-                            child: _buildMilestones(
-                              myGroups,
-                              memberships,
-                              packages,
-                              l10n,
-                              isDark,
-                            ),
-                          ),
-                        ),
-
-                      // ── Active eQubs ──────────────────────────
-                      const SizedBox(height: 28),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: _SectionLabel(label: l10n.yourActiveEqubs),
-                      ),
-                      const SizedBox(height: 14),
-
-                      if (myGroups.isEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: _buildEmptyEqubs(context, l10n, isDark),
-                        )
-                      else
-                        AnimatedBuilder(
-                          animation: _equbScrollController,
-                          builder: (context, child) {
-                            return SizedBox(
-                              height: 280,
-                              child: ListView.builder(
-                                controller: _equbScrollController,
-                                scrollDirection: Axis.horizontal,
-                                physics: const BouncingScrollPhysics(),
-                                clipBehavior: Clip.none,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                ),
-                                itemCount: myGroups.length,
-                                itemBuilder: (context, index) {
-                                  final group = myGroups[index];
-                                  final package = packages.firstWhere(
-                                    (p) => p.id == group.packageId,
-                                    orElse: () => EqubPackageModel(id: 'temp'),
-                                  );
-                                  final membership = memberships.firstWhere(
-                                    (m) => m.groupId == group.id,
-                                    orElse: () => EqubMemberModel(
-                                      groupId: '',
-                                      userId: '',
-                                    ),
-                                  );
-
-                                  // Calculate scale based on position
-                                  double scale = 1.0;
-                                  if (_equbScrollController.hasClients) {
-                                    final screenWidth = MediaQuery.of(
-                                      context,
-                                    ).size.width;
-                                    final itemCenter =
-                                        (index * 294.0) + // width + padding
-                                        147.0 + // half width
-                                        24.0 - // initial padding
-                                        _equbScrollController.offset;
-                                    final diff = (screenWidth / 2 - itemCenter)
-                                        .abs();
-                                    scale = (1.0 - (diff / screenWidth) * 0.15)
-                                        .clamp(0.85, 1.0);
-                                  }
-
-                                  return Transform.scale(
-                                    scale: scale,
-                                    child: FadeInRight(
-                                      delay: Duration(
-                                        milliseconds: index * 100 + 100,
-                                      ),
-                                      duration: const Duration(
-                                        milliseconds: 600,
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          right: 16,
-                                          bottom: 20,
-                                        ),
-                                        child: SizedBox(
-                                          width: 280,
-                                          child: PremiumGroupCard(
-                                            group: group,
-                                            contributionAmount:
-                                                package.contributionAmount ?? 0,
-                                            currentCycle:
-                                                group.currentCycle ?? 1,
-                                            payoutOrder: membership.payoutOrder,
-                                            onTap: () => _navigateToGroup(
-                                              context,
-                                              group,
-                                              package,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                        ),
-
-                      // ── Explore packages ──────────────────────
-                      const SizedBox(height: 28),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: FadeInUp(
-                          delay: const Duration(milliseconds: 300),
-                          duration: const Duration(milliseconds: 600),
-                          child: DescribedFeatureOverlay(
-                            featureId: 'packages_section',
-                            targetColor: Colors.white,
-                            textColor: Colors.black,
-                            backgroundColor: AppTheme.accentColor,
-                            contentLocation: ContentLocation.below,
-                            title: Text(l10n.explorePackages),
-                            description: _featureDesc(
-                              context,
-                              'Browse packages. Tap any to see groups and join.',
-                            ),
-                            tapTarget: const Icon(
-                              Icons.explore_rounded,
-                              color: Colors.black,
-                            ),
-                            child: _SectionLabel(label: l10n.explorePackages),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 14),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: _buildPackages(
-                          context,
-                          packages,
-                          groups,
-                          memberships,
-                          l10n,
-                          isDark,
-                        ),
-                      ),
-                      const SizedBox(height: 100),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ), // closes RefreshIndicator
-        ], // closes Stack children
-      ), // closes Stack
-    );
-  }
-
-  // ──────────────────────────────────────────────────────────────────────────
-  // HEADER
-  // ──────────────────────────────────────────────────────────────────────────
-  Widget _buildHeader(UserModel? user, bool isDark, AbayLocalizations l10n) {
-    return SliverAppBar(
-      expandedHeight: 148,
-      pinned: true,
-      elevation: 0,
-      backgroundColor: AppTheme.primaryColor,
-      surfaceTintColor: AppTheme.primaryColor,
-      leading: DescribedFeatureOverlay(
-        featureId: 'menu_button',
-        targetColor: Colors.white,
-        textColor: Colors.black,
-        backgroundColor: AppTheme.accentColor,
-        contentLocation: ContentLocation.above,
-        title: const Text('Navigation Menu'),
-        description: _featureDesc(context, 'Tap here to open the side menu.'),
-        tapTarget: const Icon(Icons.menu_rounded, color: Colors.white),
-        child: IconButton(
-          icon: const Icon(Icons.menu_rounded, color: Colors.white),
-          onPressed: () => widget.scaffoldKey.currentState?.openDrawer(),
-        ),
-      ),
-      actions: [
-        // Notification bell
-        DescribedFeatureOverlay(
-          featureId: 'notifications',
-          targetColor: Colors.white,
-          textColor: Colors.black,
-          backgroundColor: AppTheme.accentColor,
-          contentLocation: ContentLocation.below,
-          title: const Text('Notifications'),
-          description: _featureDesc(
-            context,
-            'Stay updated on contributions, payouts, and group news.',
-          ),
-          tapTarget: const Icon(
-            Icons.notifications_none_rounded,
-            color: Colors.white,
-          ),
-          child: Consumer<NotificationProvider>(
-            builder: (context, notificationProv, _) {
-              return HighEndNotificationBadge(
-                count: notificationProv.unreadCount,
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.notifications_none_rounded,
-                    color: Colors.white,
-                  ),
-                  onPressed: () =>
-                      nav.GoRouter.of(context).push('/notifications'),
-                ),
-              );
-            },
-          ),
-        ),
-        const SizedBox(width: 4),
-        // Avatar
-        GestureDetector(
-          onTap: () => nav.GoRouter.of(context).push('/profile'),
-          child: Container(
-            margin: const EdgeInsets.only(right: 16),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: _gold, width: 2),
-              boxShadow: [
-                BoxShadow(
-                  color: _gold.withValues(alpha: 0.3),
-                  blurRadius: 6,
-                  spreadRadius: 1,
-                ),
-              ],
-            ),
-            child: CircleAvatar(
-              radius: 18,
-              backgroundColor: Colors.white24,
-              backgroundImage: AbayIcon.getImageProvider(user?.profileImage),
-              child: (user?.profileImage == null || user!.profileImage!.isEmpty)
-                  ? const Icon(Icons.person, color: Colors.white70, size: 20)
-                  : null,
-            ),
-          ),
-        ),
-      ],
-      flexibleSpace: FlexibleSpaceBar(
-        background: _HeaderBg(
-          user: user,
-          ethiopianDate: _getEthiopianDate(),
-          trustScore: user?.trustScore ?? 0,
-          pulseAnimation: _pulseAnimation,
-          l10n: l10n,
-          onSkip: () => FeatureDiscovery.dismissAll(context),
-        ),
-      ),
-    );
-  }
-
-  // ──────────────────────────────────────────────────────────────────────────
-  // MILESTONES
-  // ──────────────────────────────────────────────────────────────────────────
-  Widget _buildMilestones(
-    List<EqubGroupModel> myGroups,
-    List<EqubMemberModel> memberships,
-    List<EqubPackageModel> packages,
-    AbayLocalizations l10n,
-    bool isDark,
-  ) {
-    DateTime? nextContribDate;
-    DateTime? nextPayoutDate;
-    double contribAmt = 0.0;
-    double payoutAmt = 0.0;
-
-    for (final group in myGroups) {
-      final membership = memberships.firstWhere(
-        (m) => m.groupId == group.id,
-        orElse: () => EqubMemberModel(groupId: '', userId: ''),
-      );
-      final package = packages.firstWhere(
-        (p) => p.id == group.packageId,
-        orElse: () => EqubPackageModel(id: 'temp'),
-      );
-      final startDate = group.startDate;
-      final payoutOrder = membership.payoutOrder;
-
-      if (startDate != null && payoutOrder != null) {
-        final days = package.schedule == EqubSchedule.weekly ? 7 : 30;
-        final payout = startDate.add(Duration(days: days * payoutOrder));
-        if (nextPayoutDate == null || payout.isBefore(nextPayoutDate)) {
-          nextPayoutDate = payout;
-          payoutAmt = package.targetAmount ?? 0.0;
-        }
-        final contrib = startDate.add(
-          Duration(days: days * (group.currentCycle ?? 1)),
-        );
-        if (nextContribDate == null || contrib.isBefore(nextContribDate)) {
-          nextContribDate = contrib;
-          contribAmt = package.contributionAmount ?? 0.0;
-        }
-      }
-    }
-
-    return _MilestonesCard(
-      isDark: isDark,
-      nextContribDate: _formatDate(nextContribDate),
-      nextPayoutDate: _formatDate(nextPayoutDate),
-      contribAmt: contribAmt,
-      payoutAmt: payoutAmt,
-      l10n: l10n,
-    );
-  }
-
-  // ──────────────────────────────────────────────────────────────────────────
-  // PACKAGES (expandable)
-  // ──────────────────────────────────────────────────────────────────────────
-  Widget _buildPackages(
-    BuildContext context,
-    List<EqubPackageModel> packages,
-    List<EqubGroupModel> groups,
-    List<EqubMemberModel> memberships,
-    AbayLocalizations l10n,
-    bool isDark,
-  ) {
-    if (packages.isEmpty) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(32),
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-
-    return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: packages.length,
-      itemBuilder: (context, index) {
-        final package = packages[index];
-        final pkgGroups = groups
-            .where((g) => g.packageId == package.id.toString())
-            .toList();
-
-        return FadeInUp(
-          delay: Duration(milliseconds: index * 100 + 400),
-          duration: const Duration(milliseconds: 600),
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 14),
-            decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF0F172A) : _surface,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: isDark ? Colors.white10 : _border),
-              boxShadow: [
-                BoxShadow(
-                  color: isDark
-                      ? Colors.black.withValues(alpha: 0.25)
-                      : _textPri.withValues(alpha: 0.05),
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
-                ),
-              ],
-            ),
-            child: Theme(
-              data: Theme.of(
-                context,
-              ).copyWith(dividerColor: Colors.transparent),
-              child: ExpansionTile(
-                onExpansionChanged: (expanded) {
-                  if (expanded) {
-                    context.read<EqubProvider>().fetchGroupsByPackage(
-                      package.id.toString(),
-                    );
-                  }
-                },
-                tilePadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 6,
-                ),
-                leading: Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? Colors.white10
-                        : AppTheme.primaryColor.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Center(
-                    child: AbayIcon(
-                      iconPath: package.iconPath,
-                      name: package.name,
-                      height: 26,
-                      width: 26,
-                    ),
-                  ),
-                ),
-                title: Text(
-                  package.name ?? 'Package',
-                  style: GoogleFonts.outfit(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : _textPri,
-                  ),
-                ),
-                subtitle: Text(
-                  '${package.schedule?.name.toUpperCase() ?? 'MONTHLY'}  •  ${CurrencyFormatter.format(package.contributionAmount ?? 0)}',
-                  style: GoogleFonts.outfit(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: isDark ? Colors.white54 : _textSec,
-                    letterSpacing: 0.2,
-                  ),
-                ),
-                trailing: Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: isDark ? Colors.white38 : _textMuted,
-                ),
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                    child: Column(
-                      children: [
-                        Divider(
-                          height: 1,
-                          color: isDark ? Colors.white10 : _border,
-                        ),
-                        const SizedBox(height: 14),
-                        if (pkgGroups.isEmpty)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 20),
-                            child: Center(
-                              child: context.watch<EqubProvider>().isLoading
-                                  ? const CircularProgressIndicator()
-                                  : Text(
-                                      'No groups available',
-                                      style: GoogleFonts.outfit(
-                                        color: isDark
-                                            ? Colors.white54
-                                            : _textSec,
-                                      ),
-                                    ),
-                            ),
-                          )
-                        else
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 12,
-                                  mainAxisSpacing: 12,
-                                  childAspectRatio:
-                                      MediaQuery.of(context).size.width < 400
-                                      ? 0.8
-                                      : 0.85,
-                                ),
-                            itemCount: pkgGroups.length,
-                            itemBuilder: (context, gi) {
-                              final group = pkgGroups[gi];
-                              final isJoined = memberships.any(
-                                (m) => m.groupId == group.id,
-                              );
-                              return _buildGroupCard(
-                                context,
-                                group,
-                                package,
-                                isJoined,
-                                l10n,
-                                isDark: isDark,
-                                isFirst: index == 0 && gi == 0,
-                              );
-                            },
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildGroupCard(
-    BuildContext context,
-    EqubGroupModel group,
-    EqubPackageModel package,
-    bool isJoined,
-    AbayLocalizations l10n, {
-    required bool isDark,
-    bool isFirst = false,
-  }) {
-    final btnText = group.status?.toLowerCase() == 'completed'
-        ? 'COMPLETED'
-        : (isJoined ? 'DETAILS & PAY' : 'JOIN');
-
-    Widget btn = ElevatedButton(
-      onPressed: () => _handleGroupAction(group, package, isJoined, l10n),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isJoined
-            ? AppTheme.primaryColor
-            : AppTheme.accentColor,
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        minimumSize: const Size(double.infinity, 32),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 0,
-      ),
-      child: Text(
-        btnText,
-        style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.bold),
-      ),
-    );
-
-    if (isFirst) {
-      btn = DescribedFeatureOverlay(
-        featureId: 'enroll_button',
-        targetColor: Colors.white,
-        textColor: Colors.black,
-        backgroundColor: AppTheme.accentColor,
-        contentLocation: ContentLocation.above,
-        title: Text(isJoined ? 'Make a Contribution' : 'Join an eQub'),
-        description: _featureDesc(
-          context,
-          isJoined
-              ? 'Tap to see group details and pay your next contribution.'
-              : 'Ready to start saving? Join this group and begin your journey.',
-        ),
-        tapTarget: Text(
-          isJoined ? 'PAY' : 'JOIN',
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        child: btn,
-      );
-    }
-
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : _surface,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: isDark ? Colors.white10 : _border),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.2)
-                : _textPri.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? Colors.white10
-                      : AppTheme.primaryColor.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: AbayIcon(
-                  name: group.name,
-                  width: 16,
-                  height: 16,
-                  color: isDark ? Colors.white70 : AppTheme.primaryColor,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: group.status?.toLowerCase() == 'completed'
-                      ? Colors.grey.withValues(alpha: 0.15)
-                      : AppTheme.primaryColor.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  group.status?.toUpperCase() ?? 'ACTIVE',
-                  style: GoogleFonts.outfit(
-                    fontSize: 8,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.4,
-                    color: group.status?.toLowerCase() == 'completed'
-                        ? Colors.grey
-                        : AppTheme.primaryColor,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            group.name ?? 'Group',
-            style: GoogleFonts.outfit(
-              fontWeight: FontWeight.bold,
-              fontSize: 13,
-              color: isDark ? Colors.white : _textPri,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 3),
-          Row(
-            children: [
-              Icon(
-                Icons.people_outline_rounded,
-                size: 11,
-                color: isDark ? Colors.white38 : _textMuted,
-              ),
-              const SizedBox(width: 3),
-              Text(
-                '${group.memberCount ?? 0}/${package.groupSize ?? 0}',
-                style: GoogleFonts.outfit(
-                  fontSize: 10,
-                  color: isDark ? Colors.white38 : _textMuted,
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          btn,
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmptyEqubs(
-    BuildContext context,
-    AbayLocalizations l10n,
-    bool isDark,
-  ) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF0F172A) : Colors.white,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.05)
-              : Colors.black.withValues(alpha: 0.05),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
-            blurRadius: 24,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryColor.withValues(alpha: 0.08),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.auto_awesome_rounded,
-              color: AppTheme.primaryColor,
-              size: 40,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Join your first eQub!',
-            style: GoogleFonts.outfit(
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
-              color: isDark ? Colors.white : _textPri,
-              letterSpacing: -0.5,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            'Start your savings journey today. Browse the packages below to find a group that fits your goals.',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(
-              fontSize: 14,
-              color: isDark ? Colors.white.withValues(alpha: 0.5) : _textSec,
-              height: 1.6,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _featureDesc(BuildContext context, String text) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(text, style: const TextStyle(color: Colors.white)),
-        const SizedBox(height: 12),
-        InkWell(
-          onTap: () => FeatureDiscovery.dismissAll(context),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 4.0),
-            child: Text(
-              'Skip Tutorial',
-              style: TextStyle(
-                color: Colors.white70,
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.underline,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
+  // --------------------------------------------------------------------------
+  // Navigation Helpers
+  // --------------------------------------------------------------------------
   void _handleGroupAction(
     EqubGroupModel group,
     EqubPackageModel package,
@@ -1027,204 +230,604 @@ class _DashboardScreenState extends State<DashboardScreen>
       extra: {'package': package, 'groupId': group.id},
     );
   }
-}
 
-// ═══════════════════════════════════════════════════════════════════════════
-// HEADER BACKGROUND
-// ═══════════════════════════════════════════════════════════════════════════
-class _HeaderBg extends StatelessWidget {
-  final UserModel? user;
-  final String ethiopianDate;
-  final int trustScore;
-  final Animation<double> pulseAnimation;
-  final AbayLocalizations l10n;
-  final VoidCallback onSkip;
+  // --------------------------------------------------------------------------
+  // Calculate Next Payout Estimate (simple sum of target amounts)
+  // --------------------------------------------------------------------------
+  double _calculateNextPayoutEstimate(BuildContext context) {
+    final memberships = context.read<EqubProvider>().myMemberships;
+    final groups = context.read<EqubProvider>().myGroups;
+    final packages = context.read<EqubProvider>().packages;
+    double estimate = 0;
+    for (final membership in memberships) {
+      final group = groups.firstWhere(
+        (g) => g.id == membership.groupId,
+        orElse: () => EqubGroupModel(id: '', packageId: ''),
+      );
+      if ((group.id ?? '').isNotEmpty) {
+        final package = packages.firstWhere(
+          (p) => p.id == group.packageId,
+          orElse: () => EqubPackageModel(id: ''),
+        );
+        if (package.targetAmount != null && membership.payoutOrder != null) {
+          estimate += package.targetAmount!;
+        }
+      }
+    }
+    return estimate;
+  }
 
-  const _HeaderBg({
-    required this.user,
-    required this.ethiopianDate,
-    required this.trustScore,
-    required this.pulseAnimation,
-    required this.l10n,
-    required this.onSkip,
-  });
+  // --------------------------------------------------------------------------
+  // Build Feature Discovery Description (reusable)
+  // --------------------------------------------------------------------------
+  Widget _featureDesc(BuildContext context, String text) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(text, style: const TextStyle(color: Colors.white)),
+        const SizedBox(height: 12),
+        InkWell(
+          onTap: () => FeatureDiscovery.dismissAll(context),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 4.0),
+            child: Text(
+              'Skip Tutorial',
+              style: TextStyle(
+                color: Colors.white70,
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
+  void dispose() {
+    _primaryScrollController.dispose();
+    _activeEqubsScrollController.dispose();
+    _packagesScrollController.dispose();
+    super.dispose();
+  }
+
+  // --------------------------------------------------------------------------
+  // Main Build Method
+  // --------------------------------------------------------------------------
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppTheme.primaryColor,
-            const Color(0xFF0A363A),
-            const Color(0xFF051D1F),
-          ],
+    final l10n = AbayLocalizations.of(context);
+    if (l10n == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Choose colors based on theme
+    final backgroundColor = isDark ? _calmBackgroundDark : _calmBackgroundLight;
+    final surfaceColor = isDark ? _calmSurfaceDark : _calmSurfaceLight;
+    final textPrimary = isDark ? _calmTextPrimaryDark : _calmTextPrimaryLight;
+    final textSecondary = isDark
+        ? _calmTextSecondaryDark
+        : _calmTextSecondaryLight;
+    final borderColor = isDark ? _calmBorderDark : _calmBorderLight;
+    final shadowColor = isDark ? _calmShadowDark : _calmShadowLight;
+
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: _refreshData,
+          color: _calmAccent,
+          backgroundColor: surfaceColor,
+          strokeWidth: 2,
+          child: CustomScrollView(
+            controller: _primaryScrollController,
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            slivers: [
+              // -----------------------------------------------------------------
+              // HEADER SLIVER
+              // -----------------------------------------------------------------
+              _buildHeader(
+                user: context.watch<AuthProvider>().user,
+                isDark: isDark,
+                l10n: l10n,
+                surfaceColor: surfaceColor,
+                textPrimary: textPrimary,
+                textSecondary: textSecondary,
+              ),
+
+              SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+
+                    // -----------------------------------------------------------------
+                    // WALLET OVERVIEW CARD
+                    // -----------------------------------------------------------------
+                    DescribedFeatureOverlay(
+                      featureId: 'wallet_overview',
+                      targetColor: Colors.white,
+                      textColor: textPrimary,
+                      backgroundColor: _calmAccent,
+                      contentLocation: ContentLocation.above,
+                      title: const Text('Your Portfolio'),
+                      description: _featureDesc(
+                        context,
+                        'View your total balance, available funds, and locked savings.',
+                      ),
+                      tapTarget: const Icon(
+                        Icons.account_balance_wallet_rounded,
+                        color: Colors.white,
+                      ),
+                      child: _WalletOverviewCard(
+                        wallet: context.watch<WalletProvider>().wallet,
+                        isBalanceVisible: context
+                            .watch<WalletProvider>()
+                            .isBalanceVisible,
+                        onToggleVisibility: () => context
+                            .read<WalletProvider>()
+                            .toggleBalanceVisibility(),
+                        surfaceColor: surfaceColor,
+                        borderColor: borderColor,
+                        shadowColor: shadowColor,
+                        textPrimary: textPrimary,
+                        textSecondary: textSecondary,
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // -----------------------------------------------------------------
+                    // QUICK STATS STRIP
+                    // -----------------------------------------------------------------
+                    DescribedFeatureOverlay(
+                      featureId: 'quick_stats',
+                      targetColor: Colors.white,
+                      textColor: textPrimary,
+                      backgroundColor: _calmAccent,
+                      contentLocation: ContentLocation.above,
+                      title: const Text('Quick Stats'),
+                      description: _featureDesc(
+                        context,
+                        'At-a-glance overview of your eQub activity.',
+                      ),
+                      tapTarget: const Icon(
+                        Icons.speed_rounded,
+                        color: Colors.white,
+                      ),
+                      child: _QuickStatsStrip(
+                        activeGroups: context
+                            .watch<EqubProvider>()
+                            .myGroups
+                            .length,
+                        trustScore:
+                            context.watch<AuthProvider>().user?.trustScore ?? 0,
+                        nextPayoutEstimate: _calculateNextPayoutEstimate(
+                          context,
+                        ),
+                        surfaceColor: surfaceColor,
+                        borderColor: borderColor,
+                        textPrimary: textPrimary,
+                        textSecondary: textSecondary,
+                      ),
+                    ),
+
+                    const SizedBox(height: 28),
+
+                    // -----------------------------------------------------------------
+                    // UPCOMING CONTRIBUTIONS (Timeline Style)
+                    // -----------------------------------------------------------------
+                    _SectionTitle(
+                      label: 'Upcoming Contributions',
+                      textPrimary: textPrimary,
+                      icon: Icons.upcoming_rounded,
+                    ),
+                    const SizedBox(height: 16),
+                    _UpcomingContributionsTimeline(
+                      memberships: context.watch<EqubProvider>().myMemberships,
+                      groups: context.watch<EqubProvider>().myGroups,
+                      packages: context.watch<EqubProvider>().packages,
+                      formatDate: _formatDate,
+                      surfaceColor: surfaceColor,
+                      borderColor: borderColor,
+                      textPrimary: textPrimary,
+                      textSecondary: textSecondary,
+                    ),
+
+                    const SizedBox(height: 28),
+
+                    // -----------------------------------------------------------------
+                    // FINANCIAL MILESTONES (Enhanced)
+                    // -----------------------------------------------------------------
+                    DescribedFeatureOverlay(
+                      featureId: 'milestones',
+                      targetColor: Colors.white,
+                      textColor: textPrimary,
+                      backgroundColor: _calmAccent,
+                      contentLocation: ContentLocation.above,
+                      title: const Text('Milestones'),
+                      description: _featureDesc(
+                        context,
+                        'Track your savings progress and upcoming payouts.',
+                      ),
+                      tapTarget: const Icon(
+                        Icons.flag_rounded,
+                        color: Colors.white,
+                      ),
+                      child: _MilestonesSection(
+                        groups: context.watch<EqubProvider>().myGroups,
+                        memberships: context
+                            .watch<EqubProvider>()
+                            .myMemberships,
+                        packages: context.watch<EqubProvider>().packages,
+                        formatDate: _formatDate,
+                        surfaceColor: surfaceColor,
+                        borderColor: borderColor,
+                        textPrimary: textPrimary,
+                        textSecondary: textSecondary,
+                      ),
+                    ),
+
+                    const SizedBox(height: 28),
+
+                    // -----------------------------------------------------------------
+                    // ACTIVE EQBUS (Horizontal List)
+                    // -----------------------------------------------------------------
+                    DescribedFeatureOverlay(
+                      featureId: 'active_equbs',
+                      targetColor: Colors.white,
+                      textColor: textPrimary,
+                      backgroundColor: _calmAccent,
+                      contentLocation: ContentLocation.above,
+                      title: const Text('Your Active eQubs'),
+                      description: _featureDesc(
+                        context,
+                        'Swipe to see your current groups. Tap any for details.',
+                      ),
+                      tapTarget: const Icon(
+                        Icons.account_tree_rounded,
+                        color: Colors.white,
+                      ),
+                      child: _SectionTitle(
+                        label: l10n.yourActiveEqubs,
+                        textPrimary: textPrimary,
+                        icon: Icons.account_tree_rounded,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _ActiveEqubsHorizontal(
+                      groups: context.watch<EqubProvider>().myGroups,
+                      memberships: context.watch<EqubProvider>().myMemberships,
+                      packages: context.watch<EqubProvider>().packages,
+                      onGroupTap: _navigateToGroup,
+                      surfaceColor: surfaceColor,
+                      borderColor: borderColor,
+                      textPrimary: textPrimary,
+                      textSecondary: textSecondary,
+                      l10n: l10n,
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // -----------------------------------------------------------------
+                    // EXPLORE PACKAGES (Collapsible Grid)
+                    // -----------------------------------------------------------------
+                    DescribedFeatureOverlay(
+                      featureId: 'packages_section',
+                      targetColor: Colors.white,
+                      textColor: textPrimary,
+                      backgroundColor: _calmAccent,
+                      contentLocation: ContentLocation.above,
+                      title: const Text('Explore Packages'),
+                      description: _featureDesc(
+                        context,
+                        'Browse available eQub packages and join new groups.',
+                      ),
+                      tapTarget: const Icon(
+                        Icons.explore_rounded,
+                        color: Colors.white,
+                      ),
+                      child: _SectionTitle(
+                        label: l10n.explorePackages,
+                        textPrimary: textPrimary,
+                        icon: Icons.explore_rounded,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _PackagesExplorer(
+                      packages: context.watch<EqubProvider>().packages,
+                      groups: context.watch<EqubProvider>().groups,
+                      memberships: context.watch<EqubProvider>().myMemberships,
+                      onJoinOrPay: _handleGroupAction,
+                      surfaceColor: surfaceColor,
+                      borderColor: borderColor,
+                      textPrimary: textPrimary,
+                      textSecondary: textSecondary,
+                      l10n: l10n,
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // -----------------------------------------------------------------
+                    // RECENT ACTIVITY FEED
+                    // -----------------------------------------------------------------
+                    DescribedFeatureOverlay(
+                      featureId: 'activity_feed',
+                      targetColor: Colors.white,
+                      textColor: textPrimary,
+                      backgroundColor: _calmAccent,
+                      contentLocation: ContentLocation.above,
+                      title: const Text('Recent Activity'),
+                      description: _featureDesc(
+                        context,
+                        'Stay updated with the latest notifications and events.',
+                      ),
+                      tapTarget: const Icon(
+                        Icons.history_rounded,
+                        color: Colors.white,
+                      ),
+                      child: _SectionTitle(
+                        label: 'Recent Activity',
+                        textPrimary: textPrimary,
+                        icon: Icons.history_rounded,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _ActivityFeed(
+                      notifications: context
+                          .watch<NotificationProvider>()
+                          .notifications
+                          .take(5)
+                          .toList(),
+                      surfaceColor: surfaceColor,
+                      borderColor: borderColor,
+                      textPrimary: textPrimary,
+                      textSecondary: textSecondary,
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // -----------------------------------------------------------------
+                    // TRUST SCORE BREAKDOWN (Detailed)
+                    // -----------------------------------------------------------------
+                    _SectionTitle(
+                      label: 'Trust Score Details',
+                      textPrimary: textPrimary,
+                      icon: Icons.verified_user_rounded,
+                    ),
+                    const SizedBox(height: 16),
+                    _TrustScoreBreakdown(
+                      user: context.watch<AuthProvider>().user,
+                      surfaceColor: surfaceColor,
+                      borderColor: borderColor,
+                      textPrimary: textPrimary,
+                      textSecondary: textSecondary,
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    // -----------------------------------------------------------------
+                    // COMMUNITY STATS (Placeholder for Social Features)
+                    // -----------------------------------------------------------------
+                    _SectionTitle(
+                      label: 'Community',
+                      textPrimary: textPrimary,
+                      icon: Icons.people_rounded,
+                    ),
+                    const SizedBox(height: 16),
+                    _CommunityStats(
+                      totalMembers:
+                          1234, // Placeholder – replace with real data if available
+                      activeGroups: context.watch<EqubProvider>().groups.length,
+                      totalSaved: 12500000, // Placeholder
+                      surfaceColor: surfaceColor,
+                      borderColor: borderColor,
+                      textPrimary: textPrimary,
+                      textSecondary: textSecondary,
+                    ),
+
+                    const SizedBox(height: 40),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-      child: Stack(
-        children: [
-          // Dynamic mesh glow top-right
-          Positioned(
-            right: -50,
-            top: -50,
-            child: Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    Colors.white.withValues(alpha: 0.05),
-                    Colors.transparent,
-                  ],
+    );
+  }
+
+  // --------------------------------------------------------------------------
+  // Header Sliver (Separate Method for Clarity)
+  // --------------------------------------------------------------------------
+  Widget _buildHeader({
+    required UserModel? user,
+    required bool isDark,
+    required AbayLocalizations l10n,
+    required Color surfaceColor,
+    required Color textPrimary,
+    required Color textSecondary,
+  }) {
+    return SliverAppBar(
+      expandedHeight: 140,
+      pinned: true,
+      elevation: 0,
+      backgroundColor: _calmPrimary,
+      surfaceTintColor: Colors.transparent,
+      leading: DescribedFeatureOverlay(
+        featureId: 'menu_button',
+        targetColor: Colors.white,
+        textColor: textPrimary,
+        backgroundColor: _calmAccent,
+        contentLocation: ContentLocation.above,
+        title: const Text('Navigation Menu'),
+        description: _featureDesc(context, 'Tap here to open the side menu.'),
+        tapTarget: const Icon(Icons.menu_rounded, color: Colors.white),
+        child: IconButton(
+          icon: const Icon(Icons.menu_rounded, color: Colors.white),
+          onPressed: () => widget.scaffoldKey.currentState?.openDrawer(),
+        ),
+      ),
+      actions: [
+        DescribedFeatureOverlay(
+          featureId: 'notifications',
+          targetColor: Colors.white,
+          textColor: textPrimary,
+          backgroundColor: _calmAccent,
+          contentLocation: ContentLocation.below,
+          title: const Text('Notifications'),
+          description: _featureDesc(
+            context,
+            'Stay updated on contributions, payouts, and group news.',
+          ),
+          tapTarget: const Icon(
+            Icons.notifications_none_rounded,
+            color: Colors.white,
+          ),
+          child: Consumer<NotificationProvider>(
+            builder: (context, notificationProv, _) {
+              return HighEndNotificationBadge(
+                count: notificationProv.unreadCount,
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.notifications_none_rounded,
+                    color: Colors.white,
+                  ),
+                  onPressed: () =>
+                      nav.GoRouter.of(context).push('/notifications'),
                 ),
-              ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(width: 4),
+        GestureDetector(
+          onTap: () => nav.GoRouter.of(context).push('/profile'),
+          child: Container(
+            margin: const EdgeInsets.only(right: 16),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: _calmGold, width: 1.5),
+            ),
+            child: CircleAvatar(
+              radius: 18,
+              backgroundColor: Colors.white24,
+              backgroundImage: AbayIcon.getImageProvider(user?.profileImage),
+              child: (user?.profileImage == null || user!.profileImage!.isEmpty)
+                  ? const Icon(Icons.person, color: Colors.white70, size: 20)
+                  : null,
             ),
           ),
-
-          // Subtle Bottom Border
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 1,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.transparent,
-                    _gold.withValues(alpha: 0.3),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
+        ),
+      ],
+      flexibleSpace: FlexibleSpaceBar(
+        background: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [_calmPrimary, const Color(0xFF1A2B37)],
             ),
           ),
-
-          Padding(
+          child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                FadeInLeft(
-                  duration: const Duration(milliseconds: 700),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                Text(
+                  l10n.welcome.toUpperCase(),
+                  style: GoogleFonts.outfit(
+                    color: Colors.white.withOpacity(0.7),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 2,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  user?.fullName ?? 'User',
+                  style: GoogleFonts.outfit(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.1),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            l10n.welcome.toUpperCase(),
-                            style: GoogleFonts.outfit(
-                              color: Colors.white.withValues(alpha: 0.5),
-                              fontSize: 10,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 2,
-                            ),
+                          Icon(
+                            Icons.calendar_today_rounded,
+                            color: _calmGold,
+                            size: 12,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(width: 8),
                           Text(
-                            user?.fullName ?? 'User',
+                            _getEthiopianDate(),
                             style: GoogleFonts.outfit(
                               color: Colors.white,
-                              fontSize: 26,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: -0.5,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          // Glassy Date Container
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.08),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.1),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.calendar_today_rounded,
-                                  color: _gold.withValues(alpha: 0.8),
-                                  size: 12,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  ethiopianDate,
-                                  style: GoogleFonts.outfit(
-                                    color: Colors.white.withValues(alpha: 0.9),
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ],
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                         ],
                       ),
-
-                      // Enhanced Trust Badge
-                      DescribedFeatureOverlay(
-                        featureId: 'trust_score',
-                        targetColor: Colors.white,
-                        textColor: Colors.black,
-                        backgroundColor: AppTheme.accentColor,
-                        contentLocation: ContentLocation.above,
-                        title: const Text('Trust Score'),
-                        description: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Your reliability score. Pay on time to increase it.',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            const SizedBox(height: 12),
-                            InkWell(
-                              onTap: onSkip,
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 4),
-                                child: Text(
-                                  'Skip Tutorial',
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        tapTarget: _TrustBadge(trustScore: trustScore),
-                        child: ScaleTransition(
-                          scale: pulseAnimation,
-                          child: _TrustBadge(trustScore: trustScore),
-                        ),
+                    ),
+                    const Spacer(),
+                    DescribedFeatureOverlay(
+                      featureId: 'trust_score',
+                      targetColor: Colors.white,
+                      textColor: textPrimary,
+                      backgroundColor: _calmAccent,
+                      contentLocation: ContentLocation.above,
+                      title: const Text('Trust Score'),
+                      description: _featureDesc(
+                        context,
+                        'Your reliability score. Pay on time to increase it.',
                       ),
-                    ],
-                  ),
+                      tapTarget: _TrustBadge(trustScore: user?.trustScore ?? 0),
+                      child: _TrustBadge(trustScore: user?.trustScore ?? 0),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
+// ============================================================================
+// SUB-WIDGETS (All Stateless, Highly Modular)
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Trust Badge (Small)
+// ----------------------------------------------------------------------------
 class _TrustBadge extends StatelessWidget {
   final int trustScore;
   const _TrustBadge({required this.trustScore});
@@ -1232,21 +835,21 @@ class _TrustBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: _gold.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: _gold.withValues(alpha: 0.5), width: 1.2),
+        color: _calmGold.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: _calmGold.withOpacity(0.5), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.verified_user_rounded, color: _gold, size: 14),
-          const SizedBox(width: 5),
+          Icon(Icons.verified_user_rounded, color: _calmGold, size: 14),
+          const SizedBox(width: 4),
           Text(
             '$trustScore',
             style: GoogleFonts.outfit(
-              color: _gold,
+              color: _calmGold,
               fontSize: 13,
               fontWeight: FontWeight.w800,
             ),
@@ -1257,36 +860,47 @@ class _TrustBadge extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// PORTFOLIO / BALANCE CARD
-// Shows: TOTAL PORTFOLIO (available + locked), AVAILABLE chip, LOCKED chip
-// ═══════════════════════════════════════════════════════════════════════════
-class _PortfolioCard extends StatelessWidget {
-  final double available;
-  final double locked;
-  final bool isVisible;
-  final VoidCallback onToggle;
+// ----------------------------------------------------------------------------
+// Wallet Overview Card
+// ----------------------------------------------------------------------------
+class _WalletOverviewCard extends StatelessWidget {
+  final WalletModel? wallet;
+  final bool isBalanceVisible;
+  final VoidCallback onToggleVisibility;
+  final Color surfaceColor;
+  final Color borderColor;
+  final Color shadowColor;
+  final Color textPrimary;
+  final Color textSecondary;
 
-  const _PortfolioCard({
-    required this.available,
-    required this.locked,
-    required this.isVisible,
-    required this.onToggle,
+  const _WalletOverviewCard({
+    required this.wallet,
+    required this.isBalanceVisible,
+    required this.onToggleVisibility,
+    required this.surfaceColor,
+    required this.borderColor,
+    required this.shadowColor,
+    required this.textPrimary,
+    required this.textSecondary,
   });
 
   @override
   Widget build(BuildContext context) {
+    final available = wallet?.available ?? 0.0;
+    final locked = wallet?.locked ?? 0.0;
     final total = available + locked;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
+        color: surfaceColor,
         borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryColor.withValues(alpha: isDark ? 0.3 : 0.2),
-            blurRadius: 30,
-            offset: const Offset(0, 15),
+            color: shadowColor,
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -1294,49 +908,13 @@ class _PortfolioCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(28),
         child: Stack(
           children: [
-            // Base Gradient
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppTheme.primaryLight,
-                      AppTheme.primaryColor,
-                      const Color(0xFF041F21),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
-            // Specular Highlight / Mesh Glow
-            Positioned(
-              top: -100,
-              right: -100,
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [_gold.withValues(alpha: 0.15), Colors.transparent],
-                  ),
-                ),
-              ),
-            ),
-
-            // Subtle Glass Layer
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.03),
-                  backgroundBlendMode: BlendMode.overlay,
-                ),
-              ),
-            ),
-
+            // Subtle noise texture (optional – use a local asset or remove)
+            // Positioned.fill(
+            //   child: Opacity(
+            //     opacity: 0.02,
+            //     child: Image.asset('assets/images/noise.png', fit: BoxFit.cover),
+            //   ),
+            // ),
             Padding(
               padding: const EdgeInsets.all(24),
               child: Column(
@@ -1350,111 +928,88 @@ class _PortfolioCard extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: _gold.withValues(alpha: 0.15),
+                              color: _calmAccent.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: _gold.withValues(alpha: 0.2),
-                              ),
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.account_balance_wallet_rounded,
-                              color: _gold,
+                              color: _calmAccent,
                               size: 18,
                             ),
                           ),
                           const SizedBox(width: 12),
                           Text(
-                            'ABAY VAULT',
+                            'PORTFOLIO',
                             style: GoogleFonts.outfit(
-                              color: Colors.white.withValues(alpha: 0.8),
+                              color: textSecondary,
                               fontSize: 12,
                               fontWeight: FontWeight.w800,
-                              letterSpacing: 1.5,
+                              letterSpacing: 1,
                             ),
                           ),
                         ],
                       ),
                       GestureDetector(
-                        onTap: onToggle,
+                        onTap: onToggleVisibility,
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.1),
+                            color: Colors.grey.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.1),
-                            ),
                           ),
                           child: Icon(
-                            isVisible
+                            isBalanceVisible
                                 ? Icons.visibility_outlined
                                 : Icons.visibility_off_outlined,
-                            color: Colors.white.withValues(alpha: 0.7),
+                            color: textSecondary,
                             size: 18,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 24),
                   Text(
                     'TOTAL BALANCE',
                     style: GoogleFonts.outfit(
-                      color: Colors.white.withValues(alpha: 0.4),
+                      color: textSecondary,
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
-                      letterSpacing: 2,
+                      letterSpacing: 1.5,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   Text(
-                    isVisible ? CurrencyFormatter.format(total) : 'ETB ******',
+                    isBalanceVisible
+                        ? CurrencyFormatter.format(total)
+                        : 'ETB ••••••',
                     style: GoogleFonts.outfit(
-                      color: _goldLight,
+                      color: _calmPrimary,
                       fontSize: 32,
                       fontWeight: FontWeight.w900,
                       letterSpacing: -0.5,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black.withValues(alpha: 0.2),
-                          offset: const Offset(0, 2),
-                          blurRadius: 4,
-                        ),
-                      ],
                     ),
                   ),
                   const SizedBox(height: 24),
-                  Container(
-                    height: 1,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          _gold.withValues(alpha: 0.3),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
                   Row(
                     children: [
                       Expanded(
-                        child: _BalanceChip(
+                        child: _BalanceSplit(
                           icon: Icons.savings_rounded,
                           label: 'AVAILABLE',
                           amount: available,
-                          isVisible: isVisible,
-                          accentColor: _gold,
+                          isVisible: isBalanceVisible,
+                          color: _calmAccent,
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: _BalanceChip(
+                        child: _BalanceSplit(
                           icon: Icons.lock_clock_rounded,
                           label: 'LOCKED',
                           amount: locked,
-                          isVisible: isVisible,
-                          accentColor: Colors.white60,
+                          isVisible: isBalanceVisible,
+                          color: textSecondary,
                         ),
                       ),
                     ],
@@ -1469,57 +1024,53 @@ class _PortfolioCard extends StatelessWidget {
   }
 }
 
-// Individual chip inside the portfolio card
-class _BalanceChip extends StatelessWidget {
+class _BalanceSplit extends StatelessWidget {
   final IconData icon;
   final String label;
   final double amount;
   final bool isVisible;
-  final Color accentColor;
+  final Color color;
 
-  const _BalanceChip({
+  const _BalanceSplit({
     required this.icon,
     required this.label,
     required this.amount,
     required this.isVisible,
-    required this.accentColor,
+    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
+        color: color.withOpacity(0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: accentColor.withValues(alpha: 0.15),
-          width: 1.5,
-        ),
+        border: Border.all(color: color.withOpacity(0.15), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, color: accentColor, size: 14),
+              Icon(icon, color: color, size: 14),
               const SizedBox(width: 6),
               Text(
                 label,
                 style: GoogleFonts.outfit(
-                  color: accentColor.withValues(alpha: 0.8),
+                  color: color,
                   fontSize: 10,
                   fontWeight: FontWeight.w800,
-                  letterSpacing: 1.0,
+                  letterSpacing: 0.5,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Text(
-            isVisible ? CurrencyFormatter.format(amount) : '******',
+            isVisible ? CurrencyFormatter.format(amount) : '••••••',
             style: GoogleFonts.outfit(
-              color: Colors.white,
+              color: _calmPrimary,
               fontSize: 15,
               fontWeight: FontWeight.w800,
             ),
@@ -1530,280 +1081,65 @@ class _BalanceChip extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// MILESTONES CARD
-// ═══════════════════════════════════════════════════════════════════════════
-class _MilestonesCard extends StatelessWidget {
-  final bool isDark;
-  final String nextContribDate;
-  final String nextPayoutDate;
-  final double contribAmt;
-  final double payoutAmt;
-  final AbayLocalizations l10n;
+// ----------------------------------------------------------------------------
+// Quick Stats Strip (Three Pills)
+// ----------------------------------------------------------------------------
+class _QuickStatsStrip extends StatelessWidget {
+  final int activeGroups;
+  final int trustScore;
+  final double nextPayoutEstimate;
+  final Color surfaceColor;
+  final Color borderColor;
+  final Color textPrimary;
+  final Color textSecondary;
 
-  const _MilestonesCard({
-    required this.isDark,
-    required this.nextContribDate,
-    required this.nextPayoutDate,
-    required this.contribAmt,
-    required this.payoutAmt,
-    required this.l10n,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF0F172A) : _surface,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.05) : _border,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    Icons.auto_awesome_motion_rounded,
-                    color: AppTheme.primaryColor,
-                    size: 18,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  'FINANCIAL MILESTONES',
-                  style: GoogleFonts.outfit(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                    color: isDark
-                        ? Colors.white.withValues(alpha: 0.5)
-                        : _textSec,
-                    letterSpacing: 1.5,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            height: 1,
-            color: isDark ? Colors.white.withValues(alpha: 0.05) : _border,
-          ),
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(
-                  child: _MilestoneItem(
-                    label: l10n.nextContribution,
-                    date: nextContribDate,
-                    amount: contribAmt,
-                    color: AppTheme.primaryColor,
-                    icon: Icons.upload_rounded,
-                    isDark: isDark,
-                  ),
-                ),
-                Container(
-                  width: 1,
-                  color: isDark
-                      ? Colors.white.withValues(alpha: 0.05)
-                      : _border,
-                ),
-                Expanded(
-                  child: _MilestoneItem(
-                    label: l10n.nextPayout,
-                    date: nextPayoutDate,
-                    amount: payoutAmt,
-                    color: _emerald,
-                    icon: Icons.download_rounded,
-                    isDark: isDark,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MilestoneItem extends StatelessWidget {
-  final String label;
-  final String date;
-  final double amount;
-  final Color color;
-  final IconData icon;
-  final bool isDark;
-
-  const _MilestoneItem({
-    required this.label,
-    required this.date,
-    required this.amount,
-    required this.color,
-    required this.icon,
-    required this.isDark,
+  const _QuickStatsStrip({
+    required this.activeGroups,
+    required this.trustScore,
+    required this.nextPayoutEstimate,
+    required this.surfaceColor,
+    required this.borderColor,
+    required this.textPrimary,
+    required this.textSecondary,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
         children: [
-          Text(
-            label.toUpperCase(),
-            style: GoogleFonts.outfit(
-              fontSize: 9,
-              fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white38 : _textMuted,
-              letterSpacing: 1.0,
-            ),
+          _StatPill(
+            icon: Icons.account_tree_rounded,
+            label: 'ACTIVE',
+            value: '$activeGroups',
+            color: _calmAccent,
+            surfaceColor: surfaceColor,
+            borderColor: borderColor,
+            textPrimary: textPrimary,
           ),
-          const SizedBox(height: 8),
-          Text(
-            date,
-            style: GoogleFonts.outfit(
-              fontSize: 15,
-              fontWeight: FontWeight.w800,
-              color: isDark ? Colors.white : _textPri,
-            ),
+          const SizedBox(width: 12),
+          _StatPill(
+            icon: Icons.shield_rounded,
+            label: 'TRUST',
+            value: '$trustScore/100',
+            color: _calmGold,
+            surfaceColor: surfaceColor,
+            borderColor: borderColor,
+            textPrimary: textPrimary,
           ),
-          const SizedBox(height: 6),
-          Row(
-            children: [
-              Icon(icon, size: 12, color: color),
-              const SizedBox(width: 4),
-              Flexible(
-                child: Text(
-                  CurrencyFormatter.format(amount),
-                  style: GoogleFonts.outfit(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: color,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
+          const SizedBox(width: 12),
+          _StatPill(
+            icon: Icons.auto_graph_rounded,
+            label: 'PAYOUT',
+            value: CurrencyFormatter.format(nextPayoutEstimate),
+            color: _calmGreen,
+            surfaceColor: surfaceColor,
+            borderColor: borderColor,
+            textPrimary: textPrimary,
           ),
         ],
       ),
-    );
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// SECTION LABEL  (with left gold accent bar)
-// ═══════════════════════════════════════════════════════════════════════════
-class _SectionLabel extends StatelessWidget {
-  final String label;
-  const _SectionLabel({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Row(
-      children: [
-        Container(
-          width: 6,
-          height: 24,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [_gold, _goldLight],
-            ),
-            borderRadius: BorderRadius.circular(3),
-            boxShadow: [
-              BoxShadow(
-                color: _gold.withValues(alpha: 0.3),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 14),
-        Text(
-          label,
-          style: GoogleFonts.outfit(
-            fontSize: 18,
-            fontWeight: FontWeight.w900,
-            color: isDark ? Colors.white : _textPri,
-            letterSpacing: -0.5,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// QUICK STATS STRIP  (3 mini stat pills in a row)
-// ═══════════════════════════════════════════════════════════════════════════
-class _QuickStatsStrip extends StatelessWidget {
-  final int activeGroups;
-  final int trustScore;
-  final double nextPayoutAmt;
-  final bool isDark;
-
-  const _QuickStatsStrip({
-    required this.activeGroups,
-    required this.trustScore,
-    required this.nextPayoutAmt,
-    required this.isDark,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _StatPill(
-            icon: Icons.account_tree_rounded,
-            label: 'ACTIVE',
-            value: '$activeGroups Groups',
-            accent: AppTheme.primaryColor,
-            isDark: isDark,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _StatPill(
-            icon: Icons.shield_rounded,
-            label: 'TRUST',
-            value: '$trustScore / 100',
-            accent: _gold,
-            isDark: isDark,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _StatPill(
-            icon: Icons.auto_graph_rounded,
-            label: 'PAYOUT',
-            value: CurrencyFormatter.format(nextPayoutAmt),
-            accent: _emerald,
-            isDark: isDark,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -1812,34 +1148,352 @@ class _StatPill extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
-  final Color accent;
-  final bool isDark;
+  final Color color;
+  final Color surfaceColor;
+  final Color borderColor;
+  final Color textPrimary;
 
   const _StatPill({
     required this.icon,
     required this.label,
     required this.value,
-    required this.accent,
-    required this.isDark,
+    required this.color,
+    required this.surfaceColor,
+    required this.borderColor,
+    required this.textPrimary,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+        decoration: BoxDecoration(
+          color: surfaceColor,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: borderColor),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(icon, size: 14, color: color),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: GoogleFonts.outfit(
+                      color: textPrimary.withOpacity(0.5),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              value,
+              style: GoogleFonts.outfit(
+                color: textPrimary,
+                fontSize: 13,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Upcoming Contributions Timeline
+// ----------------------------------------------------------------------------
+class _UpcomingContributionsTimeline extends StatelessWidget {
+  final List<EqubMemberModel> memberships;
+  final List<EqubGroupModel> groups;
+  final List<EqubPackageModel> packages;
+  final String Function(DateTime?) formatDate;
+  final Color surfaceColor;
+  final Color borderColor;
+  final Color textPrimary;
+  final Color textSecondary;
+
+  const _UpcomingContributionsTimeline({
+    required this.memberships,
+    required this.groups,
+    required this.packages,
+    required this.formatDate,
+    required this.surfaceColor,
+    required this.borderColor,
+    required this.textPrimary,
+    required this.textSecondary,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Build a list of upcoming contributions (next 5)
+    final upcoming = <Map<String, dynamic>>[];
+    for (final membership in memberships) {
+      final group = groups.firstWhere(
+        (g) => g.id == membership.groupId,
+        orElse: () => EqubGroupModel(id: '', packageId: ''),
+      );
+      if ((group.id ?? '').isEmpty) continue;
+      final package = packages.firstWhere(
+        (p) => p.id == group.packageId,
+        orElse: () => EqubPackageModel(id: ''),
+      );
+      if (group.startDate == null || membership.payoutOrder == null) continue;
+      final nextDate = group.startDate!.add(
+        Duration(
+          days:
+              (package.schedule == EqubSchedule.weekly ? 7 : 30) *
+              (group.currentCycle ?? 1),
+        ),
+      );
+      upcoming.add({
+        'groupName': group.name ?? 'Group',
+        'amount': package.contributionAmount ?? 0,
+        'date': nextDate,
+        'icon': group.iconPath ?? '',
+      });
+    }
+    upcoming.sort(
+      (a, b) => (a['date'] as DateTime).compareTo(b['date'] as DateTime),
+    );
+    final displayList = upcoming.take(5).toList();
+
+    if (displayList.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: surfaceColor,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: borderColor),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.upcoming_rounded, color: textSecondary),
+              const SizedBox(width: 12),
+              Text(
+                'No Active Equb Group',
+                style: GoogleFonts.outfit(color: textSecondary),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: surfaceColor,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: borderColor),
+        ),
+        child: Column(
+          children: displayList.asMap().entries.map((entry) {
+            final index = entry.key;
+            final item = entry.value;
+            final isLast = index == displayList.length - 1;
+            return Column(
+              children: [
+                ListTile(
+                  leading: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: _calmAccent.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: AbayIcon(
+                      iconPath: item['icon'],
+                      name: item['groupName'],
+                      width: 20,
+                      height: 20,
+                      color: _calmAccent,
+                    ),
+                  ),
+                  title: Text(
+                    item['groupName'],
+                    style: GoogleFonts.outfit(
+                      fontWeight: FontWeight.w700,
+                      color: textPrimary,
+                    ),
+                  ),
+                  subtitle: Text(
+                    formatDate(item['date']),
+                    style: GoogleFonts.outfit(
+                      color: textSecondary,
+                      fontSize: 12,
+                    ),
+                  ),
+                  trailing: Text(
+                    CurrencyFormatter.format(item['amount']),
+                    style: GoogleFonts.outfit(
+                      color: _calmPrimary,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                if (!isLast)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 60, right: 16),
+                    child: Divider(height: 1, color: borderColor),
+                  ),
+              ],
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Milestones Section (Dual Progress Cards)
+// ----------------------------------------------------------------------------
+class _MilestonesSection extends StatelessWidget {
+  final List<EqubGroupModel> groups;
+  final List<EqubMemberModel> memberships;
+  final List<EqubPackageModel> packages;
+  final String Function(DateTime?) formatDate;
+  final Color surfaceColor;
+  final Color borderColor;
+  final Color textPrimary;
+  final Color textSecondary;
+
+  const _MilestonesSection({
+    required this.groups,
+    required this.memberships,
+    required this.packages,
+    required this.formatDate,
+    required this.surfaceColor,
+    required this.borderColor,
+    required this.textPrimary,
+    required this.textSecondary,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Calculate next contribution and payout across all groups
+    DateTime? nextContribDate;
+    DateTime? nextPayoutDate;
+    double contribAmt = 0.0;
+    double payoutAmt = 0.0;
+
+    for (final group in groups) {
+      final membership = memberships.firstWhere(
+        (m) => m.groupId == group.id,
+        orElse: () => EqubMemberModel(groupId: '', userId: ''),
+      );
+      final package = packages.firstWhere(
+        (p) => p.id == group.packageId,
+        orElse: () => EqubPackageModel(id: 'temp'),
+      );
+      final startDate = group.startDate;
+      final payoutOrder = membership.payoutOrder;
+
+      if (startDate != null && payoutOrder != null) {
+        final days = package.schedule == EqubSchedule.weekly ? 7 : 30;
+        final payout = startDate.add(Duration(days: days * payoutOrder));
+        if (nextPayoutDate == null || payout.isBefore(nextPayoutDate)) {
+          nextPayoutDate = payout;
+          payoutAmt = package.targetAmount ?? 0.0;
+        }
+        final contrib = startDate.add(
+          Duration(days: days * (group.currentCycle ?? 1)),
+        );
+        if (nextContribDate == null || contrib.isBefore(nextContribDate)) {
+          nextContribDate = contrib;
+          contribAmt = package.contributionAmount ?? 0.0;
+        }
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Expanded(
+            child: _MilestoneCard(
+              title: 'Next Contribution',
+              date: formatDate(nextContribDate),
+              amount: contribAmt,
+              icon: Icons.upload_rounded,
+              color: _calmAccent,
+              surfaceColor: surfaceColor,
+              borderColor: borderColor,
+              textPrimary: textPrimary,
+              textSecondary: textSecondary,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: _MilestoneCard(
+              title: 'Next Payout',
+              date: formatDate(nextPayoutDate),
+              amount: payoutAmt,
+              icon: Icons.download_rounded,
+              color: _calmGreen,
+              surfaceColor: surfaceColor,
+              borderColor: borderColor,
+              textPrimary: textPrimary,
+              textSecondary: textSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MilestoneCard extends StatelessWidget {
+  final String title;
+  final String date;
+  final double amount;
+  final IconData icon;
+  final Color color;
+  final Color surfaceColor;
+  final Color borderColor;
+  final Color textPrimary;
+  final Color textSecondary;
+
+  const _MilestoneCard({
+    required this.title,
+    required this.date,
+    required this.amount,
+    required this.icon,
+    required this.color,
+    required this.surfaceColor,
+    required this.borderColor,
+    required this.textPrimary,
+    required this.textSecondary,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark
-            ? const Color(0xFF1E293B).withValues(alpha: 0.5)
-            : Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: accent.withValues(alpha: 0.1), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: accent.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: surfaceColor,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: borderColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1847,44 +1501,41 @@ class _StatPill extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(6),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
+                  color: color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, size: 14, color: accent),
+                child: Icon(icon, color: color, size: 16),
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: FittedBox(
-                  alignment: Alignment.centerLeft,
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    label,
-                    style: GoogleFonts.outfit(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      color: isDark
-                          ? Colors.white.withValues(alpha: 0.4)
-                          : _textSec,
-                      letterSpacing: 0.2, // Reduced for better fit
-                    ),
-                  ),
+              const SizedBox(width: 12),
+              Text(
+                title.toUpperCase(),
+                style: GoogleFonts.outfit(
+                  color: textSecondary,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          FittedBox(
-            alignment: Alignment.centerLeft,
-            fit: BoxFit.scaleDown,
-            child: Text(
-              value,
-              style: GoogleFonts.outfit(
-                fontSize: 12,
-                fontWeight: FontWeight.w900,
-                color: isDark ? Colors.white : _textPri,
-              ),
+          const SizedBox(height: 16),
+          Text(
+            date,
+            style: GoogleFonts.outfit(
+              color: textPrimary,
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            CurrencyFormatter.format(amount),
+            style: GoogleFonts.outfit(
+              color: color,
+              fontSize: 20,
+              fontWeight: FontWeight.w800,
             ),
           ),
         ],
@@ -1893,199 +1544,974 @@ class _StatPill extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// PROGRESS SUMMARY WIDGET
-// ═══════════════════════════════════════════════════════════════════════════
-class _ProgressSummary extends StatelessWidget {
+// ----------------------------------------------------------------------------
+// Active eQubs – Horizontal Scrollable Cards
+// ----------------------------------------------------------------------------
+class _ActiveEqubsHorizontal extends StatelessWidget {
   final List<EqubGroupModel> groups;
-  final bool isDark;
+  final List<EqubMemberModel> memberships;
+  final List<EqubPackageModel> packages;
+  final Function(BuildContext, EqubGroupModel, EqubPackageModel) onGroupTap;
+  final Color surfaceColor;
+  final Color borderColor;
+  final Color textPrimary;
+  final Color textSecondary;
   final AbayLocalizations l10n;
 
-  const _ProgressSummary({
+  const _ActiveEqubsHorizontal({
     required this.groups,
-    required this.isDark,
+    required this.memberships,
+    required this.packages,
+    required this.onGroupTap,
+    required this.surfaceColor,
+    required this.borderColor,
+    required this.textPrimary,
+    required this.textSecondary,
     required this.l10n,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Calculate overall progress across all groups
-    double totalProgressSum = 0;
-    int itemsCount = 0;
-
-    for (final g in groups) {
-      if (g.status?.toLowerCase() != 'completed') {
-        // Mock total cycles as 12 if not specified elsewhere
-        const total = 12;
-        final current = g.currentCycle ?? 1;
-        totalProgressSum += (current / total).clamp(0.0, 1.0);
-        itemsCount++;
-      }
-    }
-
-    final avgProgress = itemsCount > 0 ? totalProgressSum / itemsCount : 0.0;
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF0F172A) : Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.05)
-              : Colors.black.withValues(alpha: 0.05),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+    if (groups.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          padding: const EdgeInsets.all(40),
+          decoration: BoxDecoration(
+            color: surfaceColor,
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(color: borderColor),
           ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Stack(
-            alignment: Alignment.center,
+          child: Column(
             children: [
-              SizedBox(
-                width: 64,
-                height: 64,
-                child: CustomPaint(
-                  painter: _ProgressPainter(
-                    progress: avgProgress,
-                    color: AppTheme.primaryColor,
-                    isDark: isDark,
-                  ),
+              Icon(Icons.auto_awesome_rounded, color: _calmAccent, size: 40),
+              const SizedBox(height: 16),
+              Text(
+                'No Active Equb Group',
+                style: GoogleFonts.outfit(
+                  color: textPrimary,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
                 ),
               ),
+              const SizedBox(height: 8),
               Text(
-                '${(avgProgress * 100).toInt()}%',
+                'Browse packages below to start your savings journey.',
+                textAlign: TextAlign.center,
                 style: GoogleFonts.outfit(
+                  color: textSecondary,
                   fontSize: 14,
-                  fontWeight: FontWeight.w900,
-                  color: isDark ? Colors.white : _textPri,
+                  height: 1.5,
                 ),
               ),
             ],
           ),
-          const SizedBox(width: 20),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        ),
+      );
+    }
+
+    return SizedBox(
+      height: 280,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: groups.length,
+        itemBuilder: (context, index) {
+          final group = groups[index];
+          final package = packages.firstWhere(
+            (p) => p.id == group.packageId,
+            orElse: () => EqubPackageModel(id: 'temp'),
+          );
+          final membership = memberships.firstWhere(
+            (m) => m.groupId == group.id,
+            orElse: () => EqubMemberModel(groupId: '', userId: ''),
+          );
+
+          return Container(
+            width: 280,
+            margin: const EdgeInsets.only(right: 16),
+            decoration: BoxDecoration(
+              color: surfaceColor,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: borderColor),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(24),
+                onTap: () => onGroupTap(context, group, package),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: _calmAccent.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: AbayIcon(
+                              name: group.name,
+                              width: 20,
+                              height: 20,
+                              color: _calmAccent,
+                            ),
+                          ),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: group.status?.toLowerCase() == 'completed'
+                                  ? Colors.grey.withOpacity(0.1)
+                                  : _calmAccent.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              group.status?.toUpperCase() ?? 'ACTIVE',
+                              style: GoogleFonts.outfit(
+                                fontSize: 9,
+                                fontWeight: FontWeight.bold,
+                                color:
+                                    group.status?.toLowerCase() == 'completed'
+                                    ? Colors.grey
+                                    : _calmAccent,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        group.name ?? 'Group',
+                        style: GoogleFonts.outfit(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          color: textPrimary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.people_outline_rounded,
+                            size: 14,
+                            color: textSecondary,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${group.memberCount ?? 0}/${package.groupSize ?? 0}',
+                            style: GoogleFonts.outfit(
+                              color: textSecondary,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'NEXT PAYOUT',
+                                style: GoogleFonts.outfit(
+                                  color: textSecondary,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                CurrencyFormatter.format(
+                                  package.targetAmount ?? 0,
+                                ),
+                                style: GoogleFonts.outfit(
+                                  color: _calmGreen,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: _calmAccent,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              membership.payoutOrder != null
+                                  ? 'Order ${membership.payoutOrder}'
+                                  : 'Not set',
+                              style: GoogleFonts.outfit(
+                                color: Colors.white,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      // Progress bar for current cycle
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(2),
+                        child: LinearProgressIndicator(
+                          value:
+                              (group.currentCycle ?? 0) /
+                              (package.totalCycles ?? 12),
+                          backgroundColor: textSecondary.withOpacity(0.2),
+                          color: _calmAccent,
+                          minHeight: 4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Packages Explorer (Collapsible Expansion Tiles)
+// ----------------------------------------------------------------------------
+class _PackagesExplorer extends StatelessWidget {
+  final List<EqubPackageModel> packages;
+  final List<EqubGroupModel> groups;
+  final List<EqubMemberModel> memberships;
+  final Function(EqubGroupModel, EqubPackageModel, bool, AbayLocalizations)
+  onJoinOrPay;
+  final Color surfaceColor;
+  final Color borderColor;
+  final Color textPrimary;
+  final Color textSecondary;
+  final AbayLocalizations l10n;
+
+  const _PackagesExplorer({
+    required this.packages,
+    required this.groups,
+    required this.memberships,
+    required this.onJoinOrPay,
+    required this.surfaceColor,
+    required this.borderColor,
+    required this.textPrimary,
+    required this.textSecondary,
+    required this.l10n,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (packages.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: packages.map((package) {
+          final pkgGroups = groups
+              .where((g) => g.packageId == package.id.toString())
+              .toList();
+          return Container(
+            margin: const EdgeInsets.only(bottom: 14),
+            decoration: BoxDecoration(
+              color: surfaceColor,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: borderColor),
+            ),
+            child: Theme(
+              data: Theme.of(
+                context,
+              ).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                tilePadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 6,
+                ),
+                leading: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: _calmAccent.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Center(
+                    child: AbayIcon(
+                      iconPath: package.iconPath,
+                      name: package.name,
+                      height: 26,
+                      width: 26,
+                    ),
+                  ),
+                ),
+                title: Text(
+                  package.name ?? 'Package',
+                  style: GoogleFonts.outfit(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: textPrimary,
+                  ),
+                ),
+                subtitle: Text(
+                  '${package.schedule?.name.toUpperCase() ?? 'MONTHLY'}  •  ${CurrencyFormatter.format(package.contributionAmount ?? 0)}',
+                  style: GoogleFonts.outfit(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: textSecondary,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+                trailing: Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: textSecondary,
+                ),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: Column(
+                      children: [
+                        const Divider(height: 1, color: _calmBorderLight),
+                        const SizedBox(height: 14),
+                        if (pkgGroups.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: Text(
+                              'No groups available',
+                              style: GoogleFonts.outfit(color: textSecondary),
+                            ),
+                          )
+                        else
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 12,
+                                  mainAxisSpacing: 12,
+                                  childAspectRatio:
+                                      MediaQuery.of(context).size.width < 400
+                                      ? 0.8
+                                      : 0.85,
+                                ),
+                            itemCount: pkgGroups.length,
+                            itemBuilder: (context, gi) {
+                              final group = pkgGroups[gi];
+                              final isJoined = memberships.any(
+                                (m) => m.groupId == group.id,
+                              );
+                              return _GroupCard(
+                                group: group,
+                                package: package,
+                                isJoined: isJoined,
+                                onTap: () =>
+                                    onJoinOrPay(group, package, isJoined, l10n),
+                                surfaceColor: surfaceColor,
+                                borderColor: borderColor,
+                                textPrimary: textPrimary,
+                                textSecondary: textSecondary,
+                                isFirst: gi == 0 && packages.first == package,
+                              );
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class _GroupCard extends StatelessWidget {
+  final EqubGroupModel group;
+  final EqubPackageModel package;
+  final bool isJoined;
+  final VoidCallback onTap;
+  final Color surfaceColor;
+  final Color borderColor;
+  final Color textPrimary;
+  final Color textSecondary;
+  final bool isFirst;
+
+  const _GroupCard({
+    required this.group,
+    required this.package,
+    required this.isJoined,
+    required this.onTap,
+    required this.surfaceColor,
+    required this.borderColor,
+    required this.textPrimary,
+    required this.textSecondary,
+    required this.isFirst,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final btnText = group.status?.toLowerCase() == 'completed'
+        ? 'COMPLETED'
+        : (isJoined ? 'DETAILS & PAY' : 'JOIN');
+
+    Widget button = ElevatedButton(
+      onPressed: onTap,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: isJoined ? _calmAccent : _calmGold,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        minimumSize: const Size(double.infinity, 32),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 0,
+      ),
+      child: Text(
+        btnText,
+        style: GoogleFonts.outfit(fontSize: 11, fontWeight: FontWeight.bold),
+      ),
+    );
+
+    if (isFirst) {
+      button = DescribedFeatureOverlay(
+        featureId: 'enroll_button',
+        targetColor: Colors.white,
+        textColor: _calmTextPrimaryLight,
+        backgroundColor: _calmAccent,
+        contentLocation: ContentLocation.above,
+        title: Text(isJoined ? 'Make a Contribution' : 'Join an eQub'),
+        description: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              isJoined
+                  ? 'Tap to see group details and pay your next contribution.'
+                  : 'Ready to start saving? Join this group and begin your journey.',
+              style: const TextStyle(color: Colors.white),
+            ),
+            const SizedBox(height: 12),
+            InkWell(
+              onTap: () => FeatureDiscovery.dismissAll(context),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 4),
+                child: Text(
+                  'Skip Tutorial',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        tapTarget: Text(
+          isJoined ? 'PAY' : 'JOIN',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        child: button,
+      );
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: surfaceColor,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: borderColor),
+      ),
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: _calmAccent.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: AbayIcon(
+                  name: group.name,
+                  width: 16,
+                  height: 16,
+                  color: _calmAccent,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: group.status?.toLowerCase() == 'completed'
+                      ? Colors.grey.withOpacity(0.15)
+                      : _calmAccent.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  group.status?.toUpperCase() ?? 'ACTIVE',
+                  style: GoogleFonts.outfit(
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.4,
+                    color: group.status?.toLowerCase() == 'completed'
+                        ? Colors.grey
+                        : _calmAccent,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            group.name ?? 'Group',
+            style: GoogleFonts.outfit(
+              fontWeight: FontWeight.bold,
+              fontSize: 13,
+              color: textPrimary,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 3),
+          Row(
+            children: [
+              Icon(
+                Icons.people_outline_rounded,
+                size: 11,
+                color: textSecondary,
+              ),
+              const SizedBox(width: 3),
+              Text(
+                '${group.memberCount ?? 0}/${package.groupSize ?? 0}',
+                style: GoogleFonts.outfit(fontSize: 10, color: textSecondary),
+              ),
+            ],
+          ),
+          const Spacer(),
+          button,
+        ],
+      ),
+    );
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Activity Feed (Notifications)
+// ----------------------------------------------------------------------------
+class _ActivityFeed extends StatelessWidget {
+  final List<NotificationModel> notifications;
+  final Color surfaceColor;
+  final Color borderColor;
+  final Color textPrimary;
+  final Color textSecondary;
+
+  const _ActivityFeed({
+    required this.notifications,
+    required this.surfaceColor,
+    required this.borderColor,
+    required this.textPrimary,
+    required this.textSecondary,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (notifications.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: surfaceColor,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: borderColor),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.notifications_none_rounded, color: textSecondary),
+              const SizedBox(width: 12),
+              Text(
+                'No recent activity',
+                style: GoogleFonts.outfit(color: textSecondary),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: surfaceColor,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: borderColor),
+        ),
+        child: Column(
+          children: notifications.map((notif) {
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundColor: _calmAccent.withOpacity(0.1),
+                child: Icon(
+                  Icons.info_outline_rounded,
+                  color: _calmAccent,
+                  size: 18,
+                ),
+              ),
+              title: Text(
+                notif.title ?? 'Update',
+                style: GoogleFonts.outfit(fontWeight: FontWeight.w600),
+              ),
+              subtitle: Text(
+                notif.message ?? '',
+                style: GoogleFonts.outfit(fontSize: 12, color: textSecondary),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              dense: true,
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Trust Score Breakdown (Detailed)
+// ----------------------------------------------------------------------------
+class _TrustScoreBreakdown extends StatelessWidget {
+  final UserModel? user;
+  final Color surfaceColor;
+  final Color borderColor;
+  final Color textPrimary;
+  final Color textSecondary;
+
+  const _TrustScoreBreakdown({
+    required this.user,
+    required this.surfaceColor,
+    required this.borderColor,
+    required this.textPrimary,
+    required this.textSecondary,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final trustScore = user?.trustScore ?? 0;
+    final onTimePayments = user?.onTimePayments ?? 0;
+    final missedPayments = user?.missedPayments ?? 0;
+    final totalPayments = onTimePayments + missedPayments;
+    final reliability = totalPayments > 0
+        ? onTimePayments / totalPayments
+        : 0.0;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: surfaceColor,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: borderColor),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'SAVINGS PROGRESS',
+                  'Current Score',
                   style: GoogleFonts.outfit(
-                    fontSize: 10,
+                    color: textSecondary,
+                    fontSize: 12,
                     fontWeight: FontWeight.w800,
-                    color: isDark
-                        ? Colors.white.withValues(alpha: 0.4)
-                        : _textSec,
-                    letterSpacing: 1.5,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  'You are halfway to your goals!',
-                  style: GoogleFonts.outfit(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: isDark ? Colors.white : _textPri,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
                   ),
-                ),
-                const SizedBox(height: 6),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(2),
-                  child: LinearProgressIndicator(
-                    value: avgProgress,
-                    backgroundColor: isDark
-                        ? Colors.white.withValues(alpha: 0.05)
-                        : AppTheme.primaryColor.withValues(alpha: 0.05),
-                    color: AppTheme.primaryColor,
-                    minHeight: 4,
+                  decoration: BoxDecoration(
+                    color: _calmGold.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '$trustScore / 100',
+                    style: GoogleFonts.outfit(
+                      color: _calmGold,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 20),
+            LinearProgressIndicator(
+              value: trustScore / 100,
+              backgroundColor: textSecondary.withOpacity(0.2),
+              color: _calmGold,
+              minHeight: 8,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                _TrustFactor(
+                  label: 'On-Time',
+                  value: onTimePayments.toString(),
+                  icon: Icons.check_circle_rounded,
+                  color: _calmGreen,
+                ),
+                const SizedBox(width: 20),
+                _TrustFactor(
+                  label: 'Missed',
+                  value: missedPayments.toString(),
+                  icon: Icons.cancel_rounded,
+                  color: Colors.redAccent,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Divider(color: borderColor),
+            const SizedBox(height: 8),
+            Text(
+              'Reliability: ${(reliability * 100).toInt()}%',
+              style: GoogleFonts.outfit(
+                color: textPrimary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TrustFactor extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _TrustFactor({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 18),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: GoogleFonts.outfit(
+                  fontSize: 11,
+                  color: _calmTextSecondaryLight,
+                ),
+              ),
+              Text(
+                value,
+                style: GoogleFonts.outfit(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w900,
+                  color: _calmTextPrimaryLight,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Community Stats (Placeholder)
+// ----------------------------------------------------------------------------
+class _CommunityStats extends StatelessWidget {
+  final int totalMembers;
+  final int activeGroups;
+  final double totalSaved;
+  final Color surfaceColor;
+  final Color borderColor;
+  final Color textPrimary;
+  final Color textSecondary;
+
+  const _CommunityStats({
+    required this.totalMembers,
+    required this.activeGroups,
+    required this.totalSaved,
+    required this.surfaceColor,
+    required this.borderColor,
+    required this.textPrimary,
+    required this.textSecondary,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: surfaceColor,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: borderColor),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _CommunityStatItem(
+              label: 'Members',
+              value: '$totalMembers',
+              icon: Icons.people_rounded,
+              color: _calmAccent,
+            ),
+            _CommunityStatItem(
+              label: 'Active eQubs',
+              value: '$activeGroups',
+              icon: Icons.account_tree_rounded,
+              color: _calmGold,
+            ),
+            _CommunityStatItem(
+              label: 'Total Saved',
+              value: CurrencyFormatter.format(totalSaved),
+              icon: Icons.savings_rounded,
+              color: _calmGreen,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CommunityStatItem extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _CommunityStatItem({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: color, size: 18),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          value,
+          style: GoogleFonts.outfit(
+            fontSize: 16,
+            fontWeight: FontWeight.w900,
+            color: _calmTextPrimaryLight,
+          ),
+        ),
+        Text(
+          label,
+          style: GoogleFonts.outfit(
+            fontSize: 10,
+            color: _calmTextSecondaryLight,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Section Title with Icon and Left Accent
+// ----------------------------------------------------------------------------
+class _SectionTitle extends StatelessWidget {
+  final String label;
+  final Color textPrimary;
+  final IconData icon;
+
+  const _SectionTitle({
+    required this.label,
+    required this.textPrimary,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Container(
+            width: 6,
+            height: 24,
+            decoration: BoxDecoration(
+              color: _calmGold,
+              borderRadius: BorderRadius.circular(3),
+            ),
+          ),
+          const SizedBox(width: 14),
+          Icon(icon, color: _calmGold, size: 20),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: GoogleFonts.outfit(
+              fontSize: 18,
+              fontWeight: FontWeight.w900,
+              color: textPrimary,
+              letterSpacing: -0.5,
             ),
           ),
         ],
       ),
     );
   }
-}
-
-class _ProgressPainter extends CustomPainter {
-  final double progress;
-  final Color color;
-  final bool isDark;
-
-  _ProgressPainter({
-    required this.progress,
-    required this.color,
-    required this.isDark,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
-    const strokeWidth = 6.0;
-
-    final bgPaint = Paint()
-      ..color = isDark
-          ? Colors.white.withValues(alpha: 0.05)
-          : color.withValues(alpha: 0.1)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth;
-
-    final progressPaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
-
-    canvas.drawCircle(center, radius - strokeWidth / 2, bgPaint);
-
-    final angle = 2 * 3.14159 * progress;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius - strokeWidth / 2),
-      -3.14159 / 2,
-      angle,
-      false,
-      progressPaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_ProgressPainter oldDelegate) {
-    return oldDelegate.progress != progress;
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// DOT-GRID BACKGROUND PAINTER
-// ═══════════════════════════════════════════════════════════════════════════
-class _MeshGradientPainter extends CustomPainter {
-  final Color color;
-  const _MeshGradientPainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 30);
-
-    final random = [0.2, 0.5, 0.8, 0.3, 0.7, 0.9, 0.1, 0.4, 0.6];
-
-    for (var i = 0; i < random.length; i++) {
-      final x = size.width * random[i];
-      final y = size.height * random[(i + 2) % random.length];
-      final r = 100.0 + random[i] * 200.0;
-      canvas.drawCircle(Offset(x, y), r, paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_MeshGradientPainter old) => old.color != color;
 }

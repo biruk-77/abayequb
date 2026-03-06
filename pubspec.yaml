@@ -57,6 +57,7 @@ dependencies:
   nav_bar: ^0.0.1
   firebase_core: ^4.4.0
   firebase_messaging: ^16.1.1
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
