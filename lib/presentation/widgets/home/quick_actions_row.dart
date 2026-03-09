@@ -24,26 +24,42 @@ class QuickActionsRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildAction(
-            context,
-            Icons.account_balance_wallet_rounded,
-            "Deposit",
-            onDeposit,
+          Expanded(
+            child: _buildAction(
+              context,
+              Icons.account_balance_wallet_rounded,
+              "Deposit",
+              onDeposit,
+            ),
           ),
-          _buildAction(context, Icons.redo_rounded, "Withdraw", onWithdraw),
-          _buildAction(
-            context,
-            Icons.receipt_long_rounded,
-            "History",
-            onHistory,
+          const SizedBox(width: 8),
+          Expanded(
+            child: _buildAction(
+              context,
+              Icons.redo_rounded,
+              "Withdraw",
+              onWithdraw,
+            ),
           ),
-          _buildAction(
-            context,
-            Icons.calendar_month_rounded,
-            "Calendar",
-            onCalendar,
+          const SizedBox(width: 8),
+          Expanded(
+            child: _buildAction(
+              context,
+              Icons.receipt_long_rounded,
+              "History",
+              onHistory,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: _buildAction(
+              context,
+              Icons.calendar_month_rounded,
+              "Calendar",
+              onCalendar,
+            ),
           ),
         ],
       ),
@@ -62,7 +78,7 @@ class QuickActionsRow extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.19,
+        width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
           color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white,
@@ -99,15 +115,21 @@ class QuickActionsRow extends StatelessWidget {
               child: Icon(icon, color: AppTheme.primaryColor, size: 20),
             ),
             const SizedBox(height: 8),
-            Text(
-              label,
-              style: GoogleFonts.outfit(
-                fontSize: 9,
-                fontWeight: FontWeight.w700,
-                color: isDark
-                    ? Colors.white60
-                    : AppTheme.primaryColor.withValues(alpha: 0.7),
-                letterSpacing: 0.5,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  style: GoogleFonts.outfit(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w700,
+                    color: isDark
+                        ? Colors.white60
+                        : AppTheme.primaryColor.withValues(alpha: 0.7),
+                    letterSpacing: 0.5,
+                  ),
+                ),
               ),
             ),
           ],

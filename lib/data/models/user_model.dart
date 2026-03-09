@@ -28,8 +28,7 @@ class UserModel {
   final String? profileImage;
   @JsonKey(defaultValue: UserType.student)
   final UserType userType;
-  @JsonKey(defaultValue: 0)
-  final int trustScore;
+
   final int? onTimePayments;
   final int? missedPayments;
 
@@ -40,7 +39,6 @@ class UserModel {
     this.email,
     this.profileImage,
     required this.userType,
-    required this.trustScore,
     this.onTimePayments,
     this.missedPayments,
   });

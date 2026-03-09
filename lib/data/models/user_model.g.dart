@@ -15,7 +15,6 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   userType:
       $enumDecodeNullable(_$UserTypeEnumMap, json['userType']) ??
       UserType.student,
-  trustScore: (json['trustScore'] as num?)?.toInt() ?? 0,
   onTimePayments: (json['onTimePayments'] as num?)?.toInt(),
   missedPayments: (json['missedPayments'] as num?)?.toInt(),
 );
@@ -27,7 +26,6 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'email': instance.email,
   'profile': instance.profileImage,
   'userType': _$UserTypeEnumMap[instance.userType]!,
-  'trustScore': instance.trustScore,
   'onTimePayments': instance.onTimePayments,
   'missedPayments': instance.missedPayments,
 };

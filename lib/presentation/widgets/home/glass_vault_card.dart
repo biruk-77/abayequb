@@ -42,6 +42,7 @@ class _GlassVaultCardState extends State<GlassVaultCard> {
             ],
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(

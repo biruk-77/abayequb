@@ -42,7 +42,7 @@ class AuthRepository {
           key: 'user_data',
           value: jsonEncode(user.toJson()),
         );
-        AppLogger.success('Sign in successful for: ${user.fullName}');
+        AppLogger.success('Sign in successful for: ${user}');
         return user;
       } else {
         // Look for ID in various places including JWT
