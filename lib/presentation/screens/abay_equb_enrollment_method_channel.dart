@@ -1,3 +1,4 @@
+// lib/presentation/screens/abay_equb_enrollment_method_channel.dart
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -11,7 +12,9 @@ class MethodChannelAbayEqubEnrollment extends AbayEqubEnrollmentPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version = await methodChannel.invokeMethod<String>(
+      'getPlatformVersion',
+    );
     return version;
   }
 }

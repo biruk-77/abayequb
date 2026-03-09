@@ -1,3 +1,4 @@
+// lib/data/models/equb_member_model.dart
 import 'package:json_annotation/json_annotation.dart';
 import '../../core/utils/json_utils.dart';
 
@@ -27,6 +28,7 @@ class EqubMemberModel {
     this.joinedAt,
   });
 
-  factory EqubMemberModel.fromJson(Map<String, dynamic> json) => _$EqubMemberModelFromJson(json);
+  factory EqubMemberModel.fromJson(Map<String, dynamic> json) =>
+      _$EqubMemberModelFromJson(json);
   Map<String, dynamic> toJson() => _$EqubMemberModelToJson(this);
 }

@@ -1,3 +1,4 @@
+// lib/core/utils/logger.dart
 import 'dart:developer' as developer;
 import 'package:flutter/foundation.dart';
 
@@ -35,11 +36,6 @@ class AppLogger {
     if (kDebugMode) {
       print(formattedMessage);
     }
-    developer.log(
-      message,
-      name: _tag,
-      error: prefix,
-      stackTrace: stackTrace,
-    );
+    developer.log(message, name: _tag, error: prefix, stackTrace: stackTrace);
   }
 }

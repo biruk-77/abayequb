@@ -1,7 +1,9 @@
+// lib/presentation/providers/auth_provider.dart
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/models/user_model.dart';
+import '../../data/models/kyc_model.dart';
 import '../../data/repositories/auth_repository.dart';
 import '../../core/utils/logger.dart';
 import '../../core/utils/network_error_handler.dart';
@@ -10,6 +12,7 @@ import '../../data/services/notification_service.dart';
 class AuthProvider extends ChangeNotifier {
   final AuthRepository _authRepository;
   UserModel? _user;
+  KYCModel? _kyc;
   bool _isLoading = false;
   String? _error;
   bool _hasSeenOnboarding = false;
@@ -20,9 +23,11 @@ class AuthProvider extends ChangeNotifier {
   }
 
   UserModel? get user => _user;
+  KYCModel? get kyc => _kyc;
   bool get isLoading => _isLoading;
   String? get error => _error;
   bool get isAuthenticated => _user != null;
+  bool get isVerified => _kyc?.status == KYCStatus.verified;
   bool get hasSeenOnboarding => _hasSeenOnboarding;
   bool get hasSeenHomeShowcase => _hasSeenHomeShowcase;
 
@@ -221,14 +226,54 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // --- KYC Methods ---
+
+  Future<void> submitKYC({
+    required String documentType,
+    required String filePath,
+  }) async {
+    _isLoading = true;
+    _error = null;
+    _safeNotify();
+    try {
+      AppLogger.info('Provider: Submitting KYC...');
+      _kyc = await _authRepository.submitKYC(
+        documentType: documentType,
+        filePath: filePath,
+      );
+      AppLogger.success('Provider: KYC submitted. Status: ${_kyc!.status}');
+    } catch (e) {
+      AppLogger.error('Provider: KYC submission failed', e);
+      _error = _handleError(e);
+      throw _error!;
+    } finally {
+      _isLoading = false;
+      _safeNotify();
+    }
+  }
+
+  Future<void> fetchKYCStatus() async {
+    if (_user == null) return;
+    try {
+      AppLogger.info('Provider: Fetching KYC status...');
+      _kyc = await _authRepository.getMyKYC();
+      _safeNotify();
+      AppLogger.info('Provider: KYC status: ${_kyc?.status ?? "None"}');
+    } catch (e) {
+      AppLogger.error('Provider: Fetch KYC failed', e);
+    }
+  }
+
   Future<void> refreshUser() async {
     if (_user == null) return;
     try {
       AppLogger.info('Provider: Refreshing user data for ${_user!.id}...');
       final updatedUser = await _authRepository.getUserProfile(_user!.id);
       _user = updatedUser;
-      // Use microtask to ensure notifyListeners() doesn't fire during a build phase
-      // which can crash GoRouter's refreshListenable.
+
+      // Also fetch KYC status on user refresh
+      await fetchKYCStatus();
+
       _safeNotify();
       AppLogger.success('Provider: User data refreshed');
     } catch (e) {
@@ -241,6 +286,7 @@ class AuthProvider extends ChangeNotifier {
       AppLogger.info('Provider: Logging out...');
       await _authRepository.signOut();
       _user = null;
+      _kyc = null;
       AppLogger.success('Provider: Logged out successfully');
       _safeNotify();
     } catch (e) {

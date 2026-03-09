@@ -1,13 +1,18 @@
+// ignore_for_file: deprecated_member_use
+// lib/presentation/screens/profile_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as p;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/auth_provider.dart';
+import '../../data/models/kyc_model.dart';
 import '../providers/locale_provider.dart';
 import '../providers/theme_provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/theme/app_theme.dart';
 import '../widgets/abay_icon.dart';
+import '../../data/services/notification_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -18,15 +23,32 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _notificationsEnabled = true;
-  bool _emailNotifications = true;
-  bool _smsNotifications = false;
+
+  // ── SharedPreferences keys ─────────────────────────────────────
+  static const _kNotif = 'notif_enabled';
 
   @override
   void initState() {
     super.initState();
+    _loadNotifPrefs();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      p.Provider.of<AuthProvider>(context, listen: false).refreshUser();
+      final authProvider = p.Provider.of<AuthProvider>(context, listen: false);
+      authProvider.refreshUser();
+      authProvider.fetchKYCStatus();
     });
+  }
+
+  Future<void> _loadNotifPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    setState(() {
+      _notificationsEnabled = prefs.getBool(_kNotif) ?? true;
+    });
+  }
+
+  Future<void> _saveNotifPref(String key, bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(key, value);
   }
 
   @override
@@ -87,7 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   child: ElevatedButton.icon(
-                    onPressed: () => _uploadKYC(context),
+                    onPressed: () => context.push('/profile/kyc'),
                     icon: const Icon(Icons.upload_file),
                     label: const Text('Upload Documents'),
                     style: ElevatedButton.styleFrom(
@@ -134,33 +156,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 _buildSwitchTile(
                   context,
-                  title: 'Enable Notifications',
-                  subtitle: 'Receive alerts and updates',
+                  title: 'App Notifications',
+                  subtitle: 'Receive eQub alerts and updates',
                   value: _notificationsEnabled,
-                  onChanged: (value) {
+                  onChanged: (value) async {
                     setState(() => _notificationsEnabled = value);
+                    await _saveNotifPref(_kNotif, value);
+
+                    if (value) {
+                      await FirebaseNotificationService().enableNotifications();
+                    } else {
+                      await FirebaseNotificationService()
+                          .disableNotifications();
+                    }
                   },
                 ),
-                if (_notificationsEnabled) ...[
-                  _buildSwitchTile(
-                    context,
-                    title: 'Email Notifications',
-                    subtitle: 'Receive updates via email',
-                    value: _emailNotifications,
-                    onChanged: (value) {
-                      setState(() => _emailNotifications = value);
-                    },
-                  ),
-                  _buildSwitchTile(
-                    context,
-                    title: 'SMS Notifications',
-                    subtitle: 'Receive SMS alerts',
-                    value: _smsNotifications,
-                    onChanged: (value) {
-                      setState(() => _smsNotifications = value);
-                    },
-                  ),
-                ],
               ],
             ),
 
@@ -176,20 +186,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   value: 'Edit All Details',
                   icon: Icons.edit_note_rounded,
                   onTap: () => context.push('/profile/edit'),
-                ),
-                _buildSwitchTile(
-                  context,
-                  title: 'Enable OTP',
-                  subtitle: 'Use OTP for sensitive operations',
-                  value: true, // Placeholder
-                  onChanged: (value) async {
-                    try {
-                      await p.Provider.of<AuthProvider>(
-                        context,
-                        listen: false,
-                      ).updateProfile(otp: value);
-                    } catch (e) {}
-                  },
                 ),
                 const Divider(height: 1, indent: 56),
                 ListTile(
@@ -370,31 +366,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildKYCStatus(BuildContext context) {
-    final kycStatus = 'pending';
+    final kyc = p.Provider.of<AuthProvider>(context).kyc;
+    final kycStatus = kyc?.status;
     Color statusColor;
     IconData statusIcon;
     String statusText;
 
-    switch (kycStatus) {
-      case 'verified':
-        statusColor = Colors.green;
-        statusIcon = Icons.check_circle;
-        statusText = 'Verified';
-        break;
-      case 'pending':
-        statusColor = Colors.orange;
-        statusIcon = Icons.pending;
-        statusText = 'Pending Review';
-        break;
-      case 'rejected':
-        statusColor = Colors.red;
-        statusIcon = Icons.cancel;
-        statusText = 'Rejected';
-        break;
-      default:
-        statusColor = Colors.grey;
-        statusIcon = Icons.help_outline;
-        statusText = 'Not Uploaded';
+    if (kycStatus == KYCStatus.verified) {
+      statusColor = Colors.green;
+      statusIcon = Icons.check_circle;
+      statusText = 'Verified';
+    } else if (kycStatus == KYCStatus.pending) {
+      statusColor = Colors.orange;
+      statusIcon = Icons.pending;
+      statusText = 'Pending Review';
+    } else if (kycStatus == KYCStatus.rejected) {
+      statusColor = Colors.red;
+      statusIcon = Icons.cancel;
+      statusText = 'Rejected';
+    } else {
+      statusColor = Colors.grey;
+      statusIcon = Icons.help_outline;
+      statusText = 'Not Uploaded';
     }
 
     return Container(
@@ -425,6 +418,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: statusColor,
                   ),
                 ),
+                if (kyc != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      'Document: ${kyc.documentType}',
+                      style: const TextStyle(fontSize: 11),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -502,12 +503,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       value: value,
       onChanged: onChanged,
       activeThumbColor: AppTheme.primaryColor,
-    );
-  }
-
-  void _uploadKYC(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('KYC upload feature coming soon')),
     );
   }
 

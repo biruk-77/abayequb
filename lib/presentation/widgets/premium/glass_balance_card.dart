@@ -1,3 +1,4 @@
+// lib/presentation/widgets/premium/glass_balance_card.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
@@ -402,7 +403,7 @@ class _GlassBalanceCardState extends State<GlassBalanceCard>
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: RadialGradient(
-            colors: [color, color.withOpacity(0)],
+            colors: [color, color.withValues(alpha: 0)],
             stops: const [0.2, 1.0],
           ),
         ),

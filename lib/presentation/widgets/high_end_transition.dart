@@ -1,3 +1,4 @@
+// lib/presentation/widgets/high_end_transition.dart
 import 'package:flutter/material.dart';
 import 'dart:ui' show lerpDouble;
 import '../../core/theme/physics.dart';

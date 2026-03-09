@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+// lib/presentation/screens/login_screen.dart
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as p;
@@ -372,7 +374,9 @@ class _LoginScreenState extends State<LoginScreen>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppTheme.primaryColor.withOpacity(isDark ? 0.15 : 0.1),
+                      AppTheme.primaryColor.withValues(
+                        alpha: isDark ? 0.15 : 0.1,
+                      ),
                       Colors.transparent,
                     ],
                   ),
@@ -392,7 +396,9 @@ class _LoginScreenState extends State<LoginScreen>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppTheme.accentColor.withOpacity(isDark ? 0.1 : 0.05),
+                      AppTheme.accentColor.withValues(
+                        alpha: isDark ? 0.1 : 0.05,
+                      ),
                       Colors.transparent,
                     ],
                   ),
@@ -560,7 +566,7 @@ class _LoginScreenState extends State<LoginScreen>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
                   blurRadius: 30,
                   offset: const Offset(0, 15),
                 ),

@@ -1,3 +1,4 @@
+// lib/data/services/equb_service.dart
 import 'package:dio/dio.dart';
 import '../../core/utils/logger.dart';
 
@@ -158,6 +159,15 @@ class EqubService {
     }
   }
 
+  Future<Map<String, dynamic>> getNextContribution() async {
+    try {
+      final response = await _dio.get('/equb/contributions/next');
+      return response.data['data'] ?? {};
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> getWallet() async {
     try {
       final response = await _dio.get('/equb/wallets');
@@ -220,6 +230,45 @@ class EqubService {
       }
       return [];
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  // --- Receipts / Wallet Top-up ---
+
+  Future<Map<String, dynamic>> uploadReceipt({
+    required String receiptName,
+    required double amount,
+    required String reason,
+    required String filePath,
+  }) async {
+    try {
+      final formData = FormData.fromMap({
+        'receiptName': receiptName,
+        'amount': amount,
+        'reason': reason,
+        'document': await MultipartFile.fromFile(
+          filePath,
+          filename: filePath.split(RegExp(r'[/\\]')).last,
+        ),
+      });
+
+      final response = await _dio.post('/equb/receipts', data: formData);
+      return response.data;
+    } catch (e) {
+      AppLogger.error('Receipt Upload Error', e);
+      rethrow;
+    }
+  }
+
+  Future<List<dynamic>> getMyReceipts() async {
+    try {
+      final response = await _dio.get('/equb/receipts/me');
+      final data = response.data['data'];
+      if (data is List) return data;
+      return [];
+    } catch (e) {
+      AppLogger.error('Fetch My Receipts Error', e);
       rethrow;
     }
   }

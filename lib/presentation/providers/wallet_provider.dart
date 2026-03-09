@@ -1,3 +1,4 @@
+// lib/presentation/providers/wallet_provider.dart
 import 'package:flutter/foundation.dart';
 import '../../data/models/wallet_model.dart';
 import '../../data/models/transaction_model.dart';
@@ -21,6 +22,10 @@ class WalletProvider extends ChangeNotifier {
   List<TransactionModel> get transactions => _transactions;
   bool get isTransactionsLoading => _isTransactionsLoading;
 
+  void _safeNotify() {
+    Future.microtask(() => notifyListeners());
+  }
+
   void toggleBalanceVisibility() {
     _isBalanceVisible = !_isBalanceVisible;
     notifyListeners();
@@ -29,7 +34,7 @@ class WalletProvider extends ChangeNotifier {
   Future<void> fetchWallet() async {
     if (_isLoading) return;
     _isLoading = true;
-    notifyListeners();
+    _safeNotify();
 
     try {
       AppLogger.info('Provider: Fetching wallet balance...');
@@ -41,7 +46,7 @@ class WalletProvider extends ChangeNotifier {
       AppLogger.error('Provider: Error fetching wallet', e);
     } finally {
       _isLoading = false;
-      notifyListeners();
+      _safeNotify();
     }
   }
 
@@ -83,7 +88,7 @@ class WalletProvider extends ChangeNotifier {
     String? method,
   }) async {
     _isTransactionsLoading = true;
-    notifyListeners();
+    _safeNotify();
 
     try {
       AppLogger.info('Provider: Fetching transactions...');
@@ -101,7 +106,39 @@ class WalletProvider extends ChangeNotifier {
       AppLogger.error('Provider: Error fetching transactions', e);
     } finally {
       _isTransactionsLoading = false;
-      notifyListeners();
+      _safeNotify();
+    }
+  }
+
+  // --- Receipts ---
+
+  Future<void> uploadReceipt({
+    required String receiptName,
+    required double amount,
+    required String reason,
+    required String filePath,
+  }) async {
+    _isLoading = true;
+    _safeNotify();
+
+    try {
+      AppLogger.info('Provider: Uploading receipt...');
+      await _repository.uploadReceipt(
+        receiptName: receiptName,
+        amount: amount,
+        reason: reason,
+        filePath: filePath,
+      );
+      AppLogger.success('Provider: Receipt uploaded successfully');
+
+      // Refresh transactions to show the new pending top-up
+      await fetchTransactions();
+    } catch (e) {
+      AppLogger.error('Provider: Receipt upload failed', e);
+      rethrow;
+    } finally {
+      _isLoading = false;
+      _safeNotify();
     }
   }
 }

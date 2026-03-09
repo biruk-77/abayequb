@@ -1,3 +1,4 @@
+// lib/presentation/widgets/fluid_bottom_nav.dart
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -116,12 +117,14 @@ class _FuturisticNavBarState extends State<FuturisticNavBar>
   Widget build(BuildContext context) {
     _ensureAnimations();
 
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     // Compact height
     const double height = 72.0;
-    const Color activeColor = Colors.white;
-    const Color inactiveColor = Color(
-      0xFFAABBCB,
-    ); // Lighter blue-gray for better contrast on dark teal
+    final Color activeColor = colorScheme.secondary; // Gold from theme
+    final Color inactiveColor = colorScheme.onPrimary.withValues(alpha: 0.6,
+    ); // Faint white/silver on primary
 
     return RepaintBoundary(
       child: Container(
@@ -129,9 +132,8 @@ class _FuturisticNavBarState extends State<FuturisticNavBar>
         // Floating but low and wide
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
-          color: const Color(
-            0xFF0D4348,
-          ).withValues(alpha: 0.98), // Deep Teal from theme
+          color: colorScheme.primary.withValues(alpha: 0.98,
+          ), // Royal Blue/Deep Teal from theme
           borderRadius: BorderRadius.circular(32), // Fully rounded ends
           boxShadow: [
             BoxShadow(
@@ -222,8 +224,7 @@ class _FuturisticNavBarState extends State<FuturisticNavBar>
                                       shadows: [
                                         if (t > 0.1)
                                           Shadow(
-                                            color: activeColor.withOpacity(
-                                              0.3 * t,
+                                            color: activeColor.withValues(alpha: 0.3 * t,
                                             ),
                                             blurRadius: 8 * t,
                                           ),
@@ -241,12 +242,10 @@ class _FuturisticNavBarState extends State<FuturisticNavBar>
                                       width: 8,
                                       height: 8,
                                       decoration: BoxDecoration(
-                                        color: const Color(
-                                          0xFFFF3B30,
-                                        ), // System Red
+                                        color: colorScheme.error, // System Red
                                         shape: BoxShape.circle,
                                         border: Border.all(
-                                          color: const Color(0xFF0D4348),
+                                          color: colorScheme.primary,
                                           width: 1.5,
                                         ),
                                       ),

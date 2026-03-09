@@ -1,3 +1,4 @@
+// lib/presentation/screens/about_equb_screen.dart
 import 'package:flutter/material.dart';
 
 class AboutEqubScreen extends StatelessWidget {
@@ -6,10 +7,7 @@ class AboutEqubScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('About Abay eQub'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('About Abay eQub'), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -38,7 +36,7 @@ class AboutEqubScreen extends StatelessWidget {
               content:
                   'Equb (Traditional: እቁብ) is an Ethiopian traditional association established by a small group of people to provide rotating funding for members to improve their lives and living conditions.',
             ),
-            
+
             _buildSection(
               context,
               title: 'How it Works',
@@ -55,8 +53,8 @@ class AboutEqubScreen extends StatelessWidget {
               content:
                   'Abay eQub digitizes this trust-based system, making it secure, transparent, and accessible to everyone, everywhere. We handle the math, the notifications, and the transfers so you can focus on your goals.',
             ),
-            
-             // Placeholder for PDF content
+
+            // Placeholder for PDF content
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -66,14 +64,14 @@ class AboutEqubScreen extends StatelessWidget {
               ),
               child: const Row(
                 children: [
-                   Icon(Icons.info_outline, color: Colors.amber),
-                   SizedBox(width: 12),
-                   Expanded(
-                     child: Text(
-                       'More details from "ROSCAs as a Financial Commons" can be added here regarding community governance and economic resilience.',
-                       style: TextStyle(color: Colors.black87),
-                     ),
-                   ),
+                  Icon(Icons.info_outline, color: Colors.amber),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'More details from "ROSCAs as a Financial Commons" can be added here regarding community governance and economic resilience.',
+                      style: TextStyle(color: Colors.black87),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -83,24 +81,28 @@ class AboutEqubScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSection(BuildContext context, {required String title, required String content}) {
+  Widget _buildSection(
+    BuildContext context, {
+    required String title,
+    required String content,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
-              ),
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColor,
+          ),
         ),
         const SizedBox(height: 10),
         Text(
           content,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                height: 1.6,
-                color: Theme.of(context).textTheme.bodyLarge?.color,
-              ),
+            height: 1.6,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
+          ),
         ),
         const SizedBox(height: 30),
       ],

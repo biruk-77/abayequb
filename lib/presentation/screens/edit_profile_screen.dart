@@ -1,3 +1,4 @@
+// lib/presentation/screens/edit_profile_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -135,8 +136,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         children: [
                           CircleAvatar(
                             radius: 60,
-                            backgroundColor: primaryColor.withValues(
-                              alpha: 0.1,
+                            backgroundColor: primaryColor.withValues(alpha: 0.1,
                             ),
                             backgroundImage: _localImagePath != null
                                 ? FileImage(File(_localImagePath!))

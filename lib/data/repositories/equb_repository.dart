@@ -1,9 +1,13 @@
+// lib/data/repositories/equb_repository.dart
+import 'package:dio/dio.dart';
 import '../services/equb_service.dart';
 import '../models/equb_package_model.dart';
 import '../models/equb_group_model.dart';
 import '../models/equb_member_model.dart';
+import '../models/contribution_model.dart';
 import '../models/wallet_model.dart';
 import '../models/transaction_model.dart';
+import '../models/receipt_model.dart';
 import '../../core/utils/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -41,8 +45,6 @@ class EqubRepository {
     }
   }
 
-  // Modified to use getGroupsByPackageId logic if needed, or keeping original getGroups
-  // But user implies specific endpoint. I'll add the specific method and keep this one for now.
   Future<List<EqubGroupModel>> getGroups({
     int page = 1,
     int limit = 20,
@@ -145,7 +147,6 @@ class EqubRepository {
   Future<EqubMemberModel> joinGroup(String groupId) async {
     try {
       AppLogger.info('joining group $groupId...');
-      // Convert to int if possible to match backend expectations (per Postman tests)
       final numericId = int.tryParse(groupId) ?? groupId;
       final data = await _equbService.joinGroup({'groupId': numericId});
       AppLogger.success('successfully joined group');
@@ -159,12 +160,33 @@ class EqubRepository {
   Future<void> makeContribution(String groupId) async {
     try {
       AppLogger.info('making contribution for group $groupId...');
-      // Convert to int if possible to match backend expectations (per Postman tests)
       final numericId = int.tryParse(groupId) ?? groupId;
       await _equbService.makeContribution({'groupId': numericId});
       AppLogger.success('contribution successful');
     } catch (e) {
       AppLogger.error('failed to make contribution', e);
+      rethrow;
+    }
+  }
+
+  Future<ContributionModel?> getNextContribution() async {
+    try {
+      AppLogger.info('fetching next contribution detail...');
+      final data = await _equbService.getNextContribution();
+      if (data.isEmpty) return null;
+      return ContributionModel.fromJson(data);
+    } on DioException catch (e) {
+      // 404 means the server found no upcoming contribution — treat as null, not an error
+      if (e.response?.statusCode == 404) {
+        AppLogger.info(
+          'No upcoming contribution found (404) — treating as null.',
+        );
+        return null;
+      }
+      AppLogger.error('failed to get next contribution', e);
+      rethrow;
+    } catch (e) {
+      AppLogger.error('failed to get next contribution', e);
       rethrow;
     }
   }
@@ -311,6 +333,40 @@ class EqubRepository {
       return data.map((json) => TransactionModel.fromJson(json)).toList();
     } catch (e) {
       AppLogger.error('failed to get transactions', e);
+      rethrow;
+    }
+  }
+
+  // --- Receipts ---
+
+  Future<void> uploadReceipt({
+    required String receiptName,
+    required double amount,
+    required String reason,
+    required String filePath,
+  }) async {
+    try {
+      AppLogger.info('Uploading receipt: $receiptName, amount: $amount');
+      await _equbService.uploadReceipt(
+        receiptName: receiptName,
+        amount: amount,
+        reason: reason,
+        filePath: filePath,
+      );
+      AppLogger.success('Receipt uploaded successfully');
+    } catch (e) {
+      AppLogger.error('Receipt upload failed', e);
+      rethrow;
+    }
+  }
+
+  Future<List<ReceiptModel>> getMyReceipts() async {
+    try {
+      AppLogger.info('Fetching my receipts...');
+      final data = await _equbService.getMyReceipts();
+      return data.map((json) => ReceiptModel.fromJson(json)).toList();
+    } catch (e) {
+      AppLogger.error('Failed to get receipts', e);
       rethrow;
     }
   }

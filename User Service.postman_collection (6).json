@@ -1,0 +1,4236 @@
+{
+  "info": {
+    "_postman_id": "275dae28-3c40-43ee-bfec-a731600395bd",
+    "name": "User Service",
+    "description": "Automated registration, login OTP flow for ABAY eQub API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "41294772",
+    "_collection_link": "https://go.postman.co/collection/41294772-275dae28-3c40-43ee-bfec-a731600395bd?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Admin",
+          "item": [
+            {
+              "name": "Login by phone or eamil",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "// {\n//     \"emailOrPhone\": \"{{email}}\",\n//     \"password\": \"{{password}}\"\n// }\n{\n    \"emailOrPhone\": \"{{phone}}\",\n    \"password\": \"123456\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/auth/admin/login",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "admin",
+                    "login"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Refresh Token",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/auth/admin/refresh",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "admin",
+                    "refresh"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Logout",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/auth/admin/logout",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "admin",
+                    "logout"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Forgot Request By Phone",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"phone\": \"{{phone}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/auth/admin/forgot/otp/request",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "admin",
+                    "forgot",
+                    "otp",
+                    "request"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Verify Phone OTP and Reset Password",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"phone\": \"{{phone}}\",\n    \"otp\": \"{{otp}}\",\n    \"newPassword\": \"{{password}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/auth/admin/forgot/otp/verify",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "admin",
+                    "forgot",
+                    "otp",
+                    "verify"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Forgot Request By Email",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"{{email}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/auth/admin/forgot/email/request",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "admin",
+                    "forgot",
+                    "email",
+                    "request"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Verify By Email OTP and Reset Password",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"{{email}}\",\n    \"otp\": \"{{otp}}\",\n    \"newPassword\": \"{{password}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/auth/admin/forgot/email/verify",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "admin",
+                    "forgot",
+                    "email",
+                    "verify"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "User",
+          "item": [
+            {
+              "name": "OTP",
+              "item": [
+                {
+                  "name": "1️⃣ Request Registration OTP",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"OTP request successful\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "    const json = pm.response.json();",
+                          "    pm.environment.set(\"phone\", json.phone);",
+                          "    pm.environment.set(\"otpExpiresIn\", json.expiresIn);",
+                          "    pm.expect(json.success).to.eql(true);",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"phone\": \"{{phone}}\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/auth/otp/register",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "auth",
+                        "otp",
+                        "register"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "2️⃣ Verify Registration OTP",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Registration verified\", function () {",
+                          "    pm.response.to.have.status(201);",
+                          "    const json = pm.response.json();",
+                          "    pm.environment.set(\"accessToken\", pm.cookies.get('access_token'));",
+                          "    pm.environment.set(\"refreshToken\", pm.cookies.get('refresh_token'));",
+                          "    pm.environment.set(\"userId\", json.user.id);",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"phone\": \"{{phone}}\",\n  \"otp\": \"644332\",\n  \"fullName\": \"John Doe\",\n  \"email\": \"{{email}}\",\n  \"password\": \"123456\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/auth/otp/verify",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "auth",
+                        "otp",
+                        "verify"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "3️⃣ Request Login OTP",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Login OTP response received\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "    const json = pm.response.json();",
+                          "    pm.environment.set(\"loginAccessToken\", pm.cookies.get('access_token'));",
+                          "    pm.environment.set(\"loginRefreshToken\", pm.cookies.get('refresh_token'));",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"phone\": \"{{phone}}\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/auth/otp/login/request",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "auth",
+                        "otp",
+                        "login",
+                        "request"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "3️⃣ Verify Login OTP",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Login OTP response received\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "    const json = pm.response.json();",
+                          "    pm.environment.set(\"loginAccessToken\", pm.cookies.get('access_token'));",
+                          "    pm.environment.set(\"loginRefreshToken\", pm.cookies.get('refresh_token'));",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"phone\": \"{{phone}}\",\n  \"otp\": \"{{otp}}\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/auth/otp/login/verify",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "auth",
+                        "otp",
+                        "login",
+                        "verify"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "3️⃣ Request Forgot Password",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Login OTP response received\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "    const json = pm.response.json();",
+                          "    pm.environment.set(\"loginAccessToken\", pm.cookies.get('access_token'));",
+                          "    pm.environment.set(\"loginRefreshToken\", pm.cookies.get('refresh_token'));",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"phone\": \"{{phone}}\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/auth/otp/forgot/password/request",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "auth",
+                        "otp",
+                        "forgot",
+                        "password",
+                        "request"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "3️⃣ Verify Forgot Password",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Login OTP response received\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "    const json = pm.response.json();",
+                          "    pm.environment.set(\"loginAccessToken\", pm.cookies.get('access_token'));",
+                          "    pm.environment.set(\"loginRefreshToken\", pm.cookies.get('refresh_token'));",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"phone\": \"{{phone}}\",\n    \"otp\": \"{{otp}}\",\n    \"newPassword\": \"{{password}}\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/auth/otp/forgot/password/verify",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "auth",
+                        "otp",
+                        "forgot",
+                        "password",
+                        "verify"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Email",
+              "item": [
+                {
+                  "name": "Email Register",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Login OTP response received\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "    const json = pm.response.json();",
+                          "    pm.environment.set(\"loginAccessToken\", pm.cookies.get('access_token'));",
+                          "    pm.environment.set(\"loginRefreshToken\", pm.cookies.get('refresh_token'));",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"email\": \"{{email}}\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/auth/email/register",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "auth",
+                        "email",
+                        "register"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Email Verify",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Login OTP response received\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "    const json = pm.response.json();",
+                          "    pm.environment.set(\"loginAccessToken\", pm.cookies.get('access_token'));",
+                          "    pm.environment.set(\"loginRefreshToken\", pm.cookies.get('refresh_token'));",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"email\": \"{{email}}\",\n    \"otp\": \"790664\",\n    \"fullName\": \"John do\",\n    \"password\": {{password}}\n}"
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/auth/email/verify",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "auth",
+                        "email",
+                        "verify"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Email Forgot",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Login OTP response received\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "    const json = pm.response.json();",
+                          "    pm.environment.set(\"loginAccessToken\", pm.cookies.get('access_token'));",
+                          "    pm.environment.set(\"loginRefreshToken\", pm.cookies.get('refresh_token'));",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"email\": \"{{email}}\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/auth/email/forgot/request",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "auth",
+                        "email",
+                        "forgot",
+                        "request"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Email Verify Copy 2",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Login OTP response received\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "    const json = pm.response.json();",
+                          "    pm.environment.set(\"loginAccessToken\", pm.cookies.get('access_token'));",
+                          "    pm.environment.set(\"loginRefreshToken\", pm.cookies.get('refresh_token'));",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"email\": \"{{email}}\",\n    \"otp\": \"949489\",\n    \"newPassword\": {{password}}\n}"
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/auth/email/forgot/verify",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "auth",
+                        "email",
+                        "forgot",
+                        "verify"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Sign In/Out & Refresh Token",
+              "item": [
+                {
+                  "name": "Sign In",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Login OTP response received\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "    const json = pm.response.json();",
+                          "    pm.environment.set(\"loginAccessToken\", pm.cookies.get('access_token'));",
+                          "    pm.environment.set(\"loginRefreshToken\", pm.cookies.get('refresh_token'));",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"phone\": \"{{phone}}\",\n    \"password\": \"{{password}}\"\n}\n// {\n//     \"email\": \"{{email}}\",\n//     \"password\": \"123456\"\n// }"
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/auth/user/signin",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "auth",
+                        "user",
+                        "signin"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Refresh Token",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Refresh token success\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "    const json = pm.response.json();",
+                          "    pm.expect(json.success).to.eql(true);",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{url}}/api/auth/user/refresh",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "auth",
+                        "user",
+                        "refresh"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Sign out",
+                  "event": [
+                    {
+                      "listen": "test",
+                      "script": {
+                        "exec": [
+                          "pm.test(\"Login OTP response received\", function () {",
+                          "    pm.response.to.have.status(200);",
+                          "    const json = pm.response.json();",
+                          "    pm.environment.set(\"loginAccessToken\", pm.cookies.get('access_token'));",
+                          "    pm.environment.set(\"loginRefreshToken\", pm.cookies.get('refresh_token'));",
+                          "});"
+                        ],
+                        "type": "text/javascript",
+                        "packages": {},
+                        "requests": {}
+                      }
+                    }
+                  ],
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"phone\": \"{{phone}}\",\n    \"otp\": \"{{otp}}\",\n    \"newPassword\": \"{{password}}\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/auth/user/signout",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "auth",
+                        "user",
+                        "signout"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Messages for one user sms",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "// {\n//     \"userId\": 1,\n//     \"msg\": \"Hello from model!\"\n// }\n{\n    \"phone\": \"+251917123631\",\n    \"msg\": \"Hello from model!\"\n}"
+            },
+            "url": {
+              "raw": "{{url}}/api/messages/sms",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "messages",
+                "sms"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Message",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "// {\n//     \"phones\": [\n//         {\n//             \"phone\": \"251703674406\"\n//         },\n//         {\n//             \"phone\": \"251917123631\"\n//         }\n//     ],\n//     \"msg\": \"Hello everyone!\"\n// }\n{\n    \"phones\": [\n        {\n            \"id\": 1,\n            \"phone\": \"+251703674406\"\n        },\n        {\n            \"id\": 3,\n            \"phone\": \"+251917123631\"\n        }\n    ],\n    \"msg\": \"Hello everyone!\"\n}"
+            },
+            "url": {
+              "raw": "{{url}}/api/messages/bulk",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "messages",
+                "bulk"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notification",
+      "item": [
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "title",
+                  "value": "New Payment Received",
+                  "type": "text"
+                },
+                {
+                  "key": "body",
+                  "value": "You have received 500 ETB in your wallet.",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "178319f1-4de7-432a-ac4d-99cefd6d1c09",
+                  "src": "postman-cloud:///1f057719-96dd-4b80-905a-0289725a5b88"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/api/notifications",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "broadcast",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "New Payment Received",
+                  "type": "text"
+                },
+                {
+                  "key": "body",
+                  "value": "You have received 500 ETB in your wallet.",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "178319f1-4de7-432a-ac4d-99cefd6d1c09",
+                  "src": "postman-cloud:///1f057719-96dd-4b80-905a-0289725a5b88"
+                },
+                {
+                  "key": "batchSize",
+                  "value": "500",
+                  "type": "text"
+                },
+                {
+                  "key": "delayMs",
+                  "value": "0",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/api/notifications/broadcast",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "broadcast"
+              ]
+            },
+            "description": "## Broadcast Push Notification\n\nSends a push notification to **all users** in the system. Notifications are dispatched in configurable batches with an optional delay between each batch, allowing controlled delivery at scale.\n\n---\n\n## Request Body\n\nThis endpoint accepts `multipart/form-data` with the following fields:\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `title` | `string` | The title of the push notification displayed to the user. |\n| `body` | `string` | The message body/content of the push notification. |\n| `batchSize` | `integer` | Number of notifications to send per batch. Controls throughput (e.g., `500`). |\n| `delayMs` | `integer` | Delay in milliseconds between each batch. Use `0` for no delay. |\n\n**Example values:**\n\n```\ntitle     = \"New Payment Received\"\nbody      = \"You have received 500 ETB in your wallet.\"\nbatchSize = 500\ndelayMs   = 0\n\n ```\n\n---\n\n## Sample Successful Response\n\n**Status:** `200 OK`\n\n``` json\n{\n  \"success\": true,\n  \"message\": \"Broadcast notification sent successfully\",\n  \"data\": {\n    \"totalSuccess\": 2,\n    \"totalFailure\": 0,\n    \"invalidTokensCount\": 0\n  },\n  \"image\": \"uploads/users/notifications/broadcast/...\"\n}\n\n ```\n\n### Response Fields\n\n| Field | Type | Description |\n| --- | --- | --- |\n| `success` | `boolean` | Indicates whether the broadcast operation succeeded. |\n| `message` | `string` | A human-readable status message. |\n| `data.totalSuccess` | `integer` | Number of notifications successfully delivered. |\n| `data.totalFailure` | `integer` | Number of notifications that failed to deliver. |\n| `data.invalidTokensCount` | `integer` | Number of device tokens found to be invalid during the broadcast. |\n| `image` | `string` | Path to the notification image used in the broadcast (if any). |"
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "title",
+                  "value": "New Payment Received",
+                  "type": "text"
+                },
+                {
+                  "key": "body",
+                  "value": "You have received 500 ETB in your wallet.",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "178319f1-4de7-432a-ac4d-99cefd6d1c09",
+                  "src": "postman-cloud:///1f057719-96dd-4b80-905a-0289725a5b88"
+                },
+                {
+                  "key": "removeImage",
+                  "value": "true",
+                  "description": "remvoe image Tag",
+                  "type": "text",
+                  "uuid": "35a73a9a-e0ad-44a0-af11-3b249da0f043"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/api/notifications/{{notificationId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "{{notificationId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/notifications",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "My",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/notifications/user",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/notifications/{{notificationId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "{{notificationId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/notifications/{{notificationId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "{{notificationId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin CURD",
+      "item": [
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fullName\": \"Admin Poki\",\n    \"email\": \"admin@gamil.com\",\n    \"phone\": \"{{phone}}\",\n    \"password\": \"{{password}}\",\n    \"roleId\": \"{{roleId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/admin",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "admin"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Updated",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fullName\": \"Admin Poki\",\n    \"email\": \"mintesinottamene0917@gamil.com\",\n    \"phone\": \"+251703674406\",\n    \"password\": \"{{password}}\",\n    \"roleId\": \"1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/admin/{{adminId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "{{adminId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Admin",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{url}}/api/admin",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "admin"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/admin/1",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/admin/{{adminId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "{{adminId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Role",
+      "item": [
+        {
+          "name": "Create",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Manager\",\n    \"description\": \"Can manage users and view reports\",\n    \"permissionId\": 3,\n    \"admin\": false,\n    \"user\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/roles",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Super Manager\",\n    \"description\": \"Updated description\",\n    \"permissionId\": 5,\n    \"admin\": true,\n    \"user\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/api/roles/{{roleId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "roles",
+                "{{roleId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/roles",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/roles/{{roleId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "roles",
+                "{{roleId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/roles/{{roleId}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "roles",
+                "{{roleId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Analytics/Dashboard",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/analytics/count",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "analytics",
+                "count"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Permissions",
+      "item": [
+        {
+          "name": "List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/api/roles/permissions",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "api",
+                "roles",
+                "permissions"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Admin",
+          "item": [
+            {
+              "name": "Lists",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminToken}}",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "url": {
+                  "raw": "{{url}}/api/users",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users"
+                  ]
+                },
+                "description": "### 🔎 Search\n\n```\nGET /users?search=john\n\n ```\n\nSearches:\n\n- fullName\n    \n- email\n    \n- phone\n    \n\n---\n\n### 🔍 Filtering\n\n```\nGET /admin/users?isActive=true\nGET /admin/users?acceptedTerms=false\n\n ```\n\n---\n\n### 📄 Pagination\n\n```\nGET /users?page=2&limit=10\n\n ```\n\n---\n\n### 🔃 Sorting\n\n```\nGET /users?sortBy=fullName&order=asc\n\n ```\n\nProtected by whitelist to prevent SQL injection."
+              },
+              "response": []
+            },
+            {
+              "name": "GET By Id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/users/{{userId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "{{userId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "fullName",
+                      "value": "John Doe",
+                      "type": "text"
+                    },
+                    {
+                      "key": "email",
+                      "value": "{{email}}",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "phone",
+                      "value": "{{phone}}",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "password",
+                      "value": "{{password}}",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "otp",
+                      "value": "true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "profile",
+                      "type": "file",
+                      "src": "postman-cloud:///1f057719-96dd-4b80-905a-0289725a5b88",
+                      "disabled": true
+                    },
+                    {
+                      "key": "removeProfile",
+                      "value": "true",
+                      "type": "text",
+                      "description": "Remove profile without uploading a new file"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{url}}/api/users/{{userId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "{{userId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/users/{{userId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "{{userId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "User",
+          "item": [
+            {
+              "name": "Update Me",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "fullName",
+                      "value": "John Doe",
+                      "type": "text"
+                    },
+                    {
+                      "key": "email",
+                      "value": "{{email}}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "phone",
+                      "value": "{{phone}}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "password",
+                      "value": "{{password}}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "otp",
+                      "value": "true",
+                      "type": "text"
+                    },
+                    {
+                      "key": "profile",
+                      "type": "file",
+                      "src": "postman-cloud:///1f057719-96dd-4b80-905a-0289725a5b88"
+                    },
+                    {
+                      "key": "removeProfile",
+                      "value": "true",
+                      "type": "text",
+                      "description": "Remove profile without uploading a new file",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{url}}/api/users",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Fcm Token",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fcmToken\": \"{{fcmToken}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/users",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Me",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/users/me",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "me"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "KYC Users",
+          "item": [
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "documentType",
+                      "value": "passport",
+                      "description": "id_card | passport | driving_license | other",
+                      "type": "text",
+                      "uuid": "49b8e8ed-c868-4e8c-8503-e757faeea1c1"
+                    },
+                    {
+                      "key": "document",
+                      "type": "file",
+                      "uuid": "ba0a3583-a345-4452-bb60-25dd9c29d910",
+                      "src": "postman-cloud:///1f0bbd76-b06d-4ce0-93b2-a46e088f30ee"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{url}}/api/kyc",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "kyc"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "documentType",
+                      "value": "id_card",
+                      "description": "id_card | passport | driving_license | other",
+                      "type": "text",
+                      "uuid": "49b8e8ed-c868-4e8c-8503-e757faeea1c1"
+                    },
+                    {
+                      "key": "document",
+                      "type": "file",
+                      "uuid": "ba0a3583-a345-4452-bb60-25dd9c29d910",
+                      "src": "postman-cloud:///1f0bbd76-b06d-4ce0-93b2-a46e088f30ee"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{url}}/api/kyc",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "kyc"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Me",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/kyc/me",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "kyc",
+                    "me"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "KYC Admin",
+          "item": [
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "documentType",
+                      "value": "passport",
+                      "description": "id_card | passport | driving_license | other",
+                      "type": "text",
+                      "uuid": "49b8e8ed-c868-4e8c-8503-e757faeea1c1"
+                    },
+                    {
+                      "key": "document",
+                      "type": "file",
+                      "uuid": "ba0a3583-a345-4452-bb60-25dd9c29d910",
+                      "src": "postman-cloud:///1f0bbd76-b06d-4ce0-93b2-a46e088f30ee"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{url}}/api/kyc",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "kyc"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "verifiy",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "documentType",
+                      "value": "id_card",
+                      "description": "id_card | passport | driving_license | other",
+                      "type": "text",
+                      "uuid": "49b8e8ed-c868-4e8c-8503-e757faeea1c1"
+                    },
+                    {
+                      "key": "document",
+                      "type": "file",
+                      "uuid": "ba0a3583-a345-4452-bb60-25dd9c29d910",
+                      "src": "postman-cloud:///1f057719-96dd-4b80-905a-0289725a5b88"
+                    },
+                    {
+                      "key": "status",
+                      "value": "verified",
+                      "type": "text",
+                      "description": "status must be one of: \"pending\" | \"verified\" | \"rejected\" | \"expired\""
+                    },
+                    {
+                      "key": "reason",
+                      "value": "Verified by admin",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{url}}/api/kyc/{{kycId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "kyc",
+                    "{{kycId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/kyc",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "kyc"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "By Id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/kyc/{{kycId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "kyc",
+                    "{{kycId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/kyc/{{kycId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "kyc",
+                    "{{kycId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Equb",
+      "item": [
+        {
+          "name": "Packages",
+          "item": [
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Premium Savings Package\",\n    \"contributionAmount\": 1500.00,\n    \"schedule\": \"weekly\", //ENUM('daily', 'weekly', 'monthly'),\n    \"groupSize\": 10,\n    \"feePercentage\": 2.5\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/packages",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "packages"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "faill",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"name\": \"Premium Savings Package\",\n    \"contributionAmount\": 1500.00,\n    \"schedule\": \"weekly\", //ENUM('daily', 'weekly', 'monthly'),\n    \"groupSize\": 10,\n    \"feePercentage\": 2.5\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/equb/packages",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "packages"
+                      ]
+                    }
+                  },
+                  "status": "Conflict",
+                  "code": 409,
+                  "_postman_previewlanguage": null,
+                  "header": [
+                    {
+                      "key": "Content-Security-Policy",
+                      "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                    },
+                    {
+                      "key": "Cross-Origin-Opener-Policy",
+                      "value": "same-origin"
+                    },
+                    {
+                      "key": "Cross-Origin-Resource-Policy",
+                      "value": "same-origin"
+                    },
+                    {
+                      "key": "Origin-Agent-Cluster",
+                      "value": "?1"
+                    },
+                    {
+                      "key": "Referrer-Policy",
+                      "value": "no-referrer"
+                    },
+                    {
+                      "key": "Strict-Transport-Security",
+                      "value": "max-age=31536000; includeSubDomains"
+                    },
+                    {
+                      "key": "X-Content-Type-Options",
+                      "value": "nosniff"
+                    },
+                    {
+                      "key": "X-DNS-Prefetch-Control",
+                      "value": "off"
+                    },
+                    {
+                      "key": "X-Download-Options",
+                      "value": "noopen"
+                    },
+                    {
+                      "key": "X-Frame-Options",
+                      "value": "SAMEORIGIN"
+                    },
+                    {
+                      "key": "X-Permitted-Cross-Domain-Policies",
+                      "value": "none"
+                    },
+                    {
+                      "key": "X-XSS-Protection",
+                      "value": "0"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Origin",
+                      "value": "*"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "Content-Length",
+                      "value": "83"
+                    },
+                    {
+                      "key": "ETag",
+                      "value": "W/\"53-3vcSdH3z0e6HN6713WefZxYxYQg\""
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Mon, 16 Feb 2026 08:27:10 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": false,\n    \"status\": \"fail\",\n    \"message\": \"Package with this name already exists\"\n}"
+                },
+                {
+                  "name": "success",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"name\": \"Premium Savings Packag\",\n    \"contributionAmount\": 1500.00,\n    \"schedule\": \"weekly\", //ENUM('daily', 'weekly', 'monthly'),\n    \"groupSize\": 10,\n    \"feePercentage\": 2.5\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/equb/packages",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "packages"
+                      ]
+                    }
+                  },
+                  "status": "Created",
+                  "code": 201,
+                  "_postman_previewlanguage": null,
+                  "header": [
+                    {
+                      "key": "Content-Security-Policy",
+                      "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                    },
+                    {
+                      "key": "Cross-Origin-Opener-Policy",
+                      "value": "same-origin"
+                    },
+                    {
+                      "key": "Cross-Origin-Resource-Policy",
+                      "value": "same-origin"
+                    },
+                    {
+                      "key": "Origin-Agent-Cluster",
+                      "value": "?1"
+                    },
+                    {
+                      "key": "Referrer-Policy",
+                      "value": "no-referrer"
+                    },
+                    {
+                      "key": "Strict-Transport-Security",
+                      "value": "max-age=31536000; includeSubDomains"
+                    },
+                    {
+                      "key": "X-Content-Type-Options",
+                      "value": "nosniff"
+                    },
+                    {
+                      "key": "X-DNS-Prefetch-Control",
+                      "value": "off"
+                    },
+                    {
+                      "key": "X-Download-Options",
+                      "value": "noopen"
+                    },
+                    {
+                      "key": "X-Frame-Options",
+                      "value": "SAMEORIGIN"
+                    },
+                    {
+                      "key": "X-Permitted-Cross-Domain-Policies",
+                      "value": "none"
+                    },
+                    {
+                      "key": "X-XSS-Protection",
+                      "value": "0"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Origin",
+                      "value": "*"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "Content-Length",
+                      "value": "223"
+                    },
+                    {
+                      "key": "ETag",
+                      "value": "W/\"df-V9wV4QU7l+87WqrAtfjpoI1VYRU\""
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Mon, 16 Feb 2026 08:27:41 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 4,\n        \"name\": \"Premium Savings Packag\",\n        \"contributionAmount\": 1500,\n        \"schedule\": \"weekly\",\n        \"groupSize\": 10,\n        \"feePercentage\": 2.5,\n        \"updatedAt\": \"2026-02-16T08:27:41.514Z\",\n        \"createdAt\": \"2026-02-16T08:27:41.514Z\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "Lists",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/packages",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "packages"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "success",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{url}}/api/equb/packages",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "packages"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": null,
+                  "header": [
+                    {
+                      "key": "Content-Security-Policy",
+                      "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                    },
+                    {
+                      "key": "Cross-Origin-Opener-Policy",
+                      "value": "same-origin"
+                    },
+                    {
+                      "key": "Cross-Origin-Resource-Policy",
+                      "value": "same-origin"
+                    },
+                    {
+                      "key": "Origin-Agent-Cluster",
+                      "value": "?1"
+                    },
+                    {
+                      "key": "Referrer-Policy",
+                      "value": "no-referrer"
+                    },
+                    {
+                      "key": "Strict-Transport-Security",
+                      "value": "max-age=31536000; includeSubDomains"
+                    },
+                    {
+                      "key": "X-Content-Type-Options",
+                      "value": "nosniff"
+                    },
+                    {
+                      "key": "X-DNS-Prefetch-Control",
+                      "value": "off"
+                    },
+                    {
+                      "key": "X-Download-Options",
+                      "value": "noopen"
+                    },
+                    {
+                      "key": "X-Frame-Options",
+                      "value": "SAMEORIGIN"
+                    },
+                    {
+                      "key": "X-Permitted-Cross-Domain-Policies",
+                      "value": "none"
+                    },
+                    {
+                      "key": "X-XSS-Protection",
+                      "value": "0"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Origin",
+                      "value": "*"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "Content-Length",
+                      "value": "753"
+                    },
+                    {
+                      "key": "ETag",
+                      "value": "W/\"2f1-jEXmD8u/KtVrghoqf/nx9XOOvrI\""
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Mon, 16 Feb 2026 08:28:18 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"data\": [\n        {\n            \"id\": 4,\n            \"name\": \"Premium Savings Packag\",\n            \"contributionAmount\": \"1500.00\",\n            \"schedule\": \"weekly\",\n            \"groupSize\": 10,\n            \"feePercentage\": \"2.50\",\n            \"createdAt\": \"2026-02-16T08:27:41.000Z\",\n            \"updatedAt\": \"2026-02-16T08:27:41.000Z\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Premium Savings Package 2\",\n            \"contributionAmount\": \"1500.00\",\n            \"schedule\": \"weekly\",\n            \"groupSize\": 10,\n            \"feePercentage\": \"2.50\",\n            \"createdAt\": \"2026-02-09T15:57:55.000Z\",\n            \"updatedAt\": \"2026-02-09T15:57:55.000Z\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Premium Savings Package\",\n            \"contributionAmount\": \"1500.00\",\n            \"schedule\": \"weekly\",\n            \"groupSize\": 10,\n            \"feePercentage\": \"2.50\",\n            \"createdAt\": \"2026-02-09T15:57:00.000Z\",\n            \"updatedAt\": \"2026-02-09T15:57:00.000Z\"\n        }\n    ],\n    \"meta\": {\n        \"currentPage\": 1,\n        \"perPage\": 10,\n        \"totalItems\": 3,\n        \"totalPages\": 1,\n        \"hasNext\": false,\n        \"hasPrev\": false\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Premium Savings Package\",\n    \"contributionAmount\": 150.00,\n    \"schedule\": \"weekly\",\n    \"groupSize\": 10,\n    \"feePercentage\": 2.5\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/packages/{{packageId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "packages",
+                    "{{packageId}}"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "Success",
+                  "originalRequest": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"name\": \"Premium Savings Package\",\n    \"contributionAmount\": 150.00,\n    \"schedule\": \"weekly\",\n    \"groupSize\": 10,\n    \"feePercentage\": 2.5\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/equb/packages/{{packageId}}",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "packages",
+                        "{{packageId}}"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": null,
+                  "header": [
+                    {
+                      "key": "Content-Security-Policy",
+                      "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                    },
+                    {
+                      "key": "Cross-Origin-Opener-Policy",
+                      "value": "same-origin"
+                    },
+                    {
+                      "key": "Cross-Origin-Resource-Policy",
+                      "value": "same-origin"
+                    },
+                    {
+                      "key": "Origin-Agent-Cluster",
+                      "value": "?1"
+                    },
+                    {
+                      "key": "Referrer-Policy",
+                      "value": "no-referrer"
+                    },
+                    {
+                      "key": "Strict-Transport-Security",
+                      "value": "max-age=31536000; includeSubDomains"
+                    },
+                    {
+                      "key": "X-Content-Type-Options",
+                      "value": "nosniff"
+                    },
+                    {
+                      "key": "X-DNS-Prefetch-Control",
+                      "value": "off"
+                    },
+                    {
+                      "key": "X-Download-Options",
+                      "value": "noopen"
+                    },
+                    {
+                      "key": "X-Frame-Options",
+                      "value": "SAMEORIGIN"
+                    },
+                    {
+                      "key": "X-Permitted-Cross-Domain-Policies",
+                      "value": "none"
+                    },
+                    {
+                      "key": "X-XSS-Protection",
+                      "value": "0"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Origin",
+                      "value": "*"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "Content-Length",
+                      "value": "222"
+                    },
+                    {
+                      "key": "ETag",
+                      "value": "W/\"de-D4PwhTcNzRrZA70fNQQjrsGiyYY\""
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Mon, 16 Feb 2026 08:29:28 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 4,\n        \"name\": \"Premium Savings Packag\",\n        \"contributionAmount\": 150,\n        \"schedule\": \"weekly\",\n        \"groupSize\": 10,\n        \"feePercentage\": 2.5,\n        \"createdAt\": \"2026-02-16T08:27:41.000Z\",\n        \"updatedAt\": \"2026-02-16T08:29:28.664Z\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "Get By Id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/packages/{{packageId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "packages",
+                    "{{packageId}}"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "success",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{url}}/api/equb/packages/{{packageId}}",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "packages",
+                        "{{packageId}}"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": null,
+                  "header": [
+                    {
+                      "key": "Content-Security-Policy",
+                      "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                    },
+                    {
+                      "key": "Cross-Origin-Opener-Policy",
+                      "value": "same-origin"
+                    },
+                    {
+                      "key": "Cross-Origin-Resource-Policy",
+                      "value": "same-origin"
+                    },
+                    {
+                      "key": "Origin-Agent-Cluster",
+                      "value": "?1"
+                    },
+                    {
+                      "key": "Referrer-Policy",
+                      "value": "no-referrer"
+                    },
+                    {
+                      "key": "Strict-Transport-Security",
+                      "value": "max-age=31536000; includeSubDomains"
+                    },
+                    {
+                      "key": "X-Content-Type-Options",
+                      "value": "nosniff"
+                    },
+                    {
+                      "key": "X-DNS-Prefetch-Control",
+                      "value": "off"
+                    },
+                    {
+                      "key": "X-Download-Options",
+                      "value": "noopen"
+                    },
+                    {
+                      "key": "X-Frame-Options",
+                      "value": "SAMEORIGIN"
+                    },
+                    {
+                      "key": "X-Permitted-Cross-Domain-Policies",
+                      "value": "none"
+                    },
+                    {
+                      "key": "X-XSS-Protection",
+                      "value": "0"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Origin",
+                      "value": "*"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "Content-Length",
+                      "value": "230"
+                    },
+                    {
+                      "key": "ETag",
+                      "value": "W/\"e6-s9wGbg+xr3sBlmdKa26qgBmpb1g\""
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Mon, 16 Feb 2026 08:29:41 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 4,\n        \"name\": \"Premium Savings Packag\",\n        \"contributionAmount\": \"150.00\",\n        \"schedule\": \"weekly\",\n        \"groupSize\": 10,\n        \"feePercentage\": \"2.50\",\n        \"createdAt\": \"2026-02-16T08:27:41.000Z\",\n        \"updatedAt\": \"2026-02-16T08:29:28.000Z\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "Delete",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/packages/{{packageId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "packages",
+                    "{{packageId}}"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "Success",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{url}}/api/equb/packages/{{packageId}}",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "packages",
+                        "{{packageId}}"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": null,
+                  "header": [
+                    {
+                      "key": "Content-Security-Policy",
+                      "value": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+                    },
+                    {
+                      "key": "Cross-Origin-Opener-Policy",
+                      "value": "same-origin"
+                    },
+                    {
+                      "key": "Cross-Origin-Resource-Policy",
+                      "value": "same-origin"
+                    },
+                    {
+                      "key": "Origin-Agent-Cluster",
+                      "value": "?1"
+                    },
+                    {
+                      "key": "Referrer-Policy",
+                      "value": "no-referrer"
+                    },
+                    {
+                      "key": "Strict-Transport-Security",
+                      "value": "max-age=31536000; includeSubDomains"
+                    },
+                    {
+                      "key": "X-Content-Type-Options",
+                      "value": "nosniff"
+                    },
+                    {
+                      "key": "X-DNS-Prefetch-Control",
+                      "value": "off"
+                    },
+                    {
+                      "key": "X-Download-Options",
+                      "value": "noopen"
+                    },
+                    {
+                      "key": "X-Frame-Options",
+                      "value": "SAMEORIGIN"
+                    },
+                    {
+                      "key": "X-Permitted-Cross-Domain-Policies",
+                      "value": "none"
+                    },
+                    {
+                      "key": "X-XSS-Protection",
+                      "value": "0"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Origin",
+                      "value": "*"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "Content-Length",
+                      "value": "57"
+                    },
+                    {
+                      "key": "ETag",
+                      "value": "W/\"39-fxBWRwpO4BtZ0u6Ss2PXV6F4BP0\""
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Mon, 16 Feb 2026 08:30:38 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Package deleted successfully\"\n}"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Groups",
+          "item": [
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Weekly Savings Group\",\n    \"packageId\": {{packageId}},\n    \"status\": \"active\",\n    \"riskReserve\": 100.00,\n    \"startDate\": \"2026-02-15T00:00:00.000Z\",\n    \"currentCycle\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/groups",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "groups"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Lists",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/groups",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "groups"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "active",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "createdAt",
+                      "disabled": true
+                    },
+                    {
+                      "key": "order",
+                      "value": "DESC",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "My",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/groups/my",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "groups",
+                    "my"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "active",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "createdAt",
+                      "disabled": true
+                    },
+                    {
+                      "key": "order",
+                      "value": "DESC",
+                      "disabled": true
+                    },
+                    {
+                      "key": "page",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Weekly Savings Group\",\n    \"packageId\": 2,\n    \"status\": \"active\",\n    \"riskReserve\": 100.00,\n    \"startDate\": \"2026-02-15T00:00:00.000Z\",\n    \"currentCycle\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/groups/{{groupId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "groups",
+                    "{{groupId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get By Id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/groups/{{groupId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "groups",
+                    "{{groupId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/groups/{{groupId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "groups",
+                    "{{groupId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Groups Copy",
+          "item": [
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Weekly Savings Group\",\n    \"packageId\": {{packageId}},\n    \"status\": \"active\",\n    \"riskReserve\": 100.00,\n    \"startDate\": \"2026-02-15T00:00:00.000Z\",\n    \"currentCycle\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/groups",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "groups"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Lists",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/groups",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "groups"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "active",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "createdAt",
+                      "disabled": true
+                    },
+                    {
+                      "key": "order",
+                      "value": "DESC",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "My",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/groups/my",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "groups",
+                    "my"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "active",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "createdAt",
+                      "disabled": true
+                    },
+                    {
+                      "key": "order",
+                      "value": "DESC",
+                      "disabled": true
+                    },
+                    {
+                      "key": "page",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"Weekly Savings Group\",\n    \"packageId\": 2,\n    \"status\": \"active\",\n    \"riskReserve\": 100.00,\n    \"startDate\": \"2026-02-15T00:00:00.000Z\",\n    \"currentCycle\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/groups/{{groupId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "groups",
+                    "{{groupId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get By Id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/groups/{{groupId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "groups",
+                    "{{groupId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/groups/{{groupId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "groups",
+                    "{{groupId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Dispute",
+          "item": [
+            {
+              "name": "User",
+              "item": [
+                {
+                  "name": "Create",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"transactionId\": {{transactionId}},\n    \"category\": \"payment_failure\",\n    \"description\": \"The payment was deducted from my wallet but not reflected in the group contribution.\"\n}\n// category = \"payment_failure\",\"payout_delay\", \"fee_dispute\", \"group_issue\", \"other\"",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/equb/disputes",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "disputes"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Update",
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n    \"description\": \"Adding more details about the issue.\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/equb/disputes/{{disputeId}}",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "disputes",
+                        "{{disputeId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "My",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{url}}/api/equb/disputes/me",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "disputes",
+                        "me"
+                      ],
+                      "query": [
+                        {
+                          "key": "limit",
+                          "value": "10",
+                          "disabled": true
+                        },
+                        {
+                          "key": "status",
+                          "value": "active",
+                          "disabled": true
+                        },
+                        {
+                          "key": "sortBy",
+                          "value": "createdAt",
+                          "disabled": true
+                        },
+                        {
+                          "key": "order",
+                          "value": "DESC",
+                          "disabled": true
+                        },
+                        {
+                          "key": "page",
+                          "value": "",
+                          "disabled": true
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Admin",
+              "item": [
+                {
+                  "name": "Delete",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{url}}/api/equb/disputes/{{disputeId}}",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "disputes",
+                        "{{disputeId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Get By Id",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{url}}/api/equb/disputes/{{disputeId}}",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "disputes",
+                        "{{disputeId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Lists",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{url}}/api/equb/disputes",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "disputes"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1",
+                          "disabled": true
+                        },
+                        {
+                          "key": "limit",
+                          "value": "10",
+                          "disabled": true
+                        },
+                        {
+                          "key": "status",
+                          "value": "active",
+                          "disabled": true
+                        },
+                        {
+                          "key": "sortBy",
+                          "value": "createdAt",
+                          "disabled": true
+                        },
+                        {
+                          "key": "order",
+                          "value": "DESC",
+                          "disabled": true
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Members",
+          "item": [
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"groupId\": {{groupId}}\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/members",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "members"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Lists",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/members",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "members"
+                  ]
+                },
+                "description": "# 🔎 What You Can Now Do From Frontend\n\n### Search\n\n```\nGET /members?search=john\n\n ```\n\nSearches:\n\n- fullName\n    \n- phone\n    \n- group name\n    \n\n---\n\n### Filter by Group\n\n```\nGET /members?groupId=3\n\n ```\n\n---\n\n### Filter by Package\n\n```\nGET /members?packageId=2\n\n ```\n\n---\n\n### Filter by Status\n\n```\nGET /members?status=paid\n\n ```\n\n---\n\n### Sorting\n\n```\nGET /members?sortBy=payoutOrder&order=ASC\n\n ```"
+              },
+              "response": []
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"status\": \"paid\",\n    \"payoutOrder\": 2\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/members/{{memberId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "members",
+                    "{{memberId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get By Id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/members/{{memberId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "members",
+                    "{{memberId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get By Package Id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/members/package/{{packageId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "members",
+                    "package",
+                    "{{packageId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/members/{{memberId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "members",
+                    "{{memberId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Wallet",
+          "item": [
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"userId\": {{userId}},\n    \"amount\": {{amount}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/wallets",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "wallets"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "My Wallet",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/wallets",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "wallets"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Contribution",
+          "item": [
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"groupId\": {{groupId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/contributions",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "contributions"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "By Id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/contributions/{{contributionId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "contributions",
+                    "{{contributionId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/contributions/{{contributionId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "contributions",
+                    "{{contributionId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/contributions",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "contributions"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Receipts",
+          "item": [
+            {
+              "name": "user",
+              "item": [
+                {
+                  "name": "Create",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "key": "receiptName",
+                          "value": "CBE",
+                          "type": "text"
+                        },
+                        {
+                          "key": "amount",
+                          "value": "150.5",
+                          "type": "text"
+                        },
+                        {
+                          "key": "reason",
+                          "value": "Purchased stationery for the group",
+                          "type": "text"
+                        },
+                        {
+                          "key": "document",
+                          "type": "file",
+                          "uuid": "26568a92-c257-4ef0-8211-f52cb63089cb",
+                          "src": "postman-cloud:///1f0bbd76-b06d-4ce0-93b2-a46e088f30ee"
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/equb/receipts",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "receipts"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Update",
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "key": "receiptName",
+                          "value": "CBE",
+                          "type": "text"
+                        },
+                        {
+                          "key": "amount",
+                          "value": "150.5",
+                          "type": "text"
+                        },
+                        {
+                          "key": "reason",
+                          "value": "Purchased stationery for the group",
+                          "type": "text"
+                        },
+                        {
+                          "key": "document",
+                          "type": "file",
+                          "uuid": "26568a92-c257-4ef0-8211-f52cb63089cb",
+                          "src": "postman-cloud:///1f0bbd76-b06d-4ce0-93b2-a46e088f30ee"
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/equb/receipts/{{receiptsId}}",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "receipts",
+                        "{{receiptsId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "My  Receipts",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{url}}/api/equb/receipts/me",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "receipts",
+                        "me"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "Admin",
+              "item": [
+                {
+                  "name": "Approved",
+                  "request": {
+                    "method": "PATCH",
+                    "header": [],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "key": "receiptName",
+                          "value": "CBE",
+                          "type": "text"
+                        },
+                        {
+                          "key": "amount",
+                          "value": "150.5",
+                          "type": "text"
+                        },
+                        {
+                          "key": "reason",
+                          "value": "Purchased stationery for the group",
+                          "type": "text"
+                        },
+                        {
+                          "key": "document",
+                          "type": "file",
+                          "uuid": "26568a92-c257-4ef0-8211-f52cb63089cb",
+                          "src": "postman-cloud:///1f0bbd76-b06d-4ce0-93b2-a46e088f30ee"
+                        },
+                        {
+                          "key": "status",
+                          "value": "approved",
+                          "description": "status must be one of: \"pending\" | \"approved\" | \"rejected\" | \"expired\"",
+                          "type": "text",
+                          "uuid": "5fda3ad1-9b57-41b0-8711-035993fd9f5c"
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{url}}/api/equb/receipts/{{receiptsId}}",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "receipts",
+                        "{{receiptsId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "List",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{url}}/api/equb/receipts",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "receipts"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "By Id",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{url}}/api/equb/receipts/{{receiptsId}}",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "receipts",
+                        "{{receiptsId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "Delete",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{url}}/api/equb/receipts/{{receiptsId}}",
+                      "host": [
+                        "{{url}}"
+                      ],
+                      "path": [
+                        "api",
+                        "equb",
+                        "receipts",
+                        "{{receiptsId}}"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Revenue",
+          "item": [
+            {
+              "name": "List",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/revenues",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "revenues"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "By Id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/revenues/{{revenueId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "revenues",
+                    "{{revenueId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/revenues/{{revenueId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "revenues",
+                    "{{revenueId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Transaction",
+          "item": [
+            {
+              "name": "My",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/transactions",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "transactions"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "type",
+                      "value": "deposit",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "completed",
+                      "disabled": true
+                    },
+                    {
+                      "key": "method",
+                      "value": "wallet",
+                      "disabled": true
+                    },
+                    {
+                      "key": "minAmount",
+                      "value": "100",
+                      "disabled": true
+                    },
+                    {
+                      "key": "maxAmount",
+                      "value": "1000",
+                      "disabled": true
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2026-01-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-02-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "createdAt",
+                      "disabled": true
+                    },
+                    {
+                      "key": "order",
+                      "value": "DESC",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            },
+            {
+              "name": "List",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/transactions/list",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "transactions",
+                    "list"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "type",
+                      "value": "deposit",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "completed",
+                      "disabled": true
+                    },
+                    {
+                      "key": "method",
+                      "value": "wallet",
+                      "disabled": true
+                    },
+                    {
+                      "key": "minAmount",
+                      "value": "100",
+                      "disabled": true
+                    },
+                    {
+                      "key": "maxAmount",
+                      "value": "1000",
+                      "disabled": true
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2026-01-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-02-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "createdAt",
+                      "disabled": true
+                    },
+                    {
+                      "key": "order",
+                      "value": "DESC",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            },
+            {
+              "name": "By Id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/transactions/{{transactionId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "transactions",
+                    "{{transactionId}}"
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "phone",
+      "value": ""
+    },
+    {
+      "key": "otpExpiresIn",
+      "value": ""
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "loginAccessToken",
+      "value": ""
+    },
+    {
+      "key": "loginRefreshToken",
+      "value": ""
+    },
+    {
+      "key": "url",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "password",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "otp",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "email",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "adminId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "packageId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "groups",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "groupId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "memberId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "userToken",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "amount",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "contributionId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "notifiactionId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "notificationId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "fcmToken",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "roleId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "kycId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "revenueId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "receiptsId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "transactionId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "disputeId",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}

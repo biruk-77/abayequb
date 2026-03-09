@@ -1,3 +1,4 @@
+// lib/presentation/screens/notification_screen.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -326,10 +327,14 @@ class _NotificationCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: color.withOpacity(isRead ? 0.05 : 0.1),
+        color: color.withValues(alpha: isRead ? 0.05 : 0.1),
         shape: BoxShape.circle,
       ),
-      child: Icon(icon, size: 20, color: color.withOpacity(isRead ? 0.5 : 1.0)),
+      child: Icon(
+        icon,
+        size: 20,
+        color: color.withValues(alpha: isRead ? 0.5 : 1.0),
+      ),
     );
   }
 }

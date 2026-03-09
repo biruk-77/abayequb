@@ -1,3 +1,4 @@
+// lib/data/models/transaction_model.dart
 import '../../core/utils/json_utils.dart';
 
 class TransactionModel {

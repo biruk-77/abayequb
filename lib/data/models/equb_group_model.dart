@@ -1,3 +1,4 @@
+// lib/data/models/equb_group_model.dart
 import 'package:json_annotation/json_annotation.dart';
 import '../../core/utils/json_utils.dart';
 import 'equb_package_model.dart';

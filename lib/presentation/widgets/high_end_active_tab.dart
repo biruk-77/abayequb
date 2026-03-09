@@ -1,3 +1,4 @@
+// lib/presentation/widgets/high_end_active_tab.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import '../../core/theme/physics.dart';

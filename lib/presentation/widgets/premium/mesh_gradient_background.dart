@@ -1,3 +1,4 @@
+// lib/presentation/widgets/premium/mesh_gradient_background.dart
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
@@ -22,7 +23,7 @@ class MeshGradientBackground extends StatelessWidget {
           child: _buildOrb(
             300,
             (isDark ? const Color(0xFF818CF8) : const Color(0xFF6366F1))
-                .withOpacity(isDark ? 0.12 : 0.08),
+              .withValues(alpha: isDark ? 0.12 : 0.08),
           ), // Indigo
         ),
         Positioned(
@@ -31,7 +32,7 @@ class MeshGradientBackground extends StatelessWidget {
           child: _buildOrb(
             400,
             (isDark ? const Color(0xFF5EEAD4) : const Color(0xFF2DD4BF))
-                .withOpacity(isDark ? 0.08 : 0.05),
+              .withValues(alpha: isDark ? 0.08 : 0.05),
           ), // Teal
         ),
         Positioned(
@@ -40,7 +41,7 @@ class MeshGradientBackground extends StatelessWidget {
           child: _buildOrb(
             250,
             (isDark ? const Color(0xFFFBBF24) : const Color(0xFFF59E0B))
-                .withOpacity(isDark ? 0.06 : 0.03),
+              .withValues(alpha: isDark ? 0.06 : 0.03),
           ), // Amber
         ),
 

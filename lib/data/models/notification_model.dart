@@ -1,3 +1,4 @@
+// lib/data/models/notification_model.dart
 class NotificationModel {
   final String id;
   final String title;

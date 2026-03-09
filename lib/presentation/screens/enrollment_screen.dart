@@ -1,3 +1,4 @@
+// lib/presentation/screens/enrollment_screen.dart
 import 'package:flutter/material.dart';
 
 import 'package:go_router/go_router.dart';
@@ -398,7 +399,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.1),
+                      color: Colors.green.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
@@ -449,9 +450,8 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
                       onPressed: () => Navigator.pop(context),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).primaryColor,
-                        shadowColor: Theme.of(
-                          context,
-                        ).primaryColor.withOpacity(0.4),
+                        shadowColor: Theme.of(context).primaryColor
+                          .withValues(alpha: 0.4),
                         elevation: 4,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -464,39 +464,6 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
                           fontSize: 16,
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  TextButton.icon(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: const Text('Raw Backend Response'),
-                          content: SingleChildScrollView(
-                            child: Text(
-                              member != null
-                                  ? 'GroupId: ${member.groupId}\nPayoutOrder: ${member.payoutOrder}\nStatus: ${member.status}\nUserId: ${member.userId}'
-                                  : 'No data received',
-                              style: const TextStyle(
-                                fontFamily: 'monospace',
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(ctx),
-                              child: const Text('CLOSE'),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.code, size: 16),
-                    label: const Text(
-                      'View Raw Response (Debug)',
-                      style: TextStyle(fontSize: 12),
                     ),
                   ),
                 ],

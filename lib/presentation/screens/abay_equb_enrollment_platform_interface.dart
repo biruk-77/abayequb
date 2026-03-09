@@ -1,3 +1,5 @@
+// lib/presentation/screens/abay_equb_enrollment_platform_interface.dart
+// ignore_for_file: depend_on_referenced_packages
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'abay_equb_enrollment_method_channel.dart';
@@ -8,7 +10,8 @@ abstract class AbayEqubEnrollmentPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static AbayEqubEnrollmentPlatform _instance = MethodChannelAbayEqubEnrollment();
+  static AbayEqubEnrollmentPlatform _instance =
+      MethodChannelAbayEqubEnrollment();
 
   /// The default instance of [AbayEqubEnrollmentPlatform] to use.
   ///

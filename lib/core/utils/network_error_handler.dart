@@ -1,15 +1,16 @@
+// lib/core/utils/network_error_handler.dart
 import 'package:dio/dio.dart';
 
 class NetworkErrorHandler {
   static bool isNetworkError(dynamic error) {
     if (error is DioException) {
       return error.type == DioExceptionType.connectionTimeout ||
-             error.type == DioExceptionType.sendTimeout ||
-             error.type == DioExceptionType.receiveTimeout ||
-             error.type == DioExceptionType.connectionError ||
-             (error.error != null && 
+          error.type == DioExceptionType.sendTimeout ||
+          error.type == DioExceptionType.receiveTimeout ||
+          error.type == DioExceptionType.connectionError ||
+          (error.error != null &&
               (error.error.toString().contains('SocketException') ||
-               error.error.toString().contains('NetworkException')));
+                  error.error.toString().contains('NetworkException')));
     }
     return false;
   }

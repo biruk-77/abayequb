@@ -1,3 +1,4 @@
+// lib/core/api/api_client.dart
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -47,7 +48,12 @@ class ApiClient {
           final errorData = e.response?.data;
           final int? statusCode = e.response?.statusCode;
 
-          AppLogger.error('❌ [NETWORK ERROR] $statusCode - ${e.message}');
+          if (statusCode == 404) {
+            AppLogger.info('ℹ️ [API] Not Found: ${e.requestOptions.path}');
+          } else {
+            AppLogger.error('❌ [NETWORK ERROR] $statusCode - ${e.message}');
+          }
+
           if (errorData != null) {
             AppLogger.info('🚨 Error Body: $errorData');
           }

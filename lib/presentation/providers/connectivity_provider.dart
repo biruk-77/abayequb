@@ -1,3 +1,4 @@
+// lib/presentation/providers/connectivity_provider.dart
 import 'package:flutter/foundation.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'dart:async';
@@ -6,7 +7,7 @@ import '../../core/utils/logger.dart';
 class ConnectivityProvider extends ChangeNotifier {
   final Connectivity _connectivity = Connectivity();
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
-  
+
   bool _isOnline = true;
   bool _hasBeenOffline = false;
 
@@ -15,7 +16,9 @@ class ConnectivityProvider extends ChangeNotifier {
 
   ConnectivityProvider() {
     _initConnectivity();
-    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
+      _updateConnectionStatus,
+    );
   }
 
   Future<void> _initConnectivity() async {
@@ -31,10 +34,10 @@ class ConnectivityProvider extends ChangeNotifier {
 
   void _updateConnectionStatus(List<ConnectivityResult> results) {
     final wasOnline = _isOnline;
-    
+
     // Consider connected if any connection type is available (except none)
     _isOnline = results.any((result) => result != ConnectivityResult.none);
-    
+
     if (wasOnline != _isOnline) {
       if (_isOnline) {
         AppLogger.success('🌐 Connection restored');

@@ -5262,10 +5262,10 @@ class _ContributionLevelScreenState extends State<ContributionLevelScreen> {
                     colors: [
                       Theme.of(
                         context,
-                      ).scaffoldBackgroundColor.withOpacity(0.1),
+                      ).scaffoldBackgroundColor..withValues(alpha:0.1),
                       Theme.of(
                         context,
-                      ).scaffoldBackgroundColor.withOpacity(0.0),
+                      ).scaffoldBackgroundColor..withValues(alpha:0.0),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
@@ -5374,7 +5374,7 @@ class _ContributionLevelScreenState extends State<ContributionLevelScreen> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black..withValues(alpha:0.03),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -5404,7 +5404,7 @@ class _ContributionLevelScreenState extends State<ContributionLevelScreen> {
                       (group.status?.toLowerCase() == 'completed'
                               ? Colors.grey
                               : primaryColor)
-                          .withOpacity(0.1),
+                          ..withValues(alpha:0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -8300,7 +8300,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.1),
+                      color: Colors.green..withValues(alpha:0.1),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
@@ -8353,7 +8353,7 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
                         backgroundColor: Theme.of(context).primaryColor,
                         shadowColor: Theme.of(
                           context,
-                        ).primaryColor.withOpacity(0.4),
+                        ).primaryColor..withValues(alpha:0.4),
                         elevation: 4,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -9261,7 +9261,7 @@ class _LoginScreenState extends State<LoginScreen>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppTheme.primaryColor.withOpacity(isDark ? 0.15 : 0.1),
+                      AppTheme.primaryColor..withValues(alpha:isDark ? 0.15 : 0.1),
                       Colors.transparent,
                     ],
                   ),
@@ -9281,7 +9281,7 @@ class _LoginScreenState extends State<LoginScreen>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppTheme.accentColor.withOpacity(isDark ? 0.1 : 0.05),
+                      AppTheme.accentColor..withValues(alpha:isDark ? 0.1 : 0.05),
                       Colors.transparent,
                     ],
                   ),
@@ -9449,7 +9449,7 @@ class _LoginScreenState extends State<LoginScreen>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                  color: Colors.black..withValues(alpha:isDark ? 0.3 : 0.05),
                   blurRadius: 30,
                   offset: const Offset(0, 15),
                 ),
@@ -10298,10 +10298,10 @@ class _NotificationCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: color.withOpacity(isRead ? 0.05 : 0.1),
+        color: color..withValues(alpha:isRead ? 0.05 : 0.1),
         shape: BoxShape.circle,
       ),
-      child: Icon(icon, size: 20, color: color.withOpacity(isRead ? 0.5 : 1.0)),
+      child: Icon(icon, size: 20, color: color..withValues(alpha:isRead ? 0.5 : 1.0)),
     );
   }
 }
@@ -11776,7 +11776,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppTheme.primaryColor.withOpacity(isDark ? 0.15 : 0.1),
+                      AppTheme.primaryColor..withValues(alpha:isDark ? 0.15 : 0.1),
                       Colors.transparent,
                     ],
                   ),
@@ -11796,7 +11796,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [
-                      AppTheme.accentColor.withOpacity(isDark ? 0.1 : 0.05),
+                      AppTheme.accentColor..withValues(alpha:isDark ? 0.1 : 0.05),
                       Colors.transparent,
                     ],
                   ),
@@ -11966,7 +11966,7 @@ class _RegisterScreenState extends State<RegisterScreen>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
+                  color: Colors.black..withValues(alpha:isDark ? 0.3 : 0.05),
                   blurRadius: 30,
                   offset: const Offset(0, 15),
                 ),
@@ -12743,7 +12743,7 @@ class _QuantumIcon extends StatelessWidget {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: theme.accentColor.withOpacity(0.4 * val),
+                            color: theme.accentColor..withValues(alpha:0.4 * val),
                             blurRadius: 20,
                             spreadRadius: 2,
                           ),
@@ -12755,7 +12755,7 @@ class _QuantumIcon extends StatelessWidget {
                   item.icon,
                   size: 24 + (6 * val),
                   color: Color.lerp(
-                    Colors.white.withOpacity(0.35),
+                    Colors.white..withValues(alpha:0.35),
                     Colors.white,
                     val,
                   ),
@@ -12830,7 +12830,7 @@ class QuantumNeuromorphicPainter extends CustomPainter {
       65,
       Paint()
         ..shader = RadialGradient(
-          colors: [theme.accentColor.withOpacity(0.12), Colors.transparent],
+          colors: [theme.accentColor..withValues(alpha:0.12), Colors.transparent],
         ).createShader(Rect.fromCircle(center: Offset.zero, radius: 65))
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 35),
     );
@@ -12900,9 +12900,9 @@ class QuantumNeuromorphicPainter extends CustomPainter {
       Paint()
         ..shader = LinearGradient(
           colors: [
-            theme.baseColor.withOpacity(0.96),
-            const Color(0xFF101020).withOpacity(0.9),
-            theme.baseColor.withOpacity(0.96),
+            theme.baseColor..withValues(alpha:0.96),
+            const Color(0xFF101020)..withValues(alpha:0.9),
+            theme.baseColor..withValues(alpha:0.96),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -12918,11 +12918,11 @@ class QuantumNeuromorphicPainter extends CustomPainter {
         ..shader = SweepGradient(
           center: Alignment(((activeX / w) * 2) - 1.0, 0.0),
           colors: [
-            Colors.white.withOpacity(0.02),
-            theme.accentColor.withOpacity(0.4),
+            Colors.white..withValues(alpha:0.02),
+            theme.accentColor..withValues(alpha:0.4),
             theme.secondaryAccent,
-            theme.accentColor.withOpacity(0.4),
-            Colors.white.withOpacity(0.02),
+            theme.accentColor..withValues(alpha:0.4),
+            Colors.white..withValues(alpha:0.02),
           ],
           stops: const [0.0, 0.45, 0.5, 0.55, 1.0],
           transform: GradientRotation(idleTime * 0.4),
@@ -12943,8 +12943,8 @@ class QuantumNeuromorphicPainter extends CustomPainter {
       Paint()
         ..shader = RadialGradient(
           colors: [
-            theme.accentColor.withOpacity(0.18),
-            theme.secondaryAccent.withOpacity(0.05),
+            theme.accentColor..withValues(alpha:0.18),
+            theme.secondaryAccent..withValues(alpha:0.05),
             Colors.transparent,
           ],
         ).createShader(nucleusRect)
@@ -12962,7 +12962,7 @@ class QuantumNeuromorphicPainter extends CustomPainter {
     );
     canvas.drawPath(
       reflectionPath,
-      Paint()..color = Colors.white.withOpacity(0.05),
+      Paint()..color = Colors.white..withValues(alpha:0.05),
     );
 
     canvas.restore(); // Restore initial transform
@@ -12990,7 +12990,7 @@ class QuantumNeuromorphicPainter extends CustomPainter {
         const Radius.circular(14),
       ),
       paint
-        ..color = const Color(0xFF00FFFF).withOpacity(0.12)
+        ..color = const Color(0xFF00FFFF)..withValues(alpha:0.12)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5),
     );
 
@@ -13006,7 +13006,7 @@ class QuantumNeuromorphicPainter extends CustomPainter {
         const Radius.circular(14),
       ),
       paint
-        ..color = const Color(0xFFFF00FF).withOpacity(0.12)
+        ..color = const Color(0xFFFF00FF)..withValues(alpha:0.12)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5),
     );
   }
@@ -13241,7 +13241,7 @@ class _FuturisticNavBarState extends State<FuturisticNavBar>
                                       shadows: [
                                         if (t > 0.1)
                                           Shadow(
-                                            color: activeColor.withOpacity(
+                                            color: activeColor..withValues(alpha:
                                               0.3 * t,
                                             ),
                                             blurRadius: 8 * t,
@@ -14068,7 +14068,7 @@ class _RipplePainter extends CustomPainter {
     if (progress == 0) return;
 
     final paint = Paint()
-      ..color = color.withOpacity(
+      ..color = color..withValues(alpha:
         (1 - progress) * (1 - progress), // quadratic decay
       )
       ..style = PaintingStyle.fill;
@@ -14681,7 +14681,7 @@ class _GlassBalanceCardState extends State<GlassBalanceCard>
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: RadialGradient(
-            colors: [color, color.withOpacity(0)],
+            colors: [color, color..withValues(alpha:0)],
             stops: const [0.2, 1.0],
           ),
         ),
@@ -14716,7 +14716,7 @@ class MeshGradientBackground extends StatelessWidget {
           child: _buildOrb(
             300,
             (isDark ? const Color(0xFF818CF8) : const Color(0xFF6366F1))
-                .withOpacity(isDark ? 0.12 : 0.08),
+                ..withValues(alpha:isDark ? 0.12 : 0.08),
           ), // Indigo
         ),
         Positioned(
@@ -14725,7 +14725,7 @@ class MeshGradientBackground extends StatelessWidget {
           child: _buildOrb(
             400,
             (isDark ? const Color(0xFF5EEAD4) : const Color(0xFF2DD4BF))
-                .withOpacity(isDark ? 0.08 : 0.05),
+                ..withValues(alpha:isDark ? 0.08 : 0.05),
           ), // Teal
         ),
         Positioned(
@@ -14734,7 +14734,7 @@ class MeshGradientBackground extends StatelessWidget {
           child: _buildOrb(
             250,
             (isDark ? const Color(0xFFFBBF24) : const Color(0xFFF59E0B))
-                .withOpacity(isDark ? 0.06 : 0.03),
+                ..withValues(alpha:isDark ? 0.06 : 0.03),
           ), // Amber
         ),
 

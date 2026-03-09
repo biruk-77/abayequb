@@ -1,3 +1,4 @@
+// lib/presentation/widgets/premium/premium_group_card.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
@@ -284,8 +285,7 @@ class _PremiumGroupCardState extends State<PremiumGroupCard>
                                     borderRadius: BorderRadius.circular(2),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.5,
+                                        color: Colors.white.withValues(alpha: 0.5,
                                         ),
                                         blurRadius: 4,
                                       ),

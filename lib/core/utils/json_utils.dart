@@ -1,3 +1,4 @@
+// lib/core/utils/json_utils.dart
 class JsonUtils {
   static String? asString(dynamic value) => value?.toString();
 

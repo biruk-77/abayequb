@@ -1,3 +1,4 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -26,6 +27,7 @@ import 'core/utils/size_config.dart';
 import 'core/utils/logger.dart';
 import 'data/services/notification_service.dart';
 import 'data/services/notification_api_service.dart';
+import 'data/services/kyc_service.dart';
 import 'data/repositories/notification_repository.dart';
 import 'presentation/widgets/offline_indicator.dart';
 
@@ -46,9 +48,10 @@ void main() async {
   final authService = AuthService(client);
   final equbService = EqubService(client);
   final notificationApiService = NotificationApiService(client);
+  final kycService = KYCService(client);
 
   // Repositories
-  final authRepository = AuthRepository(authService, storage);
+  final authRepository = AuthRepository(authService, kycService, storage);
   final equbRepository = EqubRepository(equbService);
   final notificationRepository = NotificationRepository(notificationApiService);
 
@@ -71,7 +74,14 @@ void main() async {
   final notificationService = FirebaseNotificationService();
   notificationService.setProvider(notificationProvider);
   notificationService.setAuthService(authService);
-  await notificationService.initialize();
+  try {
+    await notificationService.initialize();
+  } catch (e) {
+    AppLogger.error(
+      'Notification initialization failed – app will continue',
+      e,
+    );
+  }
 
   // Router initialized once
   final router = AppRouter.router(authProvider);

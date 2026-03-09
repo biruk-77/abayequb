@@ -1,3 +1,4 @@
+// lib/core/router/router.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:feature_discovery/feature_discovery.dart';
@@ -16,8 +17,12 @@ import '../../presentation/screens/onboarding_screen.dart';
 import '../../presentation/providers/auth_provider.dart';
 import '../../presentation/screens/enrollment_screen.dart';
 import '../../presentation/screens/notification_screen.dart';
+import '../../presentation/screens/kyc_upload_screen.dart';
+import '../../presentation/screens/top_up_screen.dart';
+import '../../presentation/screens/calendar_screen.dart';
 import '../../data/models/equb_group_model.dart';
 import '../../data/models/equb_package_model.dart';
+import '../../presentation/screens/history_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
   debugLabel: 'root',
@@ -75,6 +80,10 @@ class AppRouter {
         builder: (context, state) => const RegisterScreen(),
       ),
       GoRoute(
+        path: '/history',
+        builder: (context, state) => const HistoryScreen(),
+      ),
+      GoRoute(
         path: '/',
         builder: (BuildContext context, GoRouterState state) {
           return FeatureDiscovery(
@@ -99,7 +108,19 @@ class AppRouter {
                 path: 'edit', // Route path: /profile/edit
                 builder: (context, state) => const EditProfileScreen(),
               ),
+              GoRoute(
+                path: 'kyc', // Route path: /profile/kyc
+                builder: (context, state) => const KYCUploadScreen(),
+              ),
             ],
+          ),
+          GoRoute(
+            path: 'top-up', // Route path: /top-up
+            builder: (context, state) {
+              final amount =
+                  (state.extra as Map<String, dynamic>?)?['amount'] as double?;
+              return TopUpScreen(initialAmount: amount);
+            },
           ),
           GoRoute(
             path: 'payment',
@@ -118,10 +139,21 @@ class AppRouter {
             path: 'enrollment',
             builder: (BuildContext context, GoRouterState state) {
               final extra = state.extra as Map<String, dynamic>;
-              return EnrollmentScreen(
-                group: extra['group'] as EqubGroupModel,
-                package: extra['package'] as EqubPackageModel,
-              );
+
+              // Handle optional maps (useful for persistence or deep links)
+              final group = extra['group'] is EqubGroupModel
+                  ? extra['group'] as EqubGroupModel
+                  : EqubGroupModel.fromJson(
+                      extra['group'] as Map<String, dynamic>,
+                    );
+
+              final package = extra['package'] is EqubPackageModel
+                  ? extra['package'] as EqubPackageModel
+                  : EqubPackageModel.fromJson(
+                      extra['package'] as Map<String, dynamic>,
+                    );
+
+              return EnrollmentScreen(group: group, package: package);
             },
           ),
           GoRoute(
@@ -134,9 +166,27 @@ class AppRouter {
                     final package = state.extra as EqubPackageModel;
                     return ContributionLevelScreen(package: package);
                   } else {
-                    final extra = state.extra as Map<String, dynamic>;
+                    final extra = state.extra is Map ? state.extra as Map : {};
+
+                    final packageParam = extra['package'];
+                    EqubPackageModel package;
+
+                    if (packageParam is EqubPackageModel) {
+                      package = packageParam;
+                    } else if (packageParam is Map) {
+                      package = EqubPackageModel.fromJson(
+                        Map<String, dynamic>.from(packageParam),
+                      );
+                    } else {
+                      // Fallback if package is completely missing or invalid type
+                      package = EqubPackageModel(
+                        id: state.pathParameters['id'] ?? 'Unknown',
+                        name: 'Unknown Package',
+                      );
+                    }
+
                     return ContributionLevelScreen(
-                      package: extra['package'] as EqubPackageModel,
+                      package: package,
                       initialGroupId: extra['groupId'] as String?,
                     );
                   }
@@ -151,6 +201,12 @@ class AppRouter {
             path: 'notifications', // Route path: /notifications
             builder: (BuildContext context, GoRouterState state) {
               return const NotificationScreen();
+            },
+          ),
+          GoRoute(
+            path: 'calendar', // Route path: /calendar
+            builder: (BuildContext context, GoRouterState state) {
+              return const CalendarScreen();
             },
           ),
         ],

@@ -1,14 +1,18 @@
+// lib/data/repositories/auth_repository.dart
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../services/auth_service.dart';
+import '../services/kyc_service.dart';
 import '../models/user_model.dart';
+import '../models/kyc_model.dart';
 import '../../core/utils/logger.dart';
 import 'dart:convert';
 
 class AuthRepository {
   final AuthService _authService;
+  final KYCService _kycService;
   final FlutterSecureStorage _storage;
 
-  AuthRepository(this._authService, this._storage);
+  AuthRepository(this._authService, this._kycService, this._storage);
 
   Future<UserModel> signIn(String identifier, String password) async {
     try {
@@ -292,6 +296,39 @@ class AuthRepository {
       return user;
     } catch (e) {
       AppLogger.error('failed to get user profile', e);
+      rethrow;
+    }
+  }
+
+  // --- KYC ---
+
+  Future<KYCModel> submitKYC({
+    required String documentType,
+    required String filePath,
+  }) async {
+    try {
+      AppLogger.info('Submitting KYC for document type: $documentType');
+      final response = await _kycService.submitKYC(
+        documentType: documentType,
+        filePath: filePath,
+      );
+      return KYCModel.fromJson(response['data']);
+    } catch (e) {
+      AppLogger.error('KYC Submission failed', e);
+      rethrow;
+    }
+  }
+
+  Future<KYCModel?> getMyKYC() async {
+    try {
+      AppLogger.info('Fetching my KYC status');
+      final response = await _kycService.getMyKYC();
+      final data = response['data'];
+      if (data == null || (data is List && data.isEmpty)) return null;
+      if (data is List) return KYCModel.fromJson(data.first);
+      return KYCModel.fromJson(data);
+    } catch (e) {
+      AppLogger.error('Fetch KYC failed', e);
       rethrow;
     }
   }

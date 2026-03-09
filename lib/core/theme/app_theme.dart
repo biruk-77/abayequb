@@ -2,63 +2,66 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // --- Brand Identity ---
+  // ─────────────────────────────────────────────────────────
+  //  THE ROYAL PALETTE (Blue, White & Gold)
+  // ─────────────────────────────────────────────────────────
+
+  // BRAND STRINGS (Restored)
   static const String appName = "Abay eQub";
 
-  // --- Brand Colors (Abay Mix) ---
-  // Blue: Represents the Abay River, Trust, and Stability
-  static const Color primaryColor = Color(0xFF003366); // Dark Royal Blue
-  static const Color primaryLight = Color(
-    0xFF00509E,
-  ); // Lighter Professional Blue
+  // PRIMARY: The "Abay" Identity
+  static const Color primaryColor = Color(0xFF003366); // Deep Royal Blue
+  static const Color primaryLight = Color(0xFF00509E); // Vibrant Deep Teal
 
-  // Gold: Represents the eQub (Wealth & Value)
-  static const Color accentColor = Color(0xFFD4AF37); // Metallic Gold
-  static const Color accentLight = Color(0xFFFFD700); // Bright Gold
+  // ACCENT: The "Wealth" Identity
+  static const Color accentColor = Color(0xFFD4AF37); // Gold Bullion
+  static const Color accentLight = Color(0xFFF4CF6E); // Gold Dust (Highlight)
 
-  static const Color errorColor = Color(0xFFE53935);
+  // NEUTRALS: High-End Backgrounds
+  static const Color bgLight = Color(0xFFF8FAFC); // Platinum White
+  static const Color surfaceLight = Colors.white;
+
+  static const Color bgDark = Color(0xFF020617); // Obsidian (Pitch Black/Blue)
+  static const Color surfaceDark = Color(0xFF0F172A); // Midnight Blue
+
+  // TEXT COLORS
+  static const Color textPrimaryLight = Color(0xFF0F172A); // Slate 900
+  static const Color textSecondaryLight = Color(0xFF64748B); // Slate 500
+  static const Color textPrimaryDark = Color(0xFFF8FAFC); // Slate 50
+  static const Color textSecondaryDark = Color(0xFF94A3B8); // Slate 400
+
+  // FUNCTIONAL
+  static const Color errorColor = Color(0xFFDC2626); // Ruby Red
+  static const Color successColor = Color(0xFF059669); // Emerald Green
   static const Color notificationRed = Color(0xFFEF4444);
 
-  // --- Neutral Colors (Light Mode) ---
-  static const Color bgLight = Color(
-    0xFFF4F6F9,
-  ); // Very light blue-grey (cleaner than pure white)
-  static const Color surfaceLight = Colors.white;
-  static const Color textPrimaryLight = Color(
-    0xFF002147,
-  ); // Very Dark Blue (Instead of harsh black)
-  static const Color textSecondaryLight = Color(0xFF546E7A); // Blue-Grey
+  // ─────────────────────────────────────────────────────────
+  //  GRADIENTS
+  // ─────────────────────────────────────────────────────────
 
-  // --- Neutral Colors (Dark Mode) ---
-  static const Color bgDark = Color(0xFF05101A); // Deep Night Blue
-  static const Color surfaceDark = Color(
-    0xFF0A1929,
-  ); // Slightly lighter dark blue
-  static const Color textPrimaryDark = Color(0xFFF8FAFC);
-  static const Color textSecondaryDark = Color(0xFF94A3B8);
-
-  // --- Gradients ---
-  // The Signature Abay Gradient (Blue to Light Blue)
-  static const LinearGradient primaryGradient = LinearGradient(
+  // The Main "Royal" Gradient
+  static const LinearGradient royalGradient = LinearGradient(
     colors: [primaryColor, primaryLight],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  // The Wealth Gradient (Gold)
-  static const LinearGradient accentGradient = LinearGradient(
-    colors: [accentColor, Color(0xFFF4CF6E)],
+  // BACKWARD COMPATIBILITY (Fixes the errors in Login/Register screens)
+  static const LinearGradient primaryGradient = royalGradient;
+
+  static const LinearGradient goldGradient = LinearGradient(
+    colors: [accentColor, accentLight],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  // Helper for glass effects
+  // Helper for glass effects (restored for compatibility)
   static LinearGradient glassGradient(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return LinearGradient(
       colors: [
-        (isDark ? Colors.white : Colors.white).withOpacity(0.12),
-        (isDark ? Colors.white : Colors.white).withOpacity(0.04),
+        (isDark ? Colors.white : Colors.white).withValues(alpha: 0.12),
+        (isDark ? Colors.white : Colors.white).withValues(alpha: 0.04),
       ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
@@ -69,7 +72,9 @@ class AppTheme {
   static Color surface(BuildContext context) =>
       Theme.of(context).cardTheme.color ?? Colors.white;
 
-  // --- LIGHT THEME DEFINITION ---
+  // ─────────────────────────────────────────────────────────
+  //  LIGHT THEME
+  // ─────────────────────────────────────────────────────────
   static ThemeData get lightTheme {
     return _buildTheme(
       brightness: Brightness.light,
@@ -82,7 +87,9 @@ class AppTheme {
     );
   }
 
-  // --- DARK THEME DEFINITION ---
+  // ─────────────────────────────────────────────────────────
+  //  DARK THEME
+  // ─────────────────────────────────────────────────────────
   static ThemeData get darkTheme {
     return _buildTheme(
       brightness: Brightness.dark,
@@ -95,7 +102,9 @@ class AppTheme {
     );
   }
 
-  // --- THEME BUILDER ---
+  // ─────────────────────────────────────────────────────────
+  //  THEME BUILDER ENGINE
+  // ─────────────────────────────────────────────────────────
   static ThemeData _buildTheme({
     required Brightness brightness,
     required Color primary,
@@ -113,57 +122,58 @@ class AppTheme {
       primaryColor: primary,
       scaffoldBackgroundColor: background,
 
-      // Color Scheme
+      // 1. Color Scheme
       colorScheme: ColorScheme.fromSeed(
-        seedColor: primaryColor,
+        seedColor: primary,
         brightness: brightness,
         primary: primary,
         secondary: secondary,
         surface: surface,
-        background: background,
+        onSurface: textPrimary,
         error: errorColor,
       ),
 
-      // Font Styles (Fixes "Unattractive Font" issues)
+      // 2. Typography (Outfit Font - Modern & Clean)
       textTheme: GoogleFonts.outfitTextTheme().apply(
         bodyColor: textPrimary,
         displayColor: textPrimary,
       ),
 
-      // App Bar (Abay Blue Header)
+      // 3. AppBar (Royal Blue Header)
       appBarTheme: AppBarTheme(
-        backgroundColor: isDark ? surface : primaryColor,
-        foregroundColor: Colors.white, // White text on Blue header
+        backgroundColor: isDark ? surface : primary,
+        foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
         titleTextStyle: GoogleFonts.outfit(
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Colors.white,
-          letterSpacing: 0.5,
+          letterSpacing: 1.0,
         ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
 
-      // Cards (Clean White with Gold Hint)
+      // 4. Cards (Clean with subtle borders)
       cardTheme: CardThemeData(
         color: surface,
-        elevation: isDark ? 0 : 4,
-        shadowColor: primary.withOpacity(0.1),
+        elevation: isDark ? 0 : 8,
+        shadowColor: Colors.black.withValues(alpha: 0.05),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          // Subtle border
           side: BorderSide(
-            color: isDark ? Colors.white10 : Colors.black.withOpacity(0.03),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.black.withValues(alpha: 0.02),
             width: 1,
           ),
         ),
       ),
 
-      // Buttons (Gold/Blue Actions)
+      // 5. Buttons (Gold/Blue Actions)
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: primary, // Royal Blue Buttons
+          backgroundColor: primary,
           foregroundColor: Colors.white,
           minimumSize: const Size(double.infinity, 56),
           shape: RoundedRectangleBorder(
@@ -175,36 +185,33 @@ class AppTheme {
             letterSpacing: 1.0,
           ),
           elevation: 4,
-          shadowColor: primary.withOpacity(0.4),
+          shadowColor: primary.withValues(alpha: 0.4),
         ),
       ),
 
-      // Input Fields (Fixes "Unattractive Inputs")
+      // 6. Input Fields (Glassy feel)
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: isDark ? surface.withOpacity(0.5) : Colors.white,
+        fillColor: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.white,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 20,
-          vertical: 18,
+          vertical: 20,
         ),
-        // Default Border
+        // Idle Border
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(
-            color: isDark ? Colors.white10 : Colors.grey.shade300,
-          ),
+          borderSide: BorderSide.none,
         ),
-        // Enabled Border (Idle)
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: isDark ? Colors.white10 : Colors.grey.shade300,
+            color: isDark ? Colors.white10 : Colors.grey.shade200,
           ),
         ),
         // Focused Border (Gold Highlight)
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: secondary, width: 2), // Gold Focus
+          borderSide: BorderSide(color: secondary, width: 2),
         ),
         // Error Border
         errorBorder: OutlineInputBorder(
@@ -212,26 +219,36 @@ class AppTheme {
           borderSide: const BorderSide(color: errorColor, width: 1.5),
         ),
         labelStyle: TextStyle(color: textSecondary),
-        hintStyle: TextStyle(color: textSecondary.withOpacity(0.5)),
+        hintStyle: TextStyle(color: textSecondary.withValues(alpha: 0.5)),
+        prefixIconColor: primary,
       ),
 
-      // Bottom Nav Bar
+      // 7. Navigation Bar
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: surface,
-        selectedItemColor: primary, // Blue for selected
+        selectedItemColor: secondary, // Gold for selected tab
         unselectedItemColor: textSecondary,
         type: BottomNavigationBarType.fixed,
-        elevation: 8,
+        elevation: 0,
+        selectedLabelStyle: GoogleFonts.outfit(fontWeight: FontWeight.bold),
       ),
 
-      // Progress Indicators
+      // 8. Progress Indicators
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: secondary, // Gold loaders
-        circularTrackColor: primary.withOpacity(0.1),
+        circularTrackColor: primary.withValues(alpha: 0.1),
         refreshBackgroundColor: surface,
       ),
 
-      // Snackbars
+      // 9. Floating Action Button
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: secondary,
+        foregroundColor: primary,
+        elevation: 6,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+
+      // 10. Snackbars
       snackBarTheme: SnackBarThemeData(
         backgroundColor: isDark ? surfaceDark : primaryColor,
         contentTextStyle: GoogleFonts.outfit(color: Colors.white),
@@ -242,7 +259,9 @@ class AppTheme {
     );
   }
 
-  // --- Typography Helpers ---
+  // ─────────────────────────────────────────────────────────
+  //  TYPOGRAPHY HELPERS
+  // ─────────────────────────────────────────────────────────
   static TextStyle get caption => GoogleFonts.outfit(
     fontSize: 12,
     fontWeight: FontWeight.w500,

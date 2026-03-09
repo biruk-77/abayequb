@@ -1,3 +1,4 @@
+// lib/presentation/widgets/status_badge.dart
 import 'package:flutter/material.dart';
 
 enum StatusType { paid, due, late, locked }

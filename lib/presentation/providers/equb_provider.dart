@@ -1,8 +1,10 @@
+// lib/presentation/providers/equb_provider.dart
 import 'package:flutter/foundation.dart';
 import '../../data/models/equb_package_model.dart';
 import '../../data/models/equb_group_model.dart';
 import '../../data/repositories/equb_repository.dart';
 import '../../data/models/equb_member_model.dart';
+import '../../data/models/contribution_model.dart';
 import '../../core/utils/logger.dart';
 import '../../core/utils/network_error_handler.dart';
 
@@ -18,18 +20,24 @@ class EqubProvider extends ChangeNotifier {
   List<EqubGroupModel> _myGroups = [];
   List<EqubMemberModel> _myMemberships = [];
   List<EqubGroupModel> _packageGroups = [];
+  ContributionModel? _nextContribution;
 
   List<EqubPackageModel> get packages => _packages;
   List<EqubGroupModel> get groups => _groups;
   List<EqubGroupModel> get myGroups => _myGroups;
   List<EqubMemberModel> get myMemberships => _myMemberships;
   List<EqubGroupModel> get packageGroups => _packageGroups;
-
+  ContributionModel? get nextContribution => _nextContribution;
   EqubGroupModel? _selectedGroupDetails;
   EqubGroupModel? get selectedGroupDetails => _selectedGroupDetails;
 
   bool get isLoading => _isLoading;
   String? get error => _error;
+
+  void _safeNotify() {
+    // Notify in a microtask to avoid "setState during build" errors
+    Future.microtask(() => notifyListeners());
+  }
 
   Future<void> fetchGroupsByPackage(String packageId) async {
     // 1. Check if we already have these groups in our general list to save a server hit
@@ -38,7 +46,7 @@ class EqubProvider extends ChangeNotifier {
         .toList();
     if (localMatches.isNotEmpty) {
       _packageGroups = localMatches;
-      notifyListeners();
+      _safeNotify();
       AppLogger.info(
         'Provider: Found ${localMatches.length} groups locally for package $packageId',
       );
@@ -47,7 +55,7 @@ class EqubProvider extends ChangeNotifier {
 
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    _safeNotify();
 
     try {
       AppLogger.info(
@@ -122,7 +130,7 @@ class EqubProvider extends ChangeNotifier {
 
     _isLoading = true;
     _error = null;
-    notifyListeners();
+    _safeNotify();
 
     try {
       // 1. Load from cache first if we have nothing in memory
@@ -169,7 +177,7 @@ class EqubProvider extends ChangeNotifier {
       final cachedGroups = await _equbRepository.getCachedGroups();
       if (cachedGroups.isNotEmpty) {
         _groups = cachedGroups;
-        notifyListeners();
+        _safeNotify();
       }
 
       // 2. Fetch from API
@@ -196,7 +204,7 @@ class EqubProvider extends ChangeNotifier {
     } catch (e) {
       AppLogger.error('Provider: Error fetching groups', e);
     } finally {
-      notifyListeners();
+      _safeNotify();
     }
   }
 
@@ -248,9 +256,26 @@ class EqubProvider extends ChangeNotifier {
       AppLogger.success(
         'Provider: Fetched ${_myGroups.length} my groups and ${_myMemberships.length} memberships',
       );
-      notifyListeners();
+
+      // Auto-fetch next contribution whenever user data is refreshed
+      fetchNextContribution();
+
+      _safeNotify();
     } catch (e) {
       AppLogger.error('Provider: Error fetching user equb data', e);
+    }
+  }
+
+  Future<void> fetchNextContribution() async {
+    try {
+      AppLogger.info('Provider: Fetching next contribution detail...');
+      _nextContribution = await _equbRepository.getNextContribution();
+      // null = no upcoming contribution (404 from server) — not an error
+    } catch (e) {
+      AppLogger.error('Provider: Error fetching next contribution', e);
+      _nextContribution = null;
+    } finally {
+      _safeNotify();
     }
   }
 

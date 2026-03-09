@@ -1,3 +1,4 @@
+// lib/presentation/widgets/high_end_pressed_effect.dart
 import 'dart:math';
 import 'package:flutter/material.dart';
 
@@ -89,8 +90,8 @@ class _RipplePainter extends CustomPainter {
     if (progress == 0) return;
 
     final paint = Paint()
-      ..color = color.withOpacity(
-        (1 - progress) * (1 - progress), // quadratic decay
+      ..color = color.withValues(
+        alpha: (1 - progress) * (1 - progress), // quadratic decay
       )
       ..style = PaintingStyle.fill;
 
