@@ -2,6 +2,7 @@
 import 'package:flutter/foundation.dart';
 import '../../data/models/wallet_model.dart';
 import '../../data/models/transaction_model.dart';
+import '../../data/models/bank_account_model.dart';
 import '../../core/utils/logger.dart';
 import '../../data/repositories/equb_repository.dart';
 
@@ -11,6 +12,8 @@ class WalletProvider extends ChangeNotifier {
   bool _isLoading = false;
   List<TransactionModel> _transactions = [];
   bool _isTransactionsLoading = false;
+  List<BankAccountModel> _bankAccounts = [];
+  bool _isAccountsLoading = false;
 
   WalletProvider(this._repository);
 
@@ -21,6 +24,8 @@ class WalletProvider extends ChangeNotifier {
   bool get isBalanceVisible => _isBalanceVisible;
   List<TransactionModel> get transactions => _transactions;
   bool get isTransactionsLoading => _isTransactionsLoading;
+  List<BankAccountModel> get bankAccounts => _bankAccounts;
+  bool get isAccountsLoading => _isAccountsLoading;
 
   void _safeNotify() {
     Future.microtask(() => notifyListeners());
@@ -148,6 +153,78 @@ class WalletProvider extends ChangeNotifier {
     } finally {
       _isLoading = false;
       _safeNotify();
+    }
+  }
+
+  // --- Bank Accounts ---
+
+  Future<void> fetchBankAccounts() async {
+    _isAccountsLoading = true;
+    _safeNotify();
+
+    try {
+      AppLogger.info('Provider: Fetching system bank accounts...');
+      _bankAccounts = await _repository.getBankAccounts();
+      AppLogger.success('Provider: Fetched ${_bankAccounts.length} bank accounts');
+    } catch (e) {
+      AppLogger.error('Provider: Error fetching bank accounts', e);
+    } finally {
+      _isAccountsLoading = false;
+      _safeNotify();
+    }
+  }
+
+  Future<void> createBankAccount(Map<String, dynamic> data) async {
+    _isAccountsLoading = true;
+    _safeNotify();
+    try {
+      await _repository.createBankAccount(data);
+      await fetchBankAccounts();
+    } catch (e) {
+      AppLogger.error('Provider: Error creating bank account', e);
+      rethrow;
+    } finally {
+      _isAccountsLoading = false;
+      _safeNotify();
+    }
+  }
+
+  Future<void> updateBankAccount(String id, Map<String, dynamic> data) async {
+    _isAccountsLoading = true;
+    _safeNotify();
+    try {
+      await _repository.updateBankAccount(id, data);
+      await fetchBankAccounts();
+    } catch (e) {
+      AppLogger.error('Provider: Error updating bank account', e);
+      rethrow;
+    } finally {
+      _isAccountsLoading = false;
+      _safeNotify();
+    }
+  }
+
+  Future<void> deleteBankAccount(String id) async {
+    _isAccountsLoading = true;
+    _safeNotify();
+    try {
+      await _repository.deleteBankAccount(id);
+      await fetchBankAccounts();
+    } catch (e) {
+      AppLogger.error('Provider: Error deleting bank account', e);
+      rethrow;
+    } finally {
+      _isAccountsLoading = false;
+      _safeNotify();
+    }
+  }
+
+  Future<void> submitDispute(Map<String, dynamic> data) async {
+    try {
+      await _repository.submitDispute(data);
+    } catch (e) {
+      AppLogger.error('Provider: Dispute submission failed', e);
+      rethrow;
     }
   }
 }

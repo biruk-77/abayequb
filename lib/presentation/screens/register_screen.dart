@@ -582,6 +582,18 @@ class _RegisterScreenState extends State<RegisterScreen>
                       ),
                     ],
                   ),
+                  const SizedBox(height: 8),
+                  GestureDetector(
+                    onTap: () => nav.GoRouter.of(context).push('/about'),
+                    child: Text(
+                      'Terms & Privacy Policy',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).primaryColor.withValues(alpha: 0.7),
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

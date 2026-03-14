@@ -270,4 +270,11 @@ class AppTheme {
 
   static TextStyle get headline =>
       GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold);
+
+  static InputDecoration inputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon),
+    );
+  }
 }

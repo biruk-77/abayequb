@@ -335,7 +335,7 @@ class _KYCUploadScreenState extends State<KYCUploadScreen> {
                               kyc!.documentUrl!,
                               fit: BoxFit.cover,
                               width: double.infinity,
-                              errorBuilder: (context, _, __) => const Center(
+                              errorBuilder: (context, _, _) => const Center(
                                 child: Icon(
                                   Icons.broken_image,
                                   color: Colors.grey,

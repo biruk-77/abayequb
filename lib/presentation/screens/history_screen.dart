@@ -340,21 +340,29 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ),
             ),
             const SizedBox(height: 32),
-            _buildDetailRow('Reference ID', tx.referenceId ?? 'N/A'),
-            _buildDetailRow('Type', tx.type?.toUpperCase() ?? 'N/A'),
-            _buildDetailRow('Amount', CurrencyFormatter.format(tx.amount)),
-            _buildDetailRow('Status', tx.status?.toUpperCase() ?? 'N/A'),
-            _buildDetailRow('Method', tx.method?.toUpperCase() ?? 'N/A'),
-            _buildDetailRow(
-              'Date',
-              DateFormatter.format(tx.createdAt ?? DateTime.now(), 'en'),
-            ),
-            _buildDetailRow(
-              'Description',
-              tx.description ?? 'No description provided',
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _buildDetailRow('Reference ID', tx.referenceId ?? 'N/A'),
+                    _buildDetailRow('Type', tx.type?.toUpperCase() ?? 'N/A'),
+                    _buildDetailRow('Amount', CurrencyFormatter.format(tx.amount)),
+                    _buildDetailRow('Status', tx.status?.toUpperCase() ?? 'N/A'),
+                    _buildDetailRow('Method', tx.method?.toUpperCase() ?? 'N/A'),
+                    _buildDetailRow(
+                      'Date',
+                      DateFormatter.format(tx.createdAt ?? DateTime.now(), 'en'),
+                    ),
+                    _buildDetailRow(
+                      'Description',
+                      tx.description ?? 'No description provided',
+                    ),
+                  ],
+                ),
+              ),
             ),
             const Spacer(),
-            SliverToBoxAdapter(child: const SizedBox(height: 20)),
+            const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -372,6 +380,99 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
                 ),
               ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: TextButton.icon(
+                onPressed: () => _showDisputeForm(context, (tx.referenceId ?? tx.id).toString()),
+                icon: const Icon(Icons.gavel_rounded, size: 20, color: Colors.red),
+                label: Text(
+                  'Dispute Transaction',
+                  style: GoogleFonts.outfit(
+                    color: Colors.red,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showDisputeForm(BuildContext context, String transactionId) {
+    String selectedCategory = 'payment_failure';
+    final reasonController = TextEditingController();
+    bool isSubmitting = false;
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: Text('Report a Dispute', style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<String>(
+                value: selectedCategory,
+                decoration: const InputDecoration(labelText: 'Category'),
+                items: const [
+                  DropdownMenuItem(value: 'payment_failure', child: Text('Payment Failure')),
+                  DropdownMenuItem(value: 'payout_delay', child: Text('Payout Delay')),
+                  DropdownMenuItem(value: 'fee_dispute', child: Text('Fee Dispute')),
+                  DropdownMenuItem(value: 'group_issue', child: Text('Group Issue')),
+                  DropdownMenuItem(value: 'other', child: Text('Other')),
+                ],
+                onChanged: (v) => setState(() => selectedCategory = v!),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: reasonController,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                  labelText: 'Reason',
+                  hintText: 'Describe the issue...',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+            ElevatedButton(
+              onPressed: isSubmitting
+                  ? null
+                  : () async {
+                      if (reasonController.text.isEmpty) return;
+                      setState(() => isSubmitting = true);
+                      try {
+                        await context.read<WalletProvider>().submitDispute({
+                          'transactionId': transactionId,
+                          'category': selectedCategory,
+                          'reason': reasonController.text,
+                        });
+                        if (context.mounted) {
+                          Navigator.pop(context); // Close dialog
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Dispute submitted successfully')),
+                          );
+                        }
+                      } catch (e) {
+                         if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Failed to submit: $e')),
+                          );
+                        }
+                      } finally {
+                        if (context.mounted) setState(() => isSubmitting = false);
+                      }
+                    },
+              child: isSubmitting ? const CircularProgressIndicator() : const Text('Submit'),
             ),
           ],
         ),

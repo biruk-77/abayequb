@@ -16,6 +16,7 @@ import '../providers/equb_provider.dart';
 import '../providers/wallet_provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/notification_provider.dart';
+import '../providers/legal_provider.dart';
 
 // Models
 import '../../data/models/user_model.dart';
@@ -23,6 +24,11 @@ import '../../data/models/equb_package_model.dart';
 import '../../data/models/equb_group_model.dart';
 
 // Widgets
+import '../widgets/home/next_payout_card.dart';
+import '../widgets/home/next_contribution_card.dart';
+import '../widgets/home/quick_actions_row.dart';
+import '../widgets/home/stats_card.dart';
+import '../widgets/home/recent_transaction_item.dart';
 import '../widgets/abay_icon.dart';
 import '../widgets/high_end_notification_badge.dart';
 import '../widgets/home/section_header.dart';
@@ -31,8 +37,6 @@ import '../widgets/home/active_group_card.dart';
 import '../widgets/home/package_mosaic_card.dart';
 import '../widgets/home/home_empty_state.dart';
 import '../widgets/home/home_curve_clipper.dart';
-import '../widgets/home/next_contribution_card.dart';
-import '../widgets/home/quick_actions_row.dart';
 
 class DashboardScreen extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -69,6 +73,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       equbProvider.fetchUserEqubData();
       equbProvider.fetchNextContribution();
       Provider.of<WalletProvider>(context, listen: false).fetchTransactions();
+
+      // Check for global terms acceptance
+      final legalProvider = Provider.of<LegalProvider>(context, listen: false);
+      legalProvider.fetchTerms(); // Pre-fetch terms
+      if (!legalProvider.hasAcceptedGlobalTerms) {
+        _showTermsDialog();
+      }
     });
   }
 
@@ -122,82 +133,153 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final packages = equbProvider.packages;
 
     return Scaffold(
-      backgroundColor: AppTheme.primaryColor, // Changed to primary to avoid white gap on pull-down
+      backgroundColor: AppTheme.bgLight,
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight + 16),
+        child: _buildStickyTopBar(context, user, l10n),
+      ),
       body: RefreshIndicator(
         onRefresh: _refreshData,
         color: AppTheme.accentColor,
         backgroundColor: AppTheme.primaryColor,
-        child: Container(
-          color: AppTheme.bgLight, // Rest of the screen is light
-          child: CustomScrollView(
+        edgeOffset: kToolbarHeight + 16,
+        child: CustomScrollView(
           controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(
             parent: BouncingScrollPhysics(),
           ),
           slivers: [
-            // 1. THE IMMERSIVE HEADER (Integrated Bar + Curve)
-            SliverAppBar(
-              expandedHeight: 280,
-              backgroundColor: AppTheme.primaryColor,
-              elevation: 0,
-              pinned: false,
-              floating: false,
-              stretch: true,
-              flexibleSpace: FlexibleSpaceBar(
-                stretchModes: const [
-                  StretchMode.zoomBackground,
-                  StretchMode.blurBackground,
-                ],
-                background: _buildCombinedHeader(context, user, l10n),
-              ),
-            ),
-
-            // 2. VAULT CARD & QUICK ACTIONS (Positioned to overlap the header)
+            // 1. THE IMMERSIVE HEADER (CURVE ONLY), VAULT CARD & QUICK ACTIONS
             SliverToBoxAdapter(
-              child: Transform.translate(
-                offset: const Offset(0, -80), // Perfect overlap onto the curve
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: FadeInUp(
-                        duration: const Duration(milliseconds: 800),
-                        child: DescribedFeatureOverlay(
-                          featureId: 'vault_card',
-                          targetColor: AppTheme.accentColor,
-                          textColor: Colors.black,
-                          backgroundColor: Colors.white,
-                          contentLocation: ContentLocation.below,
-                          title: const Text('Abay Vault'),
-                          description: const Text(
-                            'Your secure balance and locked assets.',
-                          ),
-                          tapTarget: const Icon(
-                            Icons.account_balance_wallet,
-                            color: AppTheme.primaryColor,
-                          ),
-                          child: GlassVaultCard(
-                            available: wallet?.available ?? 0.0,
-                            locked: wallet?.locked ?? 0.0,
+              child: Stack(
+                alignment: Alignment.topCenter,
+                clipBehavior: Clip.none,
+                children: [
+                  // The Curved Blue Background (Now without the sticky top bar)
+                  _buildHeaderBackground(context, user, l10n),
+
+                  // The robust layout flow wrapper for BOTH foreground elements
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(
+                        height: 185,
+                      ), // Offset perfectly into the curve
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: FadeInUp(
+                          duration: const Duration(milliseconds: 800),
+                          child: DescribedFeatureOverlay(
+                            featureId: 'vault_card',
+                            targetColor: AppTheme.accentColor,
+                            textColor: Colors.black,
+                            backgroundColor: Colors.white,
+                            contentLocation: ContentLocation.below,
+                            title: const Text('Abay Vault'),
+                            description: const Text(
+                              'Your secure balance and locked assets.',
+                            ),
+                            tapTarget: const Icon(
+                              Icons.account_balance_wallet,
+                              color: AppTheme.primaryColor,
+                            ),
+                            child: GlassVaultCard(
+                              available: wallet?.available ?? 0.0,
+                              locked: wallet?.locked ?? 0.0,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    QuickActionsRow(
-                      onDeposit: () => nav.GoRouter.of(context).push('/top-up'),
-                      onWithdraw: () => nav.GoRouter.of(context).push('/withdraw'),
-                      onHistory: () => nav.GoRouter.of(context).push('/history'),
-                      onCalendar: () => nav.GoRouter.of(context).push('/calendar'),
-                    ),
-                  ],
-                ),
+                      const SizedBox(height: 16),
+                      // The Quick Actions Row natively flows underneath without ANY overlap possibility
+                      QuickActionsRow(
+                        onDeposit: () =>
+                            nav.GoRouter.of(context).push('/top-up'),
+                        onWithdraw: () => nav.GoRouter.of(
+                          context,
+                        ).push('/withdraw'),
+                        onHistory: () =>
+                            nav.GoRouter.of(context).push('/history'),
+                        onCalendar: () =>
+                            nav.GoRouter.of(context).push('/calendar'),
+                      ),
+                      const SizedBox(height: 24),
+                      // STATS ROW (NEW PREMIUM FEATURE)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: StatsCard(
+                                title: "Total Savings",
+                                value: "${wallet?.available.toStringAsFixed(0) ?? '0'} ETB",
+                                icon: Icons.savings_rounded,
+                                color: const Color(0xFF6366F1),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: StatsCard(
+                                title: "Active Groups",
+                                value: "${myGroups.length}",
+                                icon: Icons.groups_rounded,
+                                color: const Color(0xFFF59E0B),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ],
               ),
             ),
 
             // STATISTICS / SUMMARY
-            const SliverToBoxAdapter(child: SizedBox(height: 16)),
+            // RECENT TRANSACTIONS (RESTORED)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: SectionHeader(
+                  title: "Recent Transactions",
+                  action: "See All",
+                  onActionTap: () => nav.GoRouter.of(context).push('/history'),
+                ),
+              ),
+            ),
+            if (context.watch<WalletProvider>().transactions.isEmpty)
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Text("No recent activity."),
+                ),
+              )
+            else
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final tx = context.watch<WalletProvider>().transactions[index];
+                      return FadeInUp(
+                        delay: Duration(milliseconds: 100 * index),
+                        child: RecentTransactionItem(transaction: tx),
+                      );
+                    },
+                    childCount: context.watch<WalletProvider>().transactions.length.clamp(0, 3),
+                  ),
+                ),
+              ),
+
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
+
+            // NEXT PAYOUT (Upcoming winner) - RESTORED
+            if (equbProvider.nextPayout != null)
+              SliverToBoxAdapter(
+                child: NextPayoutCard(payout: equbProvider.nextPayout!),
+              ),
 
             // NEXT CONTRIBUTION MINI-DASHBOARD (Only if joined groups exist)
             if (equbProvider.nextContribution != null)
@@ -208,16 +290,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     final contribution = equbProvider.nextContribution!;
                     // 1. Find the group for this contribution to get its packageId
                     final group = myGroups.firstWhere(
-                      (g) =>
-                          g.id.toString() ==
-                          contribution.groupId.toString(),
+                      (g) => g.id.toString() == contribution.groupId.toString(),
                       orElse: () => myGroups.isNotEmpty
                           ? myGroups.first
-                          : EqubGroupModel(
-                              id: '0',
-                              name: '',
-                              packageId: '0',
-                            ),
+                          : EqubGroupModel(id: '0', name: '', packageId: '0'),
                     );
 
                     // 2. Find the package using the group's packageId
@@ -264,9 +340,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: AppTheme.successColor.withValues(
-                              alpha: 0.1,
-                            ),
+                            color: AppTheme.successColor.withValues(alpha: 0.1),
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
@@ -375,13 +449,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             SliverPadding(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
               sliver: SliverGrid(
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: 0.8,
-                    ),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 0.8,
+                ),
                 delegate: SliverChildBuilderDelegate((context, index) {
                   final package = packages[index];
                   return FadeInUp(
@@ -403,9 +476,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   void _scrollToPackages() {
     _scrollController.animateTo(
@@ -415,183 +487,206 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // ── COMBINED HEADER (TOP BAR + CURVE) ─────────────────────────────────────────
-  Widget _buildCombinedHeader(
+  // ── STICKY TOP BAR BUILDER (FIXED) ──────────────────────────────────────────
+  Widget _buildStickyTopBar(
     BuildContext context,
     UserModel? user,
     AbayLocalizations l10n,
   ) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppTheme.primaryColor, AppTheme.primaryLight],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: Stack(
-        children: [
-          // Background Pattern
-          Positioned(
-            top: -50,
-            right: -50,
-            child: Icon(
-              Icons.stars_rounded,
-              size: 300,
-              color: Colors.white.withValues(alpha: 0.05),
-            ),
+    return ListenableBuilder(
+      listenable: _scrollController,
+      builder: (context, child) {
+        // Calculate dynamic background color based on scroll offset
+        double offset = 0.0;
+        if (_scrollController.hasClients) {
+          offset = _scrollController.offset;
+        }
+
+        // Fades from transparent to primary as user scrolls
+        final double opacity = (offset / 100).clamp(0.0, 1.0);
+
+        return Container(
+          decoration: BoxDecoration(
+            color: AppTheme.primaryColor.withValues(alpha: opacity),
+            boxShadow: [
+              if (opacity > 0.8)
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+            ],
           ),
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Menu Button
+                  DescribedFeatureOverlay(
+                    featureId: 'menu_button',
+                    targetColor: Colors.white,
+                    textColor: Colors.black,
+                    backgroundColor: AppTheme.accentColor,
+                    contentLocation: ContentLocation.below,
+                    title: const Text('Menu'),
+                    description: const Text('Access settings and history.'),
+                    tapTarget: const Icon(Icons.menu_rounded),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.sort_rounded,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                      onPressed: () =>
+                          widget.scaffoldKey.currentState?.openDrawer(),
+                    ),
+                  ),
 
-          // The Curve and Content
-          ClipPath(
-            clipper: AbayCurveClipper(),
-            child: Container(
-              color: Colors.transparent, // Curve is cut from the gradient container
-              child: SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
+                  // Logo Text (Fades out or stays pinned)
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      // 1. Integrated Top Bar (Menu, Identity, Profile)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // Menu Button
-                            DescribedFeatureOverlay(
-                              featureId: 'menu_button',
-                              targetColor: Colors.white,
-                              textColor: Colors.black,
-                              backgroundColor: AppTheme.accentColor,
-                              contentLocation: ContentLocation.below,
-                              title: const Text('Menu'),
-                              description:
-                                  const Text('Access settings and history.'),
-                              tapTarget: const Icon(Icons.menu_rounded),
-                              child: IconButton(
-                                icon: const Icon(
-                                  Icons.sort_rounded,
-                                  color: Colors.white,
-                                  size: 28,
-                                ),
-                                onPressed: () => widget.scaffoldKey.currentState
-                                    ?.openDrawer(),
-                              ),
-                            ),
-
-                            // Logo / Title
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "ABAY eQUB",
-                                  style: GoogleFonts.outfit(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 2,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                                Text(
-                                  _getEthiopianDate(context),
-                                  style: GoogleFonts.outfit(
-                                    color: AppTheme.accentColor,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            // Profile & Notifs
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Consumer<NotificationProvider>(
-                                  builder: (context, prov, _) =>
-                                      HighEndNotificationBadge(
-                                    count: prov.unreadCount,
-                                    child: IconButton(
-                                      icon: const Icon(
-                                        Icons.notifications_none_rounded,
-                                        color: Colors.white,
-                                      ),
-                                      onPressed: () => nav.GoRouter.of(context)
-                                          .push('/notifications'),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                GestureDetector(
-                                  onTap: () =>
-                                      nav.GoRouter.of(context).push('/profile'),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: AppTheme.accentColor,
-                                        width: 2,
-                                      ),
-                                    ),
-                                    child: CircleAvatar(
-                                      radius: 16,
-                                      backgroundColor: Colors.white24,
-                                      backgroundImage:
-                                          AbayIcon.getImageProvider(
-                                        user?.profileImage,
-                                      ),
-                                      child: (user?.profileImage == null)
-                                          ? const Icon(
-                                              Icons.person,
-                                              size: 20,
-                                              color: Colors.white,
-                                            )
-                                          : null,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                      Text(
+                        "ABAY eQUB",
+                        style: GoogleFonts.outfit(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                          fontSize: 18,
                         ),
                       ),
-
-                      const SizedBox(height: 16),
-
-                      // 2. Identity Welcome Text
-                      Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                l10n.welcome,
-                                style: GoogleFonts.outfit(
-                                  color: Colors.white70,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Text(
-                                user?.fullName ?? "Guest",
-                                style: GoogleFonts.outfit(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                      Text(
+                        _getEthiopianDate(context),
+                        style: GoogleFonts.outfit(
+                          color: AppTheme.accentColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ],
                   ),
-                ),
+
+                  // Notification & Profile
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Consumer<NotificationProvider>(
+                        builder: (context, prov, _) => HighEndNotificationBadge(
+                          count: prov.unreadCount,
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.notifications_none_rounded,
+                              color: Colors.white,
+                            ),
+                            onPressed: () =>
+                                nav.GoRouter.of(context).push('/notifications'),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: () => nav.GoRouter.of(context).push('/profile'),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppTheme.accentColor,
+                              width: 2,
+                            ),
+                          ),
+                          child: CircleAvatar(
+                            radius: 16,
+                            backgroundColor: Colors.white24,
+                            backgroundImage: AbayIcon.getImageProvider(
+                              user?.profileImage,
+                            ),
+                            child: (user?.profileImage == null)
+                                ? const Icon(
+                                    Icons.person,
+                                    size: 20,
+                                    color: Colors.white,
+                                  )
+                                : null,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
-        ],
+        );
+      },
+    );
+  }
+
+  Widget _buildHeaderBackground(
+    BuildContext context,
+    UserModel? user,
+    AbayLocalizations l10n,
+  ) {
+    return ClipPath(
+      clipper: AbayCurveClipper(),
+      child: Container(
+        height: 320, // Taller curve
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF003366), Color(0xFF004488)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Stack(
+          children: [
+            // Premium Large Star Icon
+            Positioned(
+              top: -30,
+              right: -120,
+              child: Opacity(
+                opacity: 0.1,
+                child: Icon(
+                  Icons.star_rounded,
+                  size: 580,
+                  color: Colors.white.withValues(alpha: 0.3),
+                ),
+              ),
+            ),
+
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.welcome,
+                      style: GoogleFonts.outfit(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      user?.fullName ?? "biruk",
+                      style: GoogleFonts.outfit(
+                        color: Colors.white,
+                        fontSize: 42,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -639,5 +734,134 @@ class _DashboardScreenState extends State<DashboardScreen> {
     } catch (_) {
       return '';
     }
+  }
+
+  void _showTermsDialog() {
+    bool hasAgreedToCheckbox = false;
+
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierLabel: "Terms",
+      pageBuilder: (context, _, __) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return PopScope(
+              canPop: false,
+              child: Scaffold(
+                body: SafeArea(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.all(24),
+                          child: Consumer<LegalProvider>(
+                            builder: (context, prov, _) {
+                              final activeTerms = prov.activeTerms;
+                              if (prov.isLoading && activeTerms == null) {
+                                return const Center(child: CircularProgressIndicator());
+                              }
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    activeTerms?['title'] ?? (prov.isLoading ? 'Loading...' : 'Terms & Conditions'),
+                                    style: GoogleFonts.outfit(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppTheme.primaryColor,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Text(
+                                    activeTerms?['content'] ?? (prov.isLoading ? 'Fetching the latest terms from the server...' : 'Terms are currently unavailable. Please check your connection or contact support.'),
+                                    style: GoogleFonts.outfit(
+                                      fontSize: 16,
+                                      height: 1.6,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, -4),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InkWell(
+                              onTap: () => setDialogState(() => hasAgreedToCheckbox = !hasAgreedToCheckbox),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                    height: 24,
+                                    width: 24,
+                                    child: Checkbox(
+                                      value: hasAgreedToCheckbox,
+                                      activeColor: AppTheme.primaryColor,
+                                      onChanged: (v) => setDialogState(() => hasAgreedToCheckbox = v ?? false),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Expanded(
+                                    child: Text(
+                                      'I have read and agree to all terms and conditions.',
+                                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 56,
+                              child: ElevatedButton(
+                                onPressed: !hasAgreedToCheckbox ? null : () {
+                                  context.read<LegalProvider>().acceptGlobalTerms();
+                                  Navigator.pop(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppTheme.primaryColor,
+                                  disabledBackgroundColor: Colors.grey.shade300,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'I ACCEPT & CONTINUE',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 }

@@ -17,6 +17,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
       UserType.student,
   onTimePayments: (json['onTimePayments'] as num?)?.toInt(),
   missedPayments: (json['missedPayments'] as num?)?.toInt(),
+  trustScore: (json['trustScore'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
@@ -28,6 +29,7 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'userType': _$UserTypeEnumMap[instance.userType]!,
   'onTimePayments': instance.onTimePayments,
   'missedPayments': instance.missedPayments,
+  'trustScore': instance.trustScore,
 };
 
 const _$UserTypeEnumMap = {

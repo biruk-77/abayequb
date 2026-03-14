@@ -1,4 +1,5 @@
 // lib/presentation/screens/main_screen.dart
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -106,16 +107,12 @@ class _MainScreenState extends State<MainScreen> with RouteAware {
         children: [
           IndexedStack(index: _selectedIndex, children: widgetOptions),
           Positioned(
-            left: 2,
-            right: 2,
-            bottom: 8,
+            left: 0,
+            right: 0,
+            bottom: 0,
             child: FuturisticNavBar(
               selectedIndex: _selectedIndex,
-              onItemSelected: (index) {
-                // Haptic feedback is already handled inside FluidNavBar,
-                // but we can keep the state update here.
-                _onItemTapped(index);
-              },
+              onItemSelected: _onItemTapped,
               items: [
                 NavBarItem(icon: Icons.home_rounded, label: l10n.home),
                 NavBarItem(
@@ -211,6 +208,22 @@ class _MainScreenState extends State<MainScreen> with RouteAware {
             onTap: () {
               Navigator.pop(context); // Close drawer
               context.push('/notifications');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.account_balance_wallet_outlined),
+            title: const Text('Withdraw Funds'),
+            onTap: () {
+              Navigator.pop(context);
+              context.push('/withdraw');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.help_outline_rounded),
+            title: const Text('Submit Dispute'),
+            onTap: () {
+              Navigator.pop(context);
+              context.push('/dispute');
             },
           ),
           ListTile(

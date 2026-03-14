@@ -27,6 +27,7 @@ class EnrollmentScreen extends StatefulWidget {
 
 class _EnrollmentScreenState extends State<EnrollmentScreen> {
   bool _isProcessing = false;
+  bool _hasAcceptedTerms = false;
 
   @override
   Widget build(BuildContext context) {
@@ -161,15 +162,17 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
                   _buildSectionTitle('Agreement & Terms'),
                   const SizedBox(height: 12),
                   _buildTermsCard(),
+                  const SizedBox(height: 16),
+                  _buildTermsCheckbox(),
 
                   const SizedBox(height: 40),
 
                   // Join Button
-                  SizedBox(
+                   SizedBox(
                     width: double.infinity,
                     height: 60,
                     child: ElevatedButton(
-                      onPressed: _isProcessing ? null : _handleEnrollment,
+                      onPressed: (_isProcessing || !_hasAcceptedTerms) ? null : _handleEnrollment,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColor,
                         foregroundColor: Colors.white,
@@ -329,18 +332,58 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
       child: Column(
         children: [
           _buildTermRow(
-            Icons.check_circle_outline,
-            'Regular commitment to pay ${CurrencyFormatter.format(widget.package.contributionAmount ?? 0)}',
+            Icons.payments_outlined,
+            'Commitment to pay ${CurrencyFormatter.format(widget.package.contributionAmount ?? 0)} every ${widget.package.schedule?.name ?? "round"}.',
           ),
           const SizedBox(height: 12),
           _buildTermRow(
-            Icons.check_circle_outline,
-            'Service fee of ${widget.package.feePercentage}% applies per round',
+            Icons.percent_outlined,
+            'Platform service fee of ${widget.package.feePercentage}% deducted per payout.',
           ),
           const SizedBox(height: 12),
           _buildTermRow(
-            Icons.check_circle_outline,
-            'Payout order is assigned upon joining',
+            Icons.gavel_outlined,
+            'By joining, you agree to the rotating payout rules and arbitration policy.',
+          ),
+          const SizedBox(height: 16),
+          const Divider(),
+          const SizedBox(height: 16),
+          TextButton.icon(
+            onPressed: () => context.push('/about'),
+            icon: const Icon(Icons.description_outlined, size: 18),
+            label: const Text('Read Full Terms & Conditions'),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.orange.shade800,
+              padding: EdgeInsets.zero,
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTermsCheckbox() {
+    return InkWell(
+      onTap: () => setState(() => _hasAcceptedTerms = !_hasAcceptedTerms),
+      child: Row(
+        children: [
+          SizedBox(
+            height: 24,
+            width: 24,
+            child: Checkbox(
+              value: _hasAcceptedTerms,
+              activeColor: Theme.of(context).primaryColor,
+              onChanged: (v) => setState(() => _hasAcceptedTerms = v ?? false),
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Text(
+              'I have read and agree to the group terms and conditions.',
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+            ),
           ),
         ],
       ),

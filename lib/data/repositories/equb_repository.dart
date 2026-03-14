@@ -8,6 +8,9 @@ import '../models/contribution_model.dart';
 import '../models/wallet_model.dart';
 import '../models/transaction_model.dart';
 import '../models/receipt_model.dart';
+import '../models/payout_model.dart';
+import '../models/dispute_model.dart';
+import '../models/bank_account_model.dart';
 import '../../core/utils/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -398,6 +401,101 @@ class EqubRepository {
       return data.map((json) => ReceiptModel.fromJson(json)).toList();
     } catch (e) {
       AppLogger.error('Failed to get receipts', e);
+      rethrow;
+    }
+  }
+
+  // --- New Features (v2) ---
+
+  Future<PayoutModel?> getNextPayout() async {
+    try {
+      AppLogger.info('fetching upcoming payout info...');
+      final data = await _equbService.getNextPayout();
+      if (data.isEmpty) return null;
+      return PayoutModel.fromJson(data);
+    } catch (e) {
+      AppLogger.error('failed to get next payout', e);
+      rethrow;
+    }
+  }
+
+  Future<void> requestWithdrawal(double amount) async {
+    try {
+      AppLogger.info('requesting withdrawal of $amount...');
+      await _equbService.requestWithdrawal(amount);
+      AppLogger.success('withdrawal request submitted');
+    } catch (e) {
+      AppLogger.error('withdrawal request failed', e);
+      rethrow;
+    }
+  }
+
+  Future<void> submitDispute(Map<String, dynamic> data) async {
+    try {
+      AppLogger.info('submitting dispute...');
+      await _equbService.submitDispute(data);
+      AppLogger.success('dispute submitted successfully');
+    } catch (e) {
+      AppLogger.error('dispute submission failed', e);
+      rethrow;
+    }
+  }
+
+  Future<List<DisputeModel>> getMyDisputes() async {
+    try {
+      AppLogger.info('fetching user disputes...');
+      final data = await _equbService.getMyDisputes();
+      return data.map((json) => DisputeModel.fromJson(json)).toList();
+    } catch (e) {
+      AppLogger.error('failed to get disputes', e);
+      rethrow;
+    }
+  }
+
+  // --- Bank Accounts (for Top-up) ---
+
+  Future<List<BankAccountModel>> getBankAccounts() async {
+    try {
+      AppLogger.info('fetching system bank accounts for top-up...');
+      final data = await _equbService.getBankAccounts();
+      final accounts = data.map((json) => BankAccountModel.fromJson(json)).toList();
+      AppLogger.success('found ${accounts.length} bank accounts');
+      return accounts;
+    } catch (e) {
+      AppLogger.error('failed to get bank accounts', e);
+      rethrow;
+    }
+  }
+
+  Future<BankAccountModel> createBankAccount(Map<String, dynamic> data) async {
+    try {
+      AppLogger.info('creating new bank account...');
+      final responseData = await _equbService.createBankAccount(data);
+      return BankAccountModel.fromJson(responseData);
+    } catch (e) {
+      AppLogger.error('failed to create bank account', e);
+      rethrow;
+    }
+  }
+
+  Future<BankAccountModel> updateBankAccount(String id, Map<String, dynamic> data) async {
+    try {
+      AppLogger.info('updating bank account $id...');
+      final responseData = await _equbService.updateBankAccount(id, data);
+      return BankAccountModel.fromJson(responseData);
+    } catch (e) {
+      AppLogger.error('failed to update bank account $id', e);
+      rethrow;
+    }
+  }
+
+  Future<void> deleteBankAccount(String id) async {
+    try {
+      AppLogger.info('deleting bank account $id...');
+      await _equbService.deleteBankAccount(id);
+      AppLogger.success('bank account $id deleted');
+    } catch (e) {
+      AppLogger.error('failed to delete bank account $id', e);
       rethrow;
     }
   }

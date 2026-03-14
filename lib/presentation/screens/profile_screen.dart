@@ -330,6 +330,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
               fontSize: 14,
             ),
           ),
+          const SizedBox(height: 12),
+          if (user?.trustScore != null)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.verified_user_rounded,
+                      color: Colors.white, size: 14),
+                  const SizedBox(width: 6),
+                  Text(
+                    'TRUST SCORE: ${user!.trustScore}',
+                    style: GoogleFonts.outfit(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );

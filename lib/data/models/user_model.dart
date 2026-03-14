@@ -31,6 +31,7 @@ class UserModel {
 
   final int? onTimePayments;
   final int? missedPayments;
+  final int? trustScore;
 
   UserModel({
     required this.id,
@@ -41,6 +42,7 @@ class UserModel {
     required this.userType,
     this.onTimePayments,
     this.missedPayments,
+    this.trustScore,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

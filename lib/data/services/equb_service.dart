@@ -162,7 +162,11 @@ class EqubService {
   Future<Map<String, dynamic>> getNextContribution() async {
     try {
       final response = await _dio.get('/equb/contributions/next');
-      return response.data['data'] ?? {};
+      final data = response.data['data'];
+      if (data is List && data.isNotEmpty) {
+        return Map<String, dynamic>.from(data.first);
+      }
+      return data is Map ? Map<String, dynamic>.from(data) : {};
     } catch (e) {
       rethrow;
     }
@@ -180,7 +184,7 @@ class EqubService {
           return {};
         }
         AppLogger.info('Wallet data is a list, taking first item');
-        return data.first;
+        return Map<String, dynamic>.from(data.first);
       }
 
       return data ?? {};
@@ -234,6 +238,47 @@ class EqubService {
     }
   }
 
+  Future<List<dynamic>> getAllTransactions({
+    int page = 1,
+    int limit = 10,
+    String? type,
+    String? status,
+    String? method,
+    double? minAmount,
+    double? maxAmount,
+    String? startDate,
+    String? endDate,
+    String sortBy = 'createdAt',
+    String order = 'DESC',
+  }) async {
+    try {
+      final Map<String, dynamic> query = {
+        'page': page,
+        'limit': limit,
+        'sortBy': sortBy,
+        'order': order,
+      };
+
+      if (type != null) query['type'] = type;
+      if (status != null) query['status'] = status;
+      if (method != null) query['method'] = method;
+      if (minAmount != null) query['minAmount'] = minAmount;
+      if (maxAmount != null) query['maxAmount'] = maxAmount;
+      if (startDate != null) query['startDate'] = startDate;
+      if (endDate != null) query['endDate'] = endDate;
+
+      final response = await _dio.get(
+        '/equb/transactions/list',
+        queryParameters: query,
+      );
+      final data = response.data['data'];
+      if (data is List) return data;
+      return [];
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // --- Receipts / Wallet Top-up ---
 
   Future<Map<String, dynamic>> uploadReceipt({
@@ -261,6 +306,44 @@ class EqubService {
     }
   }
 
+  Future<Map<String, dynamic>> updateReceipt(
+    String id, {
+    String? receiptName,
+    double? amount,
+    String? reason,
+    String? filePath,
+  }) async {
+    try {
+      final Map<String, dynamic> data = {};
+      if (receiptName != null) data['receiptName'] = receiptName;
+      if (amount != null) data['amount'] = amount;
+      if (reason != null) data['reason'] = reason;
+
+      if (filePath != null) {
+        data['document'] = await MultipartFile.fromFile(
+          filePath,
+          filename: filePath.split(RegExp(r'[/\\]')).last,
+        );
+      }
+
+      final formData = FormData.fromMap(data);
+      final response = await _dio.put('/equb/receipts/$id', data: formData);
+      return response.data;
+    } catch (e) {
+      AppLogger.error('Receipt Update Error', e);
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> getTransactionById(String id) async {
+    try {
+      final response = await _dio.get('/equb/transactions/$id');
+      return response.data['data'] ?? response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<List<dynamic>> getMyReceipts() async {
     try {
       final response = await _dio.get('/equb/receipts/me');
@@ -269,6 +352,140 @@ class EqubService {
       return [];
     } catch (e) {
       AppLogger.error('Fetch My Receipts Error', e);
+      rethrow;
+    }
+  }
+
+  // --- New Features (v2) ---
+
+  Future<Map<String, dynamic>> getNextPayout() async {
+    try {
+      final response = await _dio.get('/equb/contributions/next');
+      final data = response.data['data'];
+      if (data is List && data.isNotEmpty) {
+        return Map<String, dynamic>.from(data.first);
+      }
+      return data is Map ? Map<String, dynamic>.from(data) : {};
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> requestWithdrawal(double amount) async {
+    try {
+      // Assuming endpoint from abay.json patterns
+      final response = await _dio.post('/equb/wallets/withdraw', data: {'amount': amount});
+      return response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> submitDispute(Map<String, dynamic> data) async {
+    try {
+      final response = await _dio.post('/equb/disputes', data: data);
+      return response.data['data'];
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<dynamic>> getMyDisputes() async {
+    try {
+      final response = await _dio.get('/equb/disputes/me');
+      final data = response.data['data'];
+      if (data is List) return data;
+      return [];
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // --- Bank Accounts (for Top-up) ---
+
+  Future<List<dynamic>> getBankAccounts() async {
+    try {
+      final response = await _dio.get('/equb/accounts');
+      final data = response.data['data'];
+      if (data is List) return data;
+      return [];
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> updateBankAccount(String id, Map<String, dynamic> data) async {
+    try {
+      final response = await _dio.put('/equb/accounts/$id', data: data);
+      return response.data['data'] ?? response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> createBankAccount(Map<String, dynamic> data) async {
+    try {
+      final response = await _dio.post('/equb/accounts', data: data);
+      return response.data['data'] ?? response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> getBankAccountById(String id) async {
+    try {
+      final response = await _dio.get('/equb/accounts/$id');
+      return response.data['data'] ?? response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteBankAccount(String id) async {
+    try {
+      await _dio.delete('/equb/accounts/$id');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // --- Penalties ---
+
+  Future<Map<String, dynamic>> createPenalty(String groupId) async {
+    try {
+      final response = await _dio.post('/equb/penalties', data: {'groupId': groupId});
+      return response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // --- Revenues ---
+
+  Future<List<dynamic>> getRevenues() async {
+    try {
+      final response = await _dio.get('/equb/revenues');
+      final data = response.data['data'];
+      if (data is List) return data;
+      return [];
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> getRevenueById(String id) async {
+    try {
+      final response = await _dio.get('/equb/revenues/$id');
+      return response.data['data'] ?? response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteRevenue(String id) async {
+    try {
+      await _dio.delete('/equb/revenues/$id');
+    } catch (e) {
       rethrow;
     }
   }

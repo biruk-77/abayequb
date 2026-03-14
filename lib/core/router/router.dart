@@ -24,6 +24,10 @@ import '../../presentation/screens/calendar_screen.dart';
 import '../../data/models/equb_group_model.dart';
 import '../../data/models/equb_package_model.dart';
 import '../../presentation/screens/history_screen.dart';
+import '../../presentation/screens/withdrawal_screen.dart';
+import '../../presentation/screens/dispute_screen.dart';
+import '../../presentation/screens/ideas_screen.dart';
+import '../../presentation/screens/bank_account_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
   debugLabel: 'root',
@@ -42,6 +46,7 @@ class AppRouter {
           state.matchedLocation == '/register';
       final isSplash = state.matchedLocation == '/splash';
       final isOnboarding = state.matchedLocation == '/onboarding';
+      final isAbout = state.matchedLocation == '/about';
 
       if (isSplash) return null;
 
@@ -57,7 +62,7 @@ class AppRouter {
       }
 
       if (!authProvider.isAuthenticated) {
-        return isAuthPath ? null : '/login';
+        return (isAuthPath || isAbout) ? null : '/login';
       }
 
       if (isAuthPath) {
@@ -85,6 +90,10 @@ class AppRouter {
         builder: (context, state) => const HistoryScreen(),
       ),
       GoRoute(
+        path: '/about',
+        builder: (context, state) => const AboutEqubScreen(),
+      ),
+      GoRoute(
         path: '/',
         builder: (BuildContext context, GoRouterState state) {
           return FeatureDiscovery(
@@ -93,12 +102,6 @@ class AppRouter {
           );
         },
         routes: <RouteBase>[
-          GoRoute(
-            path: 'about', // Route path: /about
-            builder: (BuildContext context, GoRouterState state) {
-              return const AboutEqubScreen();
-            },
-          ),
           GoRoute(
             path: 'profile', // Route path: /profile
             builder: (BuildContext context, GoRouterState state) {
@@ -217,6 +220,30 @@ class AppRouter {
             path: 'calendar', // Route path: /calendar
             builder: (BuildContext context, GoRouterState state) {
               return const CalendarScreen();
+            },
+          ),
+          GoRoute(
+            path: 'withdraw', // Route path: /withdraw
+            builder: (BuildContext context, GoRouterState state) {
+              return const WithdrawalScreen();
+            },
+          ),
+          GoRoute(
+            path: 'dispute', // Route path: /dispute
+            builder: (BuildContext context, GoRouterState state) {
+              return const DisputeScreen();
+            },
+          ),
+          GoRoute(
+            path: 'ideas', // Route path: /ideas
+            builder: (BuildContext context, GoRouterState state) {
+              return const IdeasScreen();
+            },
+          ),
+          GoRoute(
+            path: 'accounts', // Route path: /accounts
+            builder: (BuildContext context, GoRouterState state) {
+              return const BankAccountScreen();
             },
           ),
         ],

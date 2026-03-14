@@ -29,6 +29,12 @@ import 'data/services/notification_service.dart';
 import 'data/services/notification_api_service.dart';
 import 'data/services/kyc_service.dart';
 import 'data/repositories/notification_repository.dart';
+import 'data/services/legal_service.dart';
+import 'data/services/ideas_service.dart';
+import 'data/repositories/legal_repository.dart';
+import 'data/repositories/ideas_repository.dart';
+import 'presentation/providers/legal_provider.dart';
+import 'presentation/providers/ideas_provider.dart';
 import 'presentation/widgets/offline_indicator.dart';
 
 void main() async {
@@ -49,11 +55,15 @@ void main() async {
   final equbService = EqubService(client);
   final notificationApiService = NotificationApiService(client);
   final kycService = KYCService(client);
+  final legalService = LegalService(client);
+  final ideasService = IdeasService(client);
 
   // Repositories
   final authRepository = AuthRepository(authService, kycService, storage);
   final equbRepository = EqubRepository(equbService);
   final notificationRepository = NotificationRepository(notificationApiService);
+  final legalRepository = LegalRepository(legalService);
+  final ideasRepository = IdeasRepository(ideasService);
 
   // Providers
   final authProvider = AuthProvider(authRepository);
@@ -69,6 +79,8 @@ void main() async {
   final themeProvider = ThemeProvider();
   final connectivityProvider = ConnectivityProvider();
   final notificationProvider = NotificationProvider(notificationRepository);
+  final legalProvider = LegalProvider(legalRepository);
+  final ideasProvider = IdeasProvider(ideasRepository);
 
   // Initialize Notifications
   final notificationService = FirebaseNotificationService();
@@ -96,6 +108,8 @@ void main() async {
         ChangeNotifierProvider.value(value: themeProvider),
         ChangeNotifierProvider.value(value: connectivityProvider),
         ChangeNotifierProvider.value(value: notificationProvider),
+        ChangeNotifierProvider.value(value: legalProvider),
+        ChangeNotifierProvider.value(value: ideasProvider),
       ],
       child: AbayEqubApp(router: router),
     ),

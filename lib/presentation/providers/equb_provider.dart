@@ -5,6 +5,8 @@ import '../../data/models/equb_group_model.dart';
 import '../../data/repositories/equb_repository.dart';
 import '../../data/models/equb_member_model.dart';
 import '../../data/models/contribution_model.dart';
+import '../../data/models/payout_model.dart';
+import '../../data/models/dispute_model.dart';
 import '../../core/utils/logger.dart';
 import '../../core/utils/network_error_handler.dart';
 
@@ -21,6 +23,8 @@ class EqubProvider extends ChangeNotifier {
   List<EqubMemberModel> _myMemberships = [];
   List<EqubGroupModel> _packageGroups = [];
   ContributionModel? _nextContribution;
+  PayoutModel? _nextPayout;
+  List<DisputeModel> _myDisputes = [];
 
   List<EqubPackageModel> get packages => _packages;
   List<EqubGroupModel> get groups => _groups;
@@ -28,6 +32,8 @@ class EqubProvider extends ChangeNotifier {
   List<EqubMemberModel> get myMemberships => _myMemberships;
   List<EqubGroupModel> get packageGroups => _packageGroups;
   ContributionModel? get nextContribution => _nextContribution;
+  PayoutModel? get nextPayout => _nextPayout;
+  List<DisputeModel> get myDisputes => _myDisputes;
   EqubGroupModel? _selectedGroupDetails;
   EqubGroupModel? get selectedGroupDetails => _selectedGroupDetails;
 
@@ -267,6 +273,7 @@ class EqubProvider extends ChangeNotifier {
 
       // Auto-fetch next contribution whenever user data is refreshed
       fetchNextContribution();
+      fetchNextPayout();
 
       _safeNotify();
     } catch (e) {
@@ -335,6 +342,71 @@ class EqubProvider extends ChangeNotifier {
     } finally {
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  // --- New Features (v2) ---
+
+  Future<void> fetchNextPayout() async {
+    try {
+      AppLogger.info('Provider: Fetching next payout detail...');
+      _nextPayout = await _equbRepository.getNextPayout();
+    } catch (e) {
+      AppLogger.error('Provider: Error fetching next payout', e);
+      _nextPayout = null;
+    } finally {
+      _safeNotify();
+    }
+  }
+
+  Future<void> fetchMyDisputes() async {
+    _isLoading = true;
+    _safeNotify();
+    try {
+      AppLogger.info('Provider: Fetching user disputes...');
+      _myDisputes = await _equbRepository.getMyDisputes();
+    } catch (e) {
+      AppLogger.error('Provider: Error fetching disputes', e);
+    } finally {
+      _isLoading = false;
+      _safeNotify();
+    }
+  }
+
+  Future<void> requestWithdrawal(double amount) async {
+    _isLoading = true;
+    _safeNotify();
+    try {
+      await _equbRepository.requestWithdrawal(amount);
+    } catch (e) {
+      AppLogger.error('Provider: Withdrawal request failed', e);
+      _error = NetworkErrorHandler.getUserFriendlyMessage(e);
+      rethrow;
+    } finally {
+      _isLoading = false;
+      _safeNotify();
+    }
+  }
+
+  Future<void> submitDispute(String category, String description,
+      {String? transactionId}) async {
+    _isLoading = true;
+    _safeNotify();
+    try {
+      final data = {
+        'category': category,
+        'description': description,
+      };
+      if (transactionId != null) data['transactionId'] = transactionId;
+      await _equbRepository.submitDispute(data);
+      fetchMyDisputes(); // Refresh
+    } catch (e) {
+      AppLogger.error('Provider: Dispute submission failed', e);
+      _error = NetworkErrorHandler.getUserFriendlyMessage(e);
+      rethrow;
+    } finally {
+      _isLoading = false;
+      _safeNotify();
     }
   }
 }

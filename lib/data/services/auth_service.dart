@@ -178,6 +178,72 @@ class AuthService {
     }
   }
 
+  // --- Email OTP ---
+
+  Future<Map<String, dynamic>> requestEmailOtp(String email) async {
+    try {
+      final response = await _dio.post(
+        '/auth/email/register',
+        data: {'email': email},
+      );
+      return response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> verifyEmailOtp({
+    required String email,
+    required String otp,
+    required String fullName,
+    required String phone,
+    required String password,
+  }) async {
+    try {
+      final response = await _dio.post(
+        '/auth/email/verify',
+        data: {
+          'email': email,
+          'otp': otp,
+          'fullName': fullName,
+          'phone': phone,
+          'password': password,
+        },
+      );
+      return response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> requestEmailForgotPassword(String email) async {
+    try {
+      final response = await _dio.post(
+        '/auth/email/forgot/password/request',
+        data: {'email': email},
+      );
+      return response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> verifyEmailForgotPassword({
+    required String email,
+    required String otp,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await _dio.post(
+        '/auth/email/forgot/password/verify',
+        data: {'email': email, 'otp': otp, 'newPassword': newPassword},
+      );
+      return response.data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> updateFcmToken(String token) async {
     try {
       await _dio.patch('/users', data: {'fcmToken': token});

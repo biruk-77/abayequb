@@ -2917,201 +2917,6 @@
           ]
         },
         {
-          "name": "Groups Copy",
-          "item": [
-            {
-              "name": "Create",
-              "request": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"Weekly Savings Group\",\n    \"packageId\": {{packageId}},\n    \"status\": \"active\",\n    \"riskReserve\": 100.00,\n    \"startDate\": \"2026-02-15T00:00:00.000Z\",\n    \"currentCycle\": 1\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{url}}/api/equb/groups",
-                  "host": [
-                    "{{url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "equb",
-                    "groups"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Lists",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{url}}/api/equb/groups",
-                  "host": [
-                    "{{url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "equb",
-                    "groups"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1",
-                      "disabled": true
-                    },
-                    {
-                      "key": "limit",
-                      "value": "10",
-                      "disabled": true
-                    },
-                    {
-                      "key": "status",
-                      "value": "active",
-                      "disabled": true
-                    },
-                    {
-                      "key": "sortBy",
-                      "value": "createdAt",
-                      "disabled": true
-                    },
-                    {
-                      "key": "order",
-                      "value": "DESC",
-                      "disabled": true
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "My",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{url}}/api/equb/groups/my",
-                  "host": [
-                    "{{url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "equb",
-                    "groups",
-                    "my"
-                  ],
-                  "query": [
-                    {
-                      "key": "limit",
-                      "value": "10",
-                      "disabled": true
-                    },
-                    {
-                      "key": "status",
-                      "value": "active",
-                      "disabled": true
-                    },
-                    {
-                      "key": "sortBy",
-                      "value": "createdAt",
-                      "disabled": true
-                    },
-                    {
-                      "key": "order",
-                      "value": "DESC",
-                      "disabled": true
-                    },
-                    {
-                      "key": "page",
-                      "value": "",
-                      "disabled": true
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Update",
-              "request": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n    \"name\": \"Weekly Savings Group\",\n    \"packageId\": 2,\n    \"status\": \"active\",\n    \"riskReserve\": 100.00,\n    \"startDate\": \"2026-02-15T00:00:00.000Z\",\n    \"currentCycle\": 1\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{url}}/api/equb/groups/{{groupId}}",
-                  "host": [
-                    "{{url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "equb",
-                    "groups",
-                    "{{groupId}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Get By Id",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{url}}/api/equb/groups/{{groupId}}",
-                  "host": [
-                    "{{url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "equb",
-                    "groups",
-                    "{{groupId}}"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "Delete",
-              "request": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{url}}/api/equb/groups/{{groupId}}",
-                  "host": [
-                    "{{url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "equb",
-                    "groups",
-                    "{{groupId}}"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
           "name": "Dispute",
           "item": [
             {
@@ -3596,6 +3401,26 @@
                     "api",
                     "equb",
                     "contributions"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Mine Next Contribution",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/contributions/next",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "contributions",
+                    "next"
                   ]
                 }
               },
@@ -4085,6 +3910,720 @@
               "response": []
             }
           ]
+        },
+        {
+          "name": "Penalty",
+          "item": [
+            {
+              "name": "penalty",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"groupId\": {{groupId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/penalties",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "penalties"
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            },
+            {
+              "name": "List",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/transactions/list",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "transactions",
+                    "list"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "type",
+                      "value": "deposit",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "completed",
+                      "disabled": true
+                    },
+                    {
+                      "key": "method",
+                      "value": "wallet",
+                      "disabled": true
+                    },
+                    {
+                      "key": "minAmount",
+                      "value": "100",
+                      "disabled": true
+                    },
+                    {
+                      "key": "maxAmount",
+                      "value": "1000",
+                      "disabled": true
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2026-01-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-02-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "createdAt",
+                      "disabled": true
+                    },
+                    {
+                      "key": "order",
+                      "value": "DESC",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            },
+            {
+              "name": "By Id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/transactions/{{transactionId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "transactions",
+                    "{{transactionId}}"
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Account Details",
+          "item": [
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bankName\": \"Tell Birr\",\n  \"accountName\": \"Equb Platform\",\n  \"accountNumber\": \"+251911234567\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/accounts",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "accounts"
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"bankName\": \"CBE\",\n  \"accountName\": \"Equb Main Account\",\n  \"accountNumber\": \"+251911234567\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/accounts/{{accountId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "accounts",
+                    "{{accountId}}"
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            },
+            {
+              "name": "List",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/accounts",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "accounts"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "type",
+                      "value": "deposit",
+                      "disabled": true
+                    },
+                    {
+                      "key": "status",
+                      "value": "completed",
+                      "disabled": true
+                    },
+                    {
+                      "key": "method",
+                      "value": "wallet",
+                      "disabled": true
+                    },
+                    {
+                      "key": "minAmount",
+                      "value": "100",
+                      "disabled": true
+                    },
+                    {
+                      "key": "maxAmount",
+                      "value": "1000",
+                      "disabled": true
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2026-01-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-02-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "sortBy",
+                      "value": "createdAt",
+                      "disabled": true
+                    },
+                    {
+                      "key": "order",
+                      "value": "DESC",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            },
+            {
+              "name": "By Id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/accounts/{{accountId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "accounts",
+                    "{{accountId}}"
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/accounts/{{accountId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "accounts",
+                    "{{accountId}}"
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Terms",
+          "item": [
+            {
+              "name": "Create",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"title\": \"Terms of Service v1.0\",\n    \"content\": \"All users must adhere to the platform rules.\",\n    \"version\": 1.0,\n    \"isActive\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/terms",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "terms"
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Terms of Service v1.1\",\n  \"content\": \"Updated content for users.\",\n  \"version\": 1.1,\n  \"isActive\": false\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/terms/{{termId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "terms",
+                    "{{termId}}"
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            },
+            {
+              "name": "List",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/terms",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "terms"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "By Id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/terms/{{termId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "terms",
+                    "{{termId}}"
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/terms/{{termId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "terms",
+                    "{{termId}}"
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Ideas",
+          "item": [
+            {
+              "name": "Create",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "const response = pm.response.json();",
+                      "",
+                      "if (response && response.data && response.data.id) {",
+                      "    pm.collectionVariables.set(\"ideaId\", response.data.id);",
+                      "    console.log(\"Saved ideaId:\", response.data.id);",
+                      "} else {",
+                      "    console.warn(\"ideaId not found in response\");",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "title",
+                      "value": "Smart Farming AI",
+                      "type": "text",
+                      "uuid": "bdceb799-7f5e-4f45-975c-fcfa1f1b10b2"
+                    },
+                    {
+                      "key": "description",
+                      "value": "Using AI to monitor crops and improve yield",
+                      "type": "text",
+                      "uuid": "116b8781-acf9-4e0c-a4cd-41d0b5e369f6"
+                    },
+                    {
+                      "key": "category",
+                      "value": "Agriculture",
+                      "type": "text",
+                      "uuid": "2d73fc50-8b74-4927-b308-8dad3b408a6b"
+                    },
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "014919df-19ca-457d-9c9d-400f556bb43b",
+                      "src": "postman-cloud:///1f04dcd1-766c-4190-af3f-9db73cb4937b"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/ideas",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "ideas"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "title",
+                      "value": "Smart Farming AI",
+                      "type": "text",
+                      "uuid": "bdceb799-7f5e-4f45-975c-fcfa1f1b10b2"
+                    },
+                    {
+                      "key": "description",
+                      "value": "Using AI to monitor crops and improve yield",
+                      "type": "text",
+                      "uuid": "116b8781-acf9-4e0c-a4cd-41d0b5e369f6"
+                    },
+                    {
+                      "key": "category",
+                      "value": "Agriculture",
+                      "type": "text",
+                      "uuid": "2d73fc50-8b74-4927-b308-8dad3b408a6b"
+                    },
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "014919df-19ca-457d-9c9d-400f556bb43b",
+                      "src": "postman-cloud:///1f04dcd1-766c-4190-af3f-9db73cb4937b"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/ideas/{{ideaId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "ideas",
+                    "{{ideaId}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "List",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{url}}/api/equb/ideas",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "ideas"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "By Id",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "title",
+                      "value": "Smart Farming AI",
+                      "type": "text",
+                      "uuid": "bdceb799-7f5e-4f45-975c-fcfa1f1b10b2"
+                    },
+                    {
+                      "key": "description",
+                      "value": "Using AI to monitor crops and improve yield",
+                      "type": "text",
+                      "uuid": "116b8781-acf9-4e0c-a4cd-41d0b5e369f6"
+                    },
+                    {
+                      "key": "category",
+                      "value": "Agriculture",
+                      "type": "text",
+                      "uuid": "2d73fc50-8b74-4927-b308-8dad3b408a6b"
+                    },
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "014919df-19ca-457d-9c9d-400f556bb43b",
+                      "src": "postman-cloud:///1f04dcd1-766c-4190-af3f-9db73cb4937b"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/ideas/{{ideaId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "ideas",
+                    "{{ideaId}}"
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            },
+            {
+              "name": "Delete",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "title",
+                      "value": "Smart Farming AI",
+                      "type": "text",
+                      "uuid": "bdceb799-7f5e-4f45-975c-fcfa1f1b10b2"
+                    },
+                    {
+                      "key": "description",
+                      "value": "Using AI to monitor crops and improve yield",
+                      "type": "text",
+                      "uuid": "116b8781-acf9-4e0c-a4cd-41d0b5e369f6"
+                    },
+                    {
+                      "key": "category",
+                      "value": "Agriculture",
+                      "type": "text",
+                      "uuid": "2d73fc50-8b74-4927-b308-8dad3b408a6b"
+                    },
+                    {
+                      "key": "file",
+                      "type": "file",
+                      "uuid": "014919df-19ca-457d-9c9d-400f556bb43b",
+                      "src": "postman-cloud:///1f04dcd1-766c-4190-af3f-9db73cb4937b"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/ideas/{{ideaId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "ideas",
+                    "{{ideaId}}"
+                  ]
+                },
+                "description": "GET {{url}}/api/equb/transactions  \n\nThis endpoint returns **transactions for the logged-in user’s wallet**.\n\n---\n\n# 📘 Query Parameters – Get My Transactions\n\nUse these in **Postman → Params tab**\n\n| Key | Type | Required | Description | Example |\n| --- | --- | --- | --- | --- |\n| page | number | ❌ | Page number (default: 1) | 1 |\n| limit | number | ❌ | Items per page (default: 10) | 10 |\n| type | string | ❌ | Filter by transaction type | deposit |\n| status | string | ❌ | Filter by transaction status | completed |\n| method | string | ❌ | Filter by payment method | wallet |\n| minAmount | number | ❌ | Minimum transaction amount | 100 |\n| maxAmount | number | ❌ | Maximum transaction amount | 1000 |\n| startDate | string | ❌ | Start date (YYYY-MM-DD) | 2026-01-01 |\n| endDate | string | ❌ | End date (YYYY-MM-DD) | 2026-02-01 |\n| sortBy | string | ❌ | Field to sort by (default: createdAt) | amount |\n| order | string | ❌ | Sort direction (ASC or DESC) | ASC |\n\n---\n\n## 🔹 Allowed Values\n\n### `type`\n\n```\ndeposit\nwithdrawal\ncontribution\npayout\nfee\nrefund\n\n ```\n\n### `status`\n\n```\npending\ncompleted\nfailed\ncanceled\n\n ```\n\n### `method`\n\n```\nwallet\nbank\nmobile_money\n\n ```\n\n---\n\n# ✅ Example Full Query (Postman)\n\nIn Params tab:\n\n| KEY | VALUE |\n| --- | --- |\n| page | 1 |\n| limit | 10 |\n| type | deposit |\n| status | completed |\n| minAmount | 100 |\n| sortBy | amount |\n| order | ASC |\n\nEquivalent URL:\n\n```\n{{url}}/api/equb/transactions?page=1&limit=10&type=deposit&status=completed&minAmount=100&sortBy=amount&order=ASC\n\n ```\n\n---"
+              },
+              "response": []
+            },
+            {
+              "name": "Patch",
+              "request": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Updated by admin\",\n  \"status\": \"approved\",\n  \"description\": \"Updated description\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{url}}/api/equb/ideas/{{ideaId}}",
+                  "host": [
+                    "{{url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "equb",
+                    "ideas",
+                    "{{ideaId}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
         }
       ]
     }
@@ -4145,10 +4684,6 @@
     },
     {
       "key": "adminId",
-      "value": "",
-      "type": "default"
-    },
-    {
       "value": "",
       "type": "default"
     },
@@ -4231,6 +4766,24 @@
       "key": "disputeId",
       "value": "",
       "type": "default"
+    },
+    {
+      "key": "accountId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "termId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "ideaId",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "value": ""
     }
   ]
 }
