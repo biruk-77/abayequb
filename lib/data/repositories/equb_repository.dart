@@ -10,6 +10,7 @@ import '../models/transaction_model.dart';
 import '../models/receipt_model.dart';
 import '../../core/utils/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 
 class EqubRepository {
@@ -137,7 +138,24 @@ class EqubRepository {
     try {
       AppLogger.info('fetching members list...');
       final data = await _equbService.getMembers();
-      return data.map((json) => EqubMemberModel.fromJson(json)).toList();
+      
+      // Filter out memberships that don't belong to the logged in user
+      const storage = FlutterSecureStorage();
+      final userDataStr = await storage.read(key: 'user_data');
+      String? currentUserId;
+      if (userDataStr != null) {
+        final userData = jsonDecode(userDataStr);
+        currentUserId = userData['id']?.toString() ?? userData['userId']?.toString();
+      }
+
+      final allMembers = data.map((json) => EqubMemberModel.fromJson(json)).toList();
+      
+      if (currentUserId != null) {
+        final myMembers = allMembers.where((m) => m.userId == currentUserId).toList();
+        AppLogger.success('filtered members list to ${myMembers.length} for user $currentUserId');
+        return myMembers;
+      }
+      return allMembers;
     } catch (e) {
       AppLogger.error('failed to get members', e);
       rethrow;
@@ -300,6 +318,19 @@ class EqubRepository {
       AppLogger.error('Failed to load cached wallet', e);
     }
     return null;
+  }
+
+  Future<void> clearAllCaches() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('cached_packages');
+      await prefs.remove('cached_groups');
+      await prefs.remove('cached_members');
+      await prefs.remove('cached_wallet');
+      AppLogger.success('All equb caches cleared');
+    } catch (e) {
+      AppLogger.error('Failed to clear caches', e);
+    }
   }
 
   Future<List<TransactionModel>> getTransactions({

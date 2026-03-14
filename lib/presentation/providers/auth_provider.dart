@@ -50,6 +50,8 @@ class AuthProvider extends ChangeNotifier {
       _user = await _authRepository.getSavedUser();
       if (_user != null) {
         AppLogger.success('Welcome back, ${_user!.fullName}!');
+        // Fetch KYC status on init if user is logged in
+        fetchKYCStatus();
       }
     } catch (e) {
       AppLogger.warning('Failed to load saved user: $e');
@@ -244,6 +246,32 @@ class AuthProvider extends ChangeNotifier {
       AppLogger.success('Provider: KYC submitted. Status: ${_kyc!.status}');
     } catch (e) {
       AppLogger.error('Provider: KYC submission failed', e);
+      _error = _handleError(e);
+      throw _error!;
+    } finally {
+      _isLoading = false;
+      _safeNotify();
+    }
+  }
+
+  Future<void> updateKYC({
+    required String kycId,
+    required String documentType,
+    required String filePath,
+  }) async {
+    _isLoading = true;
+    _error = null;
+    _safeNotify();
+    try {
+      AppLogger.info('Provider: Updating KYC $kycId...');
+      _kyc = await _authRepository.updateKYC(
+        kycId: kycId,
+        documentType: documentType,
+        filePath: filePath,
+      );
+      AppLogger.success('Provider: KYC updated. Status: ${_kyc!.status}');
+    } catch (e) {
+      AppLogger.error('Provider: KYC update failed', e);
       _error = _handleError(e);
       throw _error!;
     } finally {

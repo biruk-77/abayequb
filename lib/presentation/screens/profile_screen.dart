@@ -6,6 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/auth_provider.dart';
+import '../providers/equb_provider.dart';
+import '../providers/wallet_provider.dart';
+import '../providers/notification_provider.dart';
 import '../../data/models/kyc_model.dart';
 import '../providers/locale_provider.dart';
 import '../providers/theme_provider.dart';
@@ -106,16 +109,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 _buildKYCStatus(context),
                 const SizedBox(height: 8),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  child: ElevatedButton.icon(
-                    onPressed: () => context.push('/profile/kyc'),
-                    icon: const Icon(Icons.upload_file),
-                    label: const Text('Upload Documents'),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(double.infinity, 48),
-                    ),
-                  ),
+                p.Consumer<AuthProvider>(
+                  builder: (context, auth, _) {
+                    final kyc = auth.kyc;
+                    final status = kyc?.status;
+
+                    String label = 'Upload Documents';
+                    bool isDisabled = false;
+                    IconData icon = Icons.upload_file;
+                    Color? bgColor;
+
+                    if (status == KYCStatus.verified) {
+                      label = 'Verified';
+                      isDisabled = true;
+                      icon = Icons.check_circle;
+                      bgColor = Colors.green;
+                    } else if (status == KYCStatus.pending) {
+                      label = 'Under Review';
+                      isDisabled = true;
+                      icon = Icons.hourglass_empty;
+                      bgColor = Colors.orange;
+                    } else if (status == KYCStatus.rejected) {
+                      label = 'Update Documents';
+                      icon = Icons.update;
+                    }
+
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      child: ElevatedButton.icon(
+                        onPressed: isDisabled
+                            ? null
+                            : () => context.push('/profile/kyc'),
+                        icon: Icon(icon),
+                        label: Text(
+                          label,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 48),
+                          backgroundColor: bgColor,
+                          foregroundColor: bgColor != null
+                              ? Colors.white
+                              : null,
+                          disabledBackgroundColor: bgColor?.withValues(
+                            alpha: 0.6,
+                          ),
+                          disabledForegroundColor: Colors.white,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -521,6 +564,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () async {
               Navigator.pop(context);
+              await p.Provider.of<EqubProvider>(
+                context,
+                listen: false,
+              ).clearData();
+              p.Provider.of<WalletProvider>(
+                context,
+                listen: false,
+              ).clearData();
+              await p.Provider.of<NotificationProvider>(
+                context,
+                listen: false,
+              ).clearData();
               await p.Provider.of<AuthProvider>(
                 context,
                 listen: false,

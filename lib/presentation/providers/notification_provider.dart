@@ -108,6 +108,15 @@ class NotificationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> clearData() async {
+    _notifications = [];
+    _isLoading = false;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_storageKey);
+    notifyListeners();
+    AppLogger.info('Provider: Notifications cleared locally');
+  }
+
   Future<void> _saveToLocal() async {
     try {
       final prefs = await SharedPreferences.getInstance();

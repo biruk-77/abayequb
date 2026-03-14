@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen>
 
   bool _isOtpSent = false;
   final bool _isRegistering = false;
-  bool _showPasswordField = false;
+  bool _showPasswordField = true;
   bool _isPasswordObscured = true;
   int _otpCountdown = 0;
   Timer? _countdownTimer;
@@ -318,110 +318,33 @@ class _LoginScreenState extends State<LoginScreen>
         }
       },
       child: Scaffold(
-        body: Stack(
-          children: [
-            _buildAnimatedBackground(),
-            SafeArea(
-              child: Column(
-                children: [
-                  _buildTopBar(),
-                  Expanded(
-                    child: Center(
-                      child: SingleChildScrollView(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: SizeConfig.scaleWidth(24),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            _buildHeader(l10n),
-                            Transform.translate(
-                              offset: const Offset(0, -40),
-                              child: _buildGlassmorphicForm(l10n, isLoading),
-                            ),
-                          ],
-                        ),
-                      ),
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? AppTheme.bgDark
+            : AppTheme.bgLight,
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildTopBar(),
+              Expanded(
+                child: Center(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: SizeConfig.scaleWidth(24),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildHeader(l10n),
+                        const SizedBox(height: 8),
+                        _buildGlassmorphicForm(l10n, isLoading),
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildAnimatedBackground() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppTheme.bgDark : AppTheme.bgLight,
-      ),
-      child: Stack(
-        children: [
-          // Dynamic mesh-like glow
-          AnimatedBuilder(
-            animation: _glowController,
-            builder: (context, child) => Positioned(
-              top: -100 + (50 * _glowController.value),
-              left: -100 + (30 * _glowController.value),
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppTheme.primaryColor.withValues(
-                        alpha: isDark ? 0.15 : 0.1,
-                      ),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          AnimatedBuilder(
-            animation: _glowController,
-            builder: (context, child) => Positioned(
-              bottom: 100 - (40 * _glowController.value),
-              right: -50 + (20 * _glowController.value),
-              child: Container(
-                width: 400,
-                height: 400,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppTheme.accentColor.withValues(
-                        alpha: isDark ? 0.1 : 0.05,
-                      ),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          // Subtle grid pattern for texture
-          Opacity(
-            opacity: isDark ? 0.05 : 0.02,
-            child: GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 10,
-              ),
-              itemBuilder: (context, index) => Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppTheme.primaryColor, width: 0.5),
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -506,37 +429,24 @@ class _LoginScreenState extends State<LoginScreen>
   Widget _buildHeader(AbayLocalizations l10n) {
     return Column(
       children: [
-        Transform.translate(
-          offset: const Offset(0, -60),
-          child: Column(
-            children: [
-              FadeInDown(
-                child: Image.asset(
-                  'assets/images/logo2.png',
-                  height: SizeConfig.scaleHeight(260),
-                  width: SizeConfig.scaleHeight(260),
-                  fit: BoxFit.contain,
-                ),
-              ),
-              Transform.translate(
-                offset: const Offset(0, -30),
-                child: Column(
-                  children: [
-                    FadeInDown(
-                      delay: const Duration(milliseconds: 100),
-                      child: Text(
-                        _isRegistering ? l10n.joinAbayEqub : l10n.welcomeBack,
-                        style: TextStyle(
-                          fontSize: SizeConfig.scaleText(32),
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+        FadeInDown(
+          child: Image.asset(
+            'assets/images/logo2.png',
+            height: SizeConfig.scaleHeight(140),
+            width: SizeConfig.scaleHeight(140),
+            fit: BoxFit.contain,
+          ),
+        ),
+        const SizedBox(height: 8),
+        FadeInDown(
+          delay: const Duration(milliseconds: 100),
+          child: Text(
+            _isRegistering ? l10n.joinAbayEqub : l10n.welcomeBack,
+            style: TextStyle(
+              fontSize: SizeConfig.scaleText(24),
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).primaryColor,
+            ),
           ),
         ),
       ],
@@ -591,28 +501,33 @@ class _LoginScreenState extends State<LoginScreen>
                           setState(() => _showPasswordField = true),
                       child: Text("${l10n.login} with Password"),
                     ),
-                    if (_showPasswordField)
-                      TextButton(
-                        onPressed: _showForgotPasswordDialog,
-                        child: const Text('Forgot Password?'),
+                    ] else if (_showPasswordField) ...[
+                      _buildPhoneInput(label: "${l10n.phone} or Email"),
+                      const SizedBox(height: 16),
+                      _buildPasswordInput(),
+                      const SizedBox(height: 24),
+                      _buildSubmitButton(
+                        l10n.login,
+                        _handlePasswordLogin,
+                        isLoading,
                       ),
-                  ] else if (_showPasswordField) ...[
-                    _buildPhoneInput(label: "${l10n.phone} or Email"),
-                    const SizedBox(height: 16),
-                    _buildPasswordInput(),
-                    const SizedBox(height: 24),
-                    _buildSubmitButton(
-                      l10n.login,
-                      _handlePasswordLogin,
-                      isLoading,
-                    ),
-                    const SizedBox(height: 16),
-                    TextButton(
-                      onPressed: () =>
-                          setState(() => _showPasswordField = false),
-                      child: const Text('Use OTP instead'),
-                    ),
-                  ] else ...[
+                      const SizedBox(height: 16),
+                      Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        spacing: 8,
+                        children: [
+                          TextButton(
+                            onPressed: _showForgotPasswordDialog,
+                            child: const Text('Forgot Password?'),
+                          ),
+                          TextButton(
+                            onPressed: () =>
+                                setState(() => _showPasswordField = false),
+                            child: const Text('Use OTP instead'),
+                          ),
+                        ],
+                      ),
+                    ] else ...[
                     GlowingTextField(
                       controller: _otpController,
                       hintText: 'Verification Code',

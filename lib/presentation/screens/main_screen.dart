@@ -8,6 +8,7 @@ import '../../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 import '../providers/equb_provider.dart';
 import '../providers/wallet_provider.dart';
+import '../providers/notification_provider.dart';
 import '../providers/locale_provider.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/fluid_bottom_nav.dart';
@@ -280,6 +281,9 @@ class _MainScreenState extends State<MainScreen> with RouteAware {
             title: Text(l10n.logout, style: const TextStyle(color: Colors.red)),
             onTap: () async {
               Navigator.pop(context); // Close drawer
+              await context.read<EqubProvider>().clearData();
+              context.read<WalletProvider>().clearData();
+              await context.read<NotificationProvider>().clearData();
               await context.read<AuthProvider>().logout();
               if (context.mounted) {
                 context.go('/login');

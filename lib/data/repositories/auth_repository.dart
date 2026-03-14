@@ -42,7 +42,7 @@ class AuthRepository {
           key: 'user_data',
           value: jsonEncode(user.toJson()),
         );
-        AppLogger.success('Sign in successful for: ${user}');
+        AppLogger.success('Sign in successful for: $user');
         return user;
       } else {
         // Look for ID in various places including JWT
@@ -315,6 +315,25 @@ class AuthRepository {
       return KYCModel.fromJson(response['data']);
     } catch (e) {
       AppLogger.error('KYC Submission failed', e);
+      rethrow;
+    }
+  }
+
+  Future<KYCModel> updateKYC({
+    required String kycId,
+    required String documentType,
+    required String filePath,
+  }) async {
+    try {
+      AppLogger.info('Updating KYC $kycId for document type: $documentType');
+      final response = await _kycService.updateKYC(
+        kycId: kycId,
+        documentType: documentType,
+        filePath: filePath,
+      );
+      return KYCModel.fromJson(response['data']);
+    } catch (e) {
+      AppLogger.error('KYC Update failed', e);
       rethrow;
     }
   }

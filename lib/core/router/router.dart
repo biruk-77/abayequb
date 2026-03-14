@@ -6,6 +6,7 @@ import '../utils/route_observer.dart';
 import '../../presentation/screens/main_screen.dart';
 import '../../presentation/screens/package_selection_screen.dart';
 import '../../presentation/screens/contribution_level_screen.dart';
+import '../../presentation/screens/group_detail_screen.dart';
 import '../../presentation/screens/payment_screen.dart';
 import '../../presentation/screens/about_equb_screen.dart';
 import '../../presentation/screens/register_screen.dart';
@@ -190,6 +191,15 @@ class AppRouter {
                       initialGroupId: extra['groupId'] as String?,
                     );
                   }
+                },
+              ),
+              GoRoute(
+                path: 'group_detail',
+                builder: (BuildContext context, GoRouterState state) {
+                  final extra = state.extra as Map<String, dynamic>;
+                  final group = extra['group'] as EqubGroupModel;
+                  final package = extra['package'] as EqubPackageModel;
+                  return GroupDetailScreen(group: group, package: package);
                 },
               ),
             ],

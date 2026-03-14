@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
 import '../../data/models/equb_package_model.dart';
 import '../providers/equb_provider.dart';
 import '../../core/theme/app_theme.dart';
-import '../widgets/contribution/group_selector_list.dart';
-import '../widgets/contribution/detail_glass_card.dart';
 import '../widgets/contribution/empty_groups_view.dart';
-import '../widgets/contribution/contribution_button.dart';
+import '../widgets/contribution/group_list_card.dart';
 
 class ContributionLevelScreen extends StatefulWidget {
   final EqubPackageModel package;
@@ -25,28 +24,12 @@ class ContributionLevelScreen extends StatefulWidget {
 }
 
 class _ContributionLevelScreenState extends State<ContributionLevelScreen> {
-  int _selectedGroupIndex = 0;
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final provider = context.read<EqubProvider>();
       await provider.fetchGroupsByPackage(widget.package.id);
-
-      if (mounted) {
-        final groups = provider.packageGroups;
-        if (groups.isNotEmpty) {
-          int index = 0;
-          if (widget.initialGroupId != null) {
-            final foundIndex = groups.indexWhere(
-              (g) => g.id.toString() == widget.initialGroupId.toString(),
-            );
-            if (foundIndex != -1) index = foundIndex;
-          }
-          setState(() => _selectedGroupIndex = index);
-        }
-      }
     });
   }
 
@@ -106,57 +89,41 @@ class _ContributionLevelScreenState extends State<ContributionLevelScreen> {
                       return EmptyGroupsView(isDark: isDark);
                     }
 
-                    final displayIndex = _selectedGroupIndex.clamp(
-                      0,
-                      groups.length - 1,
-                    );
-                    final selectedGroup = groups[displayIndex];
+                    return ListView.separated(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 16,
+                      ),
+                      itemCount: groups.length,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        final selectedGroup = groups[index];
+                        final isJoined = provider.myMemberships.any(
+                          (m) =>
+                              m.groupId.toString() ==
+                              selectedGroup.id.toString(),
+                        );
+                        final isCompleted =
+                            selectedGroup.status?.toLowerCase() == 'completed';
 
-                    final isJoined = provider.myMemberships.any(
-                      (m) =>
-                          m.groupId.toString() == selectedGroup.id.toString(),
-                    );
-                    final isCompleted =
-                        selectedGroup.status?.toLowerCase() == 'completed';
-
-                    return Column(
-                      children: [
-                        // ── GROUP SELECTOR ──
-                        GroupSelectorList(
-                          groups: groups,
-                          selectedIndex: displayIndex,
+                        return GroupListCard(
+                          group: selectedGroup,
+                          package: widget.package,
+                          isJoined: isJoined,
+                          isCompleted: isCompleted,
                           isDark: isDark,
-                          onSelected: (i) =>
-                              setState(() => _selectedGroupIndex = i),
-                        ),
-
-                        SizedBox(height: screenHeight * 0.012),
-
-                        // ── DETAIL CARD ──
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                            child: DetailGlassCard(
-                              key: ValueKey(selectedGroup.id),
-                              group: selectedGroup,
-                              package: widget.package,
-                              isDark: isDark,
-                            ),
-                          ),
-                        ),
-
-                        // ── ACTION BUTTON ──
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
-                          child: ContributionButton(
-                            groups: groups,
-                            selectedIndex: displayIndex,
-                            package: widget.package,
-                            isJoined: isJoined,
-                            isCompleted: isCompleted,
-                          ),
-                        ),
-                      ],
+                          onTap: () {
+                            context.push(
+                              '/packages/group_detail',
+                              extra: {
+                                'group': selectedGroup,
+                                'package': widget.package,
+                              },
+                            );
+                          },
+                        );
+                      },
                     );
                   },
                 ),

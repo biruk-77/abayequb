@@ -31,6 +31,15 @@ class WalletProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearData() {
+    _wallet = null;
+    _transactions = [];
+    _isLoading = false;
+    _isTransactionsLoading = false;
+    _safeNotify();
+    AppLogger.info('Provider: Wallet data cleared');
+  }
+
   Future<void> fetchWallet() async {
     if (_isLoading) return;
     _isLoading = true;

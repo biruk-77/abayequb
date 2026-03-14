@@ -39,6 +39,21 @@ class EqubProvider extends ChangeNotifier {
     Future.microtask(() => notifyListeners());
   }
 
+  Future<void> clearData() async {
+    _packages = [];
+    _groups = [];
+    _myGroups = [];
+    _myMemberships = [];
+    _packageGroups = [];
+    _nextContribution = null;
+    _selectedGroupDetails = null;
+    _lastFetchTime = null;
+    _error = null;
+    await _equbRepository.clearAllCaches();
+    _safeNotify();
+    AppLogger.info('Provider: All equb data cleared');
+  }
+
   Future<void> fetchGroupsByPackage(String packageId) async {
     // 1. Check if we already have these groups in our general list to save a server hit
     final localMatches = _groups
@@ -220,38 +235,31 @@ class EqubProvider extends ChangeNotifier {
       AppLogger.info('Provider: Fetching user joined groups directly...');
       final joinedGroups = await _equbRepository.getMyGroups();
 
-      if (joinedGroups.isNotEmpty) {
-        _myGroups = joinedGroups;
-      }
-
       // 3. Fetch memberships for details like payout order
       final apiMembers = await _equbRepository.getMembers();
 
-      if (apiMembers.isEmpty && _myMemberships.isEmpty) {
+      if (apiMembers.isEmpty) {
         AppLogger.warning('Provider: No memberships found');
         _myMemberships = [];
+        _myGroups = []; // Empty out groups if user has no memberships
       } else {
         _myMemberships = apiMembers;
         AppLogger.info('Provider: User memberships data: $_myMemberships');
+        
+        // Ensure _myGroups only contains groups the user is ACTUALLY a member of 
+        // (handles buggy API returning all groups)
+        if (joinedGroups.isNotEmpty) {
+          _myGroups = joinedGroups
+              .where((g) =>
+                  _myMemberships.any((m) => m.groupId.toString() == g.id.toString()))
+              .toList();
+        } else {
+          _myGroups = [];
+        }
       }
 
       await _equbRepository.cacheMembers(_myMemberships);
 
-      // Filter joined groups from memberships as fallback
-      if (_myGroups.isEmpty && _myMemberships.isNotEmpty) {
-        List<EqubGroupModel> sourceGroups = _groups;
-        if (sourceGroups.isEmpty) {
-          sourceGroups = await _equbRepository.getGroups();
-        }
-
-        _myGroups = sourceGroups
-            .where(
-              (g) => _myMemberships.any(
-                (m) => m.groupId.toString() == g.id.toString(),
-              ),
-            )
-            .toList();
-      }
 
       AppLogger.success(
         'Provider: Fetched ${_myGroups.length} my groups and ${_myMemberships.length} memberships',
